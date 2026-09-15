@@ -926,123 +926,180 @@ body.app-open #toTop,body.app-open #feedbackFab{display:none!important}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
 
 /* ══════════════════════════════════════════════════════════════
-   VIDÉO DE DÉMONSTRATION
-   Une reconstitution de l'interface réelle, pas une illustration :
-   mêmes colonnes, mêmes couleurs, mêmes libellés que le studio.
-   Une image du produit qui ne lui ressemble pas coûte plus cher
-   qu'elle ne rapporte.
+   DÉMONSTRATION
+   Une reconstitution de l'interface, pas une illustration : mêmes
+   colonnes, mêmes couleurs, mêmes libellés, mêmes gestes. Une image
+   du produit qui ne lui ressemble pas coûte plus cher qu'elle ne
+   rapporte.
    ══════════════════════════════════════════════════════════════ */
 .vid{position:relative;margin:0;border:1px solid var(--line-2);border-radius:var(--r4);
   overflow:hidden;background:var(--surface);box-shadow:var(--sh-3)}
 .vid__mp4{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink)}
 .vid__mp4[hidden]{display:none}
 
-.vid__scene{position:relative;aspect-ratio:16/9;min-height:330px;display:flex;flex-direction:column;
+.vid__scene{position:relative;aspect-ratio:16/9;min-height:360px;display:flex;flex-direction:column;
   background:var(--surface);font-size:11px;overflow:hidden;user-select:none}
 
 /* ── Barre supérieure ─────────────────────────────────── */
-.vid__top{display:flex;align-items:center;gap:10px;padding:8px 12px;flex-shrink:0;
+.vid__top{display:flex;align-items:center;gap:9px;padding:8px 12px;flex-shrink:0;
   border-bottom:1px solid var(--line);background:var(--surface-2)}
+.vid__logo{display:grid;place-items:center;width:22px;height:22px;border-radius:6px;
+  background:var(--accent);flex-shrink:0}
+.vid__logo svg{width:13px;height:13px;--nex-body:#fff;--nex-eye:var(--accent)}
 .vid__name{font-family:var(--ff-display);font-size:12px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.vid__name b{font-family:var(--ff-mono);font-size:8.5px;font-weight:500;letter-spacing:.14em;color:var(--ink-4)}
-.vid__tabs{display:flex;gap:4px;margin-left:8px}
+.vid__name b{font-family:var(--ff-mono);font-size:8px;font-weight:500;letter-spacing:.14em;color:var(--ink-4)}
+.vid__tabs{display:flex;gap:3px;margin-left:6px}
 .vid__tabs i{padding:4px 11px;border-radius:var(--rf);font-style:normal;font-size:10.5px;
   font-weight:600;color:var(--ink-3);transition:background .25s,color .25s}
 .vid__tabs i.on{background:var(--accent-soft);color:var(--accent)}
+.vid__vp{display:flex;gap:7px;margin-left:10px;font-size:10px;color:var(--ink-4)}
+.vid__vp .on{color:var(--accent)}
 .vid__zoom{margin-left:auto;font-family:var(--ff-mono);font-size:10px;color:var(--ink-3)}
-.vid__cta{padding:5px 13px;border-radius:var(--r1);background:var(--accent);color:var(--accent-ink);
-  font-size:10.5px;font-weight:600}
+.vid__apercu{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--r1);
+  border:1px solid var(--line-2);color:var(--ink-2);font-size:10.5px;font-weight:600;
+  transition:background .2s,color .2s,border-color .2s}
+.vid__apercu.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 
-/* ── Corps : rail, panneau, scène, propriétés ─────────── */
-.vid__body{flex:1;min-height:0;display:grid;grid-template-columns:52px 172px 1fr 150px}
+/* ── Corps ─────────────────────────────────────────────── */
+.vid__body{flex:1;min-height:0;display:grid;grid-template-columns:54px 176px 1fr 152px}
 .vid__rail{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;
   border-right:1px solid var(--line);background:var(--surface-2)}
-.vid__rail b{display:flex;flex-direction:column;align-items:center;gap:3px;width:44px;padding:7px 0;
-  border-radius:9px;color:var(--ink-3);transition:background .25s,color .25s}
+.vid__rail b{display:flex;flex-direction:column;align-items:center;gap:3px;width:46px;padding:7px 0;
+  border-radius:9px;color:var(--ink-3);transition:background .22s,color .22s}
 .vid__rail b i{font-size:13px}
-.vid__rail b u{font-size:7.5px;font-weight:600;text-decoration:none;letter-spacing:.01em}
+.vid__rail b u{font-size:7.5px;font-weight:600;text-decoration:none}
 .vid__rail b.on{background:var(--accent-soft);color:var(--accent)}
 
-.vid__pan{position:relative;padding:11px;border-right:1px solid var(--line);
-  background:var(--surface);overflow:hidden}
-.vid__pan h6{margin:0 0 9px;font-family:var(--ff-mono);font-size:8px;letter-spacing:.12em;
+.vid__pan{position:relative;border-right:1px solid var(--line);background:var(--surface);overflow:hidden}
+.vid__vol{position:absolute;inset:0;padding:11px;opacity:0;transform:translateX(-8px);
+  pointer-events:none;transition:opacity .26s var(--ease),transform .26s var(--ease)}
+.vid__vol.on{opacity:1;transform:none}
+.vid__vol h6{margin:0 0 9px;font-family:var(--ff-mono);font-size:8px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink-4)}
-.vid__grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;transition:opacity .3s}
+.vid__lay{display:flex;align-items:center;gap:7px;height:26px;padding:0 8px;margin-bottom:3px;
+  border-radius:6px;background:var(--surface-2);font-size:9.5px;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid__lay i{font-size:8px;color:var(--ink-4);flex-shrink:0}
+.vid__lay.neuf{background:var(--accent-soft);color:var(--accent);animation:vidPop .4s var(--ease) both}
+@keyframes vidPop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+#vidLayNew{opacity:0}
+#vidLayNew.on{opacity:1}
+
+.vid__grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .vid__it{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 4px;
   border:1px solid var(--line);border-radius:9px;background:var(--surface-2);
-  font-size:8.5px;font-weight:600;color:var(--ink-3);text-align:center}
+  font-size:8.5px;font-weight:600;color:var(--ink-3);text-align:center;transition:.2s}
 .vid__it em{width:22px;height:16px;border-radius:4px;display:block}
-.vid__it.lift{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.vid__it.lift{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);
+  transform:scale(.94)}
 
-/* Le panneau de l'assistant glisse par-dessus celui des blocs :
-   c'est ce que fait le studio, le rail changeant simplement d'onglet. */
-.vid__ai{position:absolute;inset:0;padding:11px;background:var(--surface);
-  display:flex;flex-direction:column;gap:8px;
-  transform:translateX(-102%);transition:transform .34s var(--ease)}
-.vid__ai.on{transform:none}
-.vid__msg{flex:1;min-height:0;font-size:9.5px;line-height:1.55;color:var(--ink-2)}
+.vid__msg{min-height:74px;font-size:9.5px;line-height:1.5;color:var(--ink-2);margin-bottom:8px}
 .vid__msg b{display:block;margin-bottom:5px;padding:7px 9px;border-radius:9px 9px 9px 3px;
-  background:var(--surface-2);font-weight:500;color:var(--ink-2)}
-.vid__msg b.me{border-radius:9px 9px 3px 9px;background:var(--accent);color:var(--accent-ink);margin-left:14px}
+  background:var(--surface-2);font-weight:500;color:var(--ink-2);
+  animation:vidPop .3s var(--ease) both}
+.vid__msg b.me{border-radius:9px 9px 3px 9px;background:var(--accent);color:var(--accent-ink);margin-left:12px}
 .vid__field{display:flex;align-items:center;gap:1px;min-height:28px;padding:6px 8px;
   border:1px solid var(--line-2);border-radius:8px;background:var(--surface-2);
   font-size:9.5px;color:var(--ink);line-height:1.4}
 .vid__caret{width:1.5px;height:11px;background:var(--accent);animation:vidCaret 1s steps(1) infinite}
 @keyframes vidCaret{50%{opacity:0}}
 
-.vid__stage{position:relative;padding:16px;background:var(--canvas-bg,var(--surface-3));
+/* ── Plan de travail ───────────────────────────────────── */
+.vid__stage{position:relative;padding:15px;background:var(--canvas-bg,var(--surface-3));
   background-image:radial-gradient(var(--canvas-dot,rgba(26,25,23,.1)) 1px,transparent 1px);
   background-size:12px 12px;overflow:hidden}
-.vid__page{position:relative;height:100%;padding:16px;border-radius:6px;background:#fff;
+.vid__page{position:relative;height:100%;padding:0 0 16px;border-radius:5px;background:#fff;
   box-shadow:var(--sh-2);overflow:hidden}
-.vid__ph{border-radius:3px;background:#e9e6e1}
-.vid__ph--t{width:56%;height:13px;margin-bottom:9px;background:#d9d5cf}
-.vid__ph--p{width:84%;height:7px;margin-bottom:5px}
-.vid__ph--b{width:78px;height:19px;margin-top:11px;border-radius:5px;background:#b8351c}
+.vid__nav{display:flex;align-items:center;gap:14px;padding:9px 16px;border-bottom:1px solid #eeebe6}
+.vid__nav b{font:800 8.5px/1 var(--ff-display),sans-serif;letter-spacing:.09em;color:#1a1917}
+.vid__nav span{width:26px;height:4px;border-radius:2px;background:#e9e6e1}
+.vid__nav span:first-of-type{margin-left:auto}
+.vid__h1{margin:18px 16px 10px;width:54%;height:13px;border-radius:3px;background:#d9d5cf}
+.vid__ph{margin:0 16px 5px;width:82%;height:6px;border-radius:3px;background:#e9e6e1}
+.vid__cta{margin:12px 16px;width:74px;height:18px;border-radius:5px;background:#b8351c}
+/* Le corps de la page importée. En pourcentages : la scène change de
+   taille selon l'écran, ces blocs doivent suivre. */
+.vid__media{position:absolute;left:3%;top:31%;width:44%;height:26%;border-radius:5px;
+  background:linear-gradient(135deg,#f0ece5,#e4dfd6)}
+.vid__band{position:absolute;left:3%;right:3%;top:62%;height:11%;border-radius:4px;background:#f4f1ec}
+.vid__cards{position:absolute;left:3%;right:3%;top:77%;height:16%;display:flex;gap:2%}
+.vid__cards i{flex:1;border-radius:4px;background:#f8f6f2;border:1px solid #edeae4}
 
-/* La carte déposée : mêmes proportions que le bloc réel. */
-.vid__drop{position:absolute;left:58%;top:34%;width:0;height:0;opacity:0;
+/* La carte déposée : les proportions du bloc réel. */
+.vid__drop{position:absolute;left:57%;top:31%;width:0;height:0;opacity:0;
   border-radius:8px;background:#fff;border:1px solid #e4e1db;
-  box-shadow:0 10px 26px rgba(20,18,16,.12);overflow:hidden;
-  transition:width .3s var(--ease),height .3s var(--ease),opacity .2s,border-radius .3s}
-.vid__drop.in{width:118px;height:132px;opacity:1}
-.vid__drop::before{content:'19 €';position:absolute;left:11px;top:34px;
-  font:800 19px/1 var(--ff-display),sans-serif;color:#1a1917}
-.vid__drop::after{content:'';position:absolute;left:11px;right:11px;bottom:12px;height:20px;
-  border-radius:5px;background:#b8351c}
-.vid__drop i{position:absolute;left:11px;top:13px;width:42px;height:6px;border-radius:3px;background:#f4c4b6}
+  box-shadow:0 10px 26px rgba(20,18,16,.13);overflow:hidden;
+  transition:width .28s var(--ease),height .28s var(--ease),opacity .18s,background .3s}
+.vid__drop.in{width:116px;height:134px;opacity:1}
+.vid__drop__b{position:absolute;left:11px;top:12px;width:42px;height:6px;border-radius:3px;background:#f4c4b6}
+.vid__drop__p{position:absolute;left:11px;top:30px;font:800 20px/1 var(--ff-display),sans-serif;color:#1a1917}
+.vid__drop__l{position:absolute;left:11px;top:60px;width:0;height:5px;border-radius:3px;
+  background:#d5d1c9;transition:width .35s var(--ease)}
+.vid__drop__l.on{width:68px}
+.vid__drop__c{position:absolute;left:11px;right:11px;bottom:12px;height:20px;border-radius:5px;background:#b8351c}
 
-.vid__sel{position:absolute;left:58%;top:34%;width:118px;height:132px;
-  border:1.5px solid var(--accent);border-radius:8px;opacity:0;pointer-events:none;
-  transition:opacity .2s}
+.vid__sel{position:absolute;left:57%;top:31%;width:116px;height:134px;
+  border:1.5px solid var(--accent);border-radius:8px;opacity:0;pointer-events:none;transition:opacity .18s}
 .vid__sel.on{opacity:1}
-.vid__sel::before,.vid__sel::after{content:'';position:absolute;width:6px;height:6px;
-  border-radius:2px;background:var(--surface);border:1.5px solid var(--accent)}
-.vid__sel::before{left:-4px;top:-4px}
-.vid__sel::after{right:-4px;bottom:-4px}
+.vid__sel em{position:absolute;width:7px;height:7px;border-radius:2px;
+  background:var(--surface);border:1.5px solid var(--accent)}
+.vid__sel em:nth-child(1){left:-4px;top:-4px}
+.vid__sel em:nth-child(2){right:-4px;top:-4px}
+.vid__sel em:nth-child(3){left:-4px;bottom:-4px}
+.vid__sel em:nth-child(4){right:-4px;bottom:-4px}
 
-/* Vue « code source » : elle recouvre la scène, comme l'onglet réel. */
-.vid__code{position:absolute;inset:0;padding:14px 16px;background:var(--ink);
-  opacity:0;pointer-events:none;transition:opacity .3s;overflow:hidden}
-.vid__code.on{opacity:1}
-.vid__code pre{margin:0;font-family:var(--ff-mono);font-size:9px;line-height:1.75;
+/* Vue « code source » et vue « aperçu » : elles recouvrent la scène,
+   comme les onglets réels. */
+.vid__code,.vid__prev{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease)}
+.vid__code.on,.vid__prev.on{opacity:1}
+.vid__code{padding:14px 16px;background:var(--ink);overflow:hidden}
+.vid__code pre{margin:0;font-family:var(--ff-mono);font-size:9px;line-height:1.8;
   color:#d7d2cb;white-space:pre-wrap;word-break:break-word}
 .vid__code .k{color:#f0846a}
 .vid__code .a{color:#c8a86a}
 .vid__code .v{color:#9cc3a0}
+.vid__code mark{background:var(--accent);color:#fff;padding:0;border-radius:2px}
 
+.vid__prev{padding:15px;background:var(--surface-3)}
+.vid__prev__bar{display:flex;align-items:center;gap:5px;padding:6px 10px;
+  border-radius:7px 7px 0 0;background:var(--surface-2);border:1px solid var(--line)}
+.vid__prev__bar i{width:7px;height:7px;border-radius:50%;background:var(--line-3)}
+.vid__prev__bar span{margin-left:8px;font-family:var(--ff-mono);font-size:8.5px;color:var(--ink-4)}
+.vid__prev__in{height:calc(100% - 26px);background:#fff;border:1px solid var(--line);border-top:0;
+  border-radius:0 0 7px 7px;overflow:hidden;position:relative}
+
+/* Écran d'import */
+.vid__import{position:absolute;inset:0;display:grid;place-items:center;
+  background:var(--surface-3);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.vid__import.on{opacity:1}
+.vid__import__box{display:flex;flex-direction:column;align-items:center;gap:7px;
+  padding:26px 40px;border:2px dashed var(--accent-line);border-radius:14px;
+  background:var(--surface);text-align:center}
+.vid__import__box i{font-size:21px;color:var(--accent)}
+.vid__import__box b{font-family:var(--ff-mono);font-size:11px;color:var(--ink)}
+.vid__import__box span{font-size:9.5px;color:var(--ink-3)}
+.vid__import.depose .vid__import__box{border-style:solid;border-color:var(--accent);
+  background:var(--accent-soft)}
+
+/* ── Propriétés ────────────────────────────────────────── */
 .vid__props{padding:11px;border-left:1px solid var(--line);background:var(--surface);overflow:hidden}
 .vid__props h6{margin:0 0 10px;font-family:var(--ff-mono);font-size:8px;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink-4)}
-.vid__pl{display:flex;justify-content:space-between;align-items:baseline;
-  margin-bottom:4px;font-size:9.5px;color:var(--ink-3)}
+.vid__vide{padding:26px 6px;text-align:center;font-size:9.5px;line-height:1.5;color:var(--ink-4)}
+.vid__reglages{display:none}
+.vid__props.arme .vid__vide{display:none}
+.vid__props.arme .vid__reglages{display:block;animation:vidPop .3s var(--ease) both}
+.vid__pl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;
+  font-size:9.5px;color:var(--ink-3)}
 .vid__pl b{font-family:var(--ff-mono);font-size:10px;color:var(--ink);font-variant-numeric:tabular-nums}
 .vid__bar{height:4px;margin-bottom:11px;border-radius:2px;background:var(--surface-3);overflow:hidden}
-.vid__bar i{display:block;height:100%;border-radius:2px;background:var(--accent);transition:width .18s linear}
+.vid__bar i{display:block;height:100%;border-radius:2px;background:var(--accent);transition:width .14s linear}
 .vid__sw{display:flex;gap:5px}
 .vid__sw em{width:17px;height:17px;border-radius:5px;display:block;box-shadow:0 0 0 1px var(--line) inset}
 .vid__sw em.on{box-shadow:0 0 0 2px var(--surface) inset,0 0 0 3.5px var(--accent)}
 
+/* ── Barre basse et menu d'export ──────────────────────── */
 .vid__bottom{display:flex;align-items:center;gap:5px;flex-shrink:0;padding:7px 12px;
   border-top:1px solid var(--line);background:var(--surface-2)}
 .vid__bottom span{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;
@@ -1050,47 +1107,79 @@ body.app-open #toTop,body.app-open #feedbackFab{display:none!important}
 .vid__bottom span.on{background:var(--accent-soft);color:var(--accent)}
 .vid__exp{margin-left:auto;background:var(--accent);color:var(--accent-ink)!important}
 
-/* ── Curseur et bloc fantôme ──────────────────────────── */
-.vid__cur{position:absolute;left:0;top:0;z-index:6;font-size:14px;color:var(--ink);
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));pointer-events:none;
-  transition:transform .55s cubic-bezier(.35,.12,.25,1);will-change:transform}
-.vid__cur.tap{transform-origin:0 0}
-.vid__ghost{position:absolute;left:0;top:0;z-index:5;padding:5px 9px;border-radius:7px;
-  background:var(--surface);border:1px solid var(--accent);color:var(--accent);
-  font-size:9px;font-weight:600;opacity:0;pointer-events:none;
-  box-shadow:var(--sh-2);transition:transform .55s cubic-bezier(.35,.12,.25,1),opacity .18s}
+.vid__menu{position:absolute;right:12px;bottom:44px;z-index:7;width:210px;
+  display:flex;flex-direction:column;gap:2px;padding:5px;
+  border:1px solid var(--line-2);border-radius:11px;background:var(--surface);
+  box-shadow:var(--sh-3);opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .22s var(--ease),transform .22s var(--ease)}
+.vid__menu.on{opacity:1;transform:none}
+.vid__menu span{display:grid;grid-template-columns:16px 1fr;gap:9px;align-items:center;
+  padding:8px 9px;border-radius:8px;font-size:8.5px;line-height:1.35;color:var(--ink-3)}
+.vid__menu i{grid-row:span 2;font-size:12px;color:var(--accent);text-align:center}
+.vid__menu b{font-size:10.5px;font-weight:600;color:var(--ink)}
+.vid__menu span.sur{background:var(--accent-soft)}
+
+/* ── Curseur, bloc fantôme, légende ────────────────────── */
+.vid__cur{position:absolute;left:0;top:0;z-index:9;width:22px;height:22px;pointer-events:none;
+  transition:transform .6s cubic-bezier(.33,.1,.24,1);will-change:transform}
+.vid__cur svg{width:22px;height:22px;fill:var(--ink);stroke:#fff;stroke-width:1.4;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.vid__clic{position:absolute;left:1px;top:1px;width:26px;height:26px;margin:-13px 0 0 -13px;
+  border-radius:50%;border:2px solid var(--accent);opacity:0;transform:scale(.3)}
+.vid__cur.tape .vid__clic{animation:vidClic .45s var(--ease)}
+@keyframes vidClic{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(1.9)}}
+
+.vid__ghost{position:absolute;left:0;top:0;z-index:8;display:flex;align-items:center;gap:6px;
+  padding:6px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--accent);
+  color:var(--accent);font-size:9px;font-weight:600;opacity:0;pointer-events:none;
+  box-shadow:var(--sh-2);transform-origin:0 0;
+  transition:transform .6s cubic-bezier(.33,.1,.24,1),opacity .18s}
+.vid__ghost em{width:14px;height:10px;border-radius:3px;display:block}
 .vid__ghost.on{opacity:1}
 
-/* ── Habillage de lecture ─────────────────────────────── */
-.vid__hud{display:flex;align-items:center;gap:12px;padding:9px 12px;
-  border-top:1px solid var(--line);background:var(--surface-2)}
-.vid__play{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;
-  border:0;border-radius:50%;background:var(--accent);color:var(--accent-ink);
-  font-size:10px;cursor:pointer;transition:background .18s}
-.vid__play:hover{background:var(--accent-hover)}
-.vid__chaps{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
-.vid__chaps b{padding:3px 9px;border-radius:var(--rf);font-size:10px;font-weight:600;
-  color:var(--ink-3);background:transparent;cursor:pointer;transition:background .2s,color .2s}
-.vid__chaps b:hover{color:var(--ink)}
-.vid__chaps b.on{background:var(--accent-soft);color:var(--accent)}
-.vid__time{margin-left:auto;font-family:var(--ff-mono);font-size:10px;color:var(--ink-4);
-  font-variant-numeric:tabular-nums}
+/* La légende dit ce qui se passe. Sans elle, on regarde des pixels
+   bouger sans comprendre ce qu'on est censé apprendre. */
+.vid__leg{position:absolute;left:50%;bottom:52px;z-index:10;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;max-width:min(560px,86%);
+  padding:9px 16px 9px 11px;border-radius:var(--rf);
+  background:var(--ink);color:var(--surface);box-shadow:var(--sh-3);
+  opacity:0;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.vid__leg.on{opacity:1}
+.vid__leg b{display:grid;place-items:center;width:20px;height:20px;flex-shrink:0;
+  border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:700}
+.vid__leg span{font-size:12px;line-height:1.35;font-weight:500}
+
+/* ── Progression et chapitres ──────────────────────────── */
 .vid__track{height:3px;background:var(--surface-3)}
 .vid__track i{display:block;height:100%;width:0;background:var(--accent)}
+.vid__chaps{display:flex;gap:4px;padding:9px 12px;border-top:1px solid var(--line);
+  background:var(--surface-2);flex-wrap:wrap}
+.vid__chaps b{flex:1;min-width:120px;padding:6px 10px;border-radius:8px;cursor:pointer;
+  font-size:10.5px;font-weight:600;color:var(--ink-3);text-align:left;
+  transition:background .2s,color .2s}
+.vid__chaps b:hover{background:var(--surface-3);color:var(--ink)}
+.vid__chaps b.on{background:var(--accent-soft);color:var(--accent)}
+.vid__chaps b em{display:block;font-style:normal;font-size:9px;font-weight:500;
+  color:var(--ink-4);margin-top:2px}
+.vid__chaps b.on em{color:var(--accent)}
 .vid__note{margin-top:var(--s4);text-align:center;font-size:var(--fs-sm);color:var(--ink-3)}
 .linkish{border:0;background:none;padding:0;font:inherit;color:var(--accent);
   text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
-@media(max-width:900px){
-  .vid__body{grid-template-columns:44px 132px 1fr}
+@media(max-width:980px){
+  .vid__body{grid-template-columns:46px 150px 1fr}
   .vid__props{display:none}
   .vid__scene{font-size:10px;aspect-ratio:4/3}
+  .vid__leg span{font-size:11px}
 }
-@media(max-width:560px){
-  .vid__body{grid-template-columns:40px 1fr}
+@media(max-width:620px){
+  .vid__body{grid-template-columns:42px 1fr}
   .vid__pan{display:none}
-  .vid__scene{aspect-ratio:3/4}
-  .vid__chaps b{font-size:9px;padding:3px 7px}
+  .vid__scene{aspect-ratio:1/1}
+  .vid__chaps b{min-width:0;flex:1 1 44%;font-size:9.5px}
+  .vid__chaps b em{display:none}
+  .vid__leg{bottom:46px;padding:7px 12px 7px 9px}
+  .vid__leg span{font-size:10.5px}
 }
 @media (prefers-reduced-motion:reduce){
   .vid__cur,.vid__ghost{transition:none}
@@ -1099,7 +1188,7 @@ body.app-open #toTop,body.app-open #feedbackFab{display:none!important}
 /* ══════════════════════════════════════════════════════════════
    CIBLES CLIQUABLES
    ══════════════════════════════════════════════════════════════
-   Un lien au fil du texte fait la hauteur de sa ligne — quinze
+   Un lien au fil du texte fait la hauteur de sa ligne, quinze
    pixels. C'est assez pour une souris, pas pour un pouce. On lui
    donne une zone de 24 px sans changer la mise en page : la boîte
    grandit, le texte reste à sa place.
@@ -1392,7 +1481,7 @@ p a:not([class]),
       <button class="btn btn--sm btn--icon btn--ghost" data-act="close-drawer" aria-label="Fermer"><i class="fas fa-times"></i></button>
     </div>
     <nav class="drawer__links">
-      <a href="#demo"><i class="fas fa-wand-magic-sparkles"></i> Essayer la démo</a>
+      <a href="#demo"><i class="fas fa-circle-play"></i> Voir la démonstration</a>
       <a href="#features"><i class="fas fa-shapes"></i> Fonctionnalités</a>
       <a href="#how"><i class="fas fa-route"></i> Comment ça marche</a>
       <a href="#pricing"><i class="fas fa-tag"></i> Tarifs</a>
@@ -1434,22 +1523,21 @@ p a:not([class]),
   </div>
 </header>
 
-<!-- ══════════ VIDÉO DE DÉMONSTRATION ══════════ -->
-<section class="section" id="video">
+<!-- ══════════ DÉMONSTRATION ══════════ -->
+<section class="section" id="demo">
   <div class="wrap">
     <div class="section-head center rv">
-      <span class="eyebrow">La vraie interface</span>
-      <h2>Regardez-la fonctionner.</h2>
-      <p>Le studio, tel qu'il s'ouvre chez vous. Trois séquences : poser un bloc à la souris, demander une modification, puis reprendre la main dans le code.</p>
+      <span class="eyebrow">Le studio, en conditions réelles</span>
+      <h2>Quatre minutes de travail, en quarante secondes.</h2>
+      <p>On importe un fichier HTML, on le modifie à la souris, on demande une retouche à l'assistant, on ouvre le code, on regarde le rendu, on exporte. C'est tout le produit.</p>
     </div>
 
     <figure class="vid rv" id="vidRoot">
       <!-- ══════════════════════════════════════════════════════════
            EMPLACEMENT POUR VOTRE PROPRE VIDÉO
-           Renseignez src ci-dessous (fichier .mp4 ou .webm) : la
-           reconstitution animée s'efface et c'est votre enregistrement
-           qui est lu à sa place. Laissez vide pour garder la
-           reconstitution.
+           Renseignez src ci-dessous (.mp4 ou .webm) : la reconstitution
+           animée s'efface et c'est votre enregistrement qui est lu.
+           Laissez vide pour garder la reconstitution.
              <source src="demo.mp4" type="video/mp4">
            ══════════════════════════════════════════════════════════ -->
       <video class="vid__mp4" id="vidMp4" playsinline muted loop preload="none" hidden
@@ -1457,150 +1545,137 @@ p a:not([class]),
         <source src="" type="video/mp4">
       </video>
 
-      <!-- Reconstitution animée de l'interface réelle -->
-      <div class="vid__scene" id="vidScene" aria-hidden="false">
+      <div class="vid__scene" id="vidScene">
+
+        <!-- ─── Barre supérieure, identique au studio ─── -->
         <div class="vid__top">
-          <span class="brand__mark" style="width:22px;height:22px;border-radius:6px" aria-hidden="true"><svg style="width:14px;height:14px"><use href="#nx-mark"/></svg></span>
+          <span class="vid__logo" aria-hidden="true"><svg><use href="#nx-mark"/></svg></span>
           <span class="vid__name">DropCode <b>STUDIO</b></span>
-          <span class="vid__tabs"><i class="on">Canvas</i><i>Code source</i></span>
+          <span class="vid__tabs"><i class="on" data-tab="canvas">Canvas</i><i data-tab="code">Code source</i></span>
+          <span class="vid__vp"><i class="fas fa-desktop on"></i><i class="fas fa-tablet-screen-button"></i><i class="fas fa-mobile-screen-button"></i></span>
           <span class="vid__zoom">50 %</span>
-          <span class="vid__cta">Aperçu</span>
+          <span class="vid__apercu" id="vidApercu"><i class="fas fa-eye"></i> Aperçu</span>
         </div>
 
         <div class="vid__body">
+          <!-- ─── Rail d'icônes ─── -->
           <nav class="vid__rail" aria-hidden="true">
-            <b class="on"><i class="fas fa-layer-group"></i><u>Calques</u></b>
-            <b><i class="fas fa-shapes"></i><u>Formes</u></b>
-            <b><i class="fas fa-font"></i><u>Texte</u></b>
-            <b><i class="fas fa-icons"></i><u>Icônes</u></b>
-            <b><i class="fas fa-cube"></i><u>3D</u></b>
-            <b class="vid__ia"><i class="fas fa-comment-dots"></i><u>IA</u></b>
+            <b data-r="projets"><i class="fas fa-folder-open"></i><u>Projets</u></b>
+            <b class="on" data-r="calques"><i class="fas fa-layer-group"></i><u>Calques</u></b>
+            <b data-r="formes"><i class="fas fa-draw-polygon"></i><u>Formes</u></b>
+            <b data-r="texte"><i class="fas fa-font"></i><u>Texte</u></b>
+            <b data-r="icones"><i class="fas fa-icons"></i><u>Icônes</u></b>
+            <b data-r="ia"><i class="fas fa-robot"></i><u>IA</u></b>
           </nav>
 
-          <aside class="vid__pan" id="vidPan">
-            <h6>Formes &amp; blocs</h6>
-            <div class="vid__grid">
-              <span class="vid__it" id="vidSrc"><em style="background:#b8351c"></em>Carte tarif</span>
-              <span class="vid__it"><em style="background:#2a4d8f;border-radius:50%"></em>Pastille</span>
-              <span class="vid__it"><em style="background:#c08428"></em>Bandeau</span>
-              <span class="vid__it"><em style="background:#1b6c44;border-radius:8px"></em>Bloc chiffres</span>
-              <span class="vid__it"><em style="border:2px solid #d5d1c9"></em>Cadre</span>
-              <span class="vid__it"><em style="background:#8e3b62"></em>Ruban</span>
+          <!-- ─── Panneau de gauche, trois états ─── -->
+          <aside class="vid__pan">
+            <div class="vid__vol on" data-v="calques">
+              <h6>Code &amp; calques</h6>
+              <div class="vid__lay"><i class="fas fa-grip-vertical"></i>[nav] Élément</div>
+              <div class="vid__lay"><i class="fas fa-grip-vertical"></i>[section] Accueil</div>
+              <div class="vid__lay"><i class="fas fa-grip-vertical"></i>[h1] Votre titre</div>
+              <div class="vid__lay"><i class="fas fa-grip-vertical"></i>[p] Un paragraphe</div>
+              <div class="vid__lay" id="vidLayNew"><i class="fas fa-grip-vertical"></i>[div] Carte tarif</div>
             </div>
-            <div class="vid__ai" id="vidAi">
+            <div class="vid__vol" data-v="formes">
+              <h6>Formes &amp; blocs</h6>
+              <div class="vid__grid">
+                <span class="vid__it" id="vidSrc"><em style="background:#b8351c"></em>Carte tarif</span>
+                <span class="vid__it"><em style="background:#2a4d8f;border-radius:50%"></em>Pastille</span>
+                <span class="vid__it"><em style="background:#c08428"></em>Bandeau</span>
+                <span class="vid__it"><em style="background:#1b6c44;border-radius:7px"></em>Chiffres</span>
+                <span class="vid__it"><em style="border:2px solid #d5d1c9"></em>Cadre</span>
+                <span class="vid__it"><em style="background:#8e3b62"></em>Ruban</span>
+              </div>
+            </div>
+            <div class="vid__vol" data-v="ia">
               <h6>Assistant</h6>
               <div class="vid__msg" id="vidMsg"></div>
               <div class="vid__field"><span id="vidType"></span><i class="vid__caret"></i></div>
             </div>
           </aside>
 
+          <!-- ─── Plan de travail ─── -->
           <div class="vid__stage">
             <div class="vid__page" id="vidPage">
-              <div class="vid__ph vid__ph--t"></div>
-              <div class="vid__ph vid__ph--p"></div>
-              <div class="vid__ph vid__ph--p" style="width:62%"></div>
-              <div class="vid__ph vid__ph--b"></div>
+              <div class="vid__nav"><b>MARQUE</b><span></span><span></span><span></span></div>
+              <div class="vid__h1">Votre titre</div>
+              <div class="vid__ph"></div>
+              <div class="vid__ph" style="width:64%"></div>
+              <div class="vid__cta"></div>
+              <!-- Le reste de la page importée : sans lui, le plan de
+                   travail paraît vide et on ne voit pas qu'on travaille
+                   sur un vrai document. -->
+              <div class="vid__media"></div>
+              <div class="vid__band"></div>
+              <div class="vid__cards"><i></i><i></i><i></i></div>
             </div>
-            <div class="vid__drop" id="vidDrop"></div>
-            <div class="vid__sel" id="vidSel"></div>
+            <div class="vid__drop" id="vidDrop">
+              <i class="vid__drop__b"></i>
+              <b class="vid__drop__p">19 €</b>
+              <i class="vid__drop__l" id="vidDropL"></i>
+              <i class="vid__drop__c"></i>
+            </div>
+            <div class="vid__sel" id="vidSel"><em></em><em></em><em></em><em></em></div>
             <div class="vid__code" id="vidCode"><pre id="vidCodeTxt"></pre></div>
+            <div class="vid__prev" id="vidPrev">
+              <div class="vid__prev__bar"><i></i><i></i><i></i><span>votre-site.fr</span></div>
+              <div class="vid__prev__in" id="vidPrevIn"></div>
+            </div>
+            <div class="vid__import" id="vidImport">
+              <div class="vid__import__box">
+                <i class="fas fa-file-arrow-up"></i>
+                <b>page-accueil.html</b>
+                <span>Déposez un fichier HTML</span>
+              </div>
+            </div>
           </div>
 
+          <!-- ─── Panneau de propriétés ─── -->
           <aside class="vid__props" id="vidProps">
             <h6>Personnalisation</h6>
-            <div class="vid__pl">Largeur<b id="vidW">300</b></div>
-            <div class="vid__bar"><i id="vidWb" style="width:52%"></i></div>
-            <div class="vid__pl">Rayon<b id="vidR">16</b></div>
-            <div class="vid__bar"><i id="vidRb" style="width:34%"></i></div>
-            <div class="vid__pl">Fond</div>
-            <div class="vid__sw"><em style="background:#b8351c" class="on"></em><em style="background:#2a4d8f"></em><em style="background:#1b6c44"></em><em style="background:#c08428"></em><em style="background:#1a1917"></em></div>
+            <div class="vid__vide" id="vidVide">Aucun élément sélectionné</div>
+            <div class="vid__reglages" id="vidReglages">
+              <div class="vid__pl">Largeur<b id="vidW">300</b></div>
+              <div class="vid__bar"><i id="vidWb" style="width:50%"></i></div>
+              <div class="vid__pl">Rayon<b id="vidR">16</b></div>
+              <div class="vid__bar"><i id="vidRb" style="width:32%"></i></div>
+              <div class="vid__pl">Fond</div>
+              <div class="vid__sw"><em style="background:#b8351c" class="on"></em><em style="background:#2a4d8f"></em><em style="background:#1b6c44"></em><em style="background:#c08428"></em><em style="background:#1a1917"></em></div>
+            </div>
           </aside>
         </div>
 
+        <!-- ─── Barre basse ─── -->
         <div class="vid__bottom">
           <span class="on"><i class="fas fa-pen"></i> Édition</span>
           <span><i class="fas fa-vector-square"></i> Structure</span>
           <span><i class="fas fa-rotate-left"></i></span>
           <span><i class="fas fa-rotate-right"></i></span>
-          <span class="vid__exp"><i class="fas fa-download"></i> Exporter</span>
+          <span class="vid__exp" id="vidExp"><i class="fas fa-download"></i> Exporter</span>
         </div>
 
-        <span class="vid__cur" id="vidCur"><i class="fas fa-location-arrow"></i></span>
-        <span class="vid__ghost" id="vidGhost">Carte tarif</span>
+        <!-- ─── Menu d'export ─── -->
+        <div class="vid__menu" id="vidMenu">
+          <span><i class="fas fa-file-code"></i><b>Fichier HTML</b>Une page autonome</span>
+          <span class="vid__menu__z" id="vidMenuZip"><i class="fas fa-folder-tree"></i><b>Projet complet (.zip)</b>HTML, CSS, JS séparés</span>
+        </div>
+
+        <!-- ─── Curseur, bloc fantôme, légende ─── -->
+        <span class="vid__cur" id="vidCur" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 2.5 19.5 11 13 12.6 10.3 19z"/></svg>
+          <i class="vid__clic"></i>
+        </span>
+        <span class="vid__ghost" id="vidGhost"><em style="background:#b8351c"></em>Carte tarif</span>
+        <div class="vid__leg" id="vidLeg"><b id="vidLegN">1</b><span id="vidLegT"></span></div>
       </div>
 
-      <figcaption class="vid__hud">
-        <button type="button" class="vid__play" id="vidPlay" aria-label="Lecture ou pause"><i class="fas fa-pause"></i></button>
-        <span class="vid__chaps" id="vidChaps"></span>
-        <span class="vid__time" id="vidTime">0:00</span>
-      </figcaption>
-      <div class="vid__track"><i id="vidProg"></i></div>
+      <div class="vid__track" aria-hidden="true"><i id="vidProg"></i></div>
+      <figcaption class="vid__chaps" id="vidChaps"></figcaption>
     </figure>
 
-    <p class="vid__note">Reconstitution fidèle de l'interface, jouée à vitesse réelle. <button type="button" class="linkish" data-act="try-demo">Essayez-la vous-même juste en dessous</button>.</p>
-  </div>
-</section>
-
-<!-- ══════════ DÉMO INTERACTIVE ══════════ -->
-<section class="section" id="demo" style="padding-top:0">
-  <div class="wrap">
-    <div class="section-head center rv">
-      <span class="eyebrow">À votre tour · aucun compte requis</span>
-      <h2>Essayez, là, maintenant.</h2>
-      <p>Glissez un bloc, demandez une modification à l'IA, ou écrivez le HTML : chaque geste réécrit le même fichier, et les trois vues restent d'accord au pixel près.</p>
-    </div>
-
-    <div class="demo rv" id="demoRoot">
-      <div class="demo__bar">
-        <span class="brand__mark" style="width:24px;height:24px;border-radius:6px" aria-hidden="true"><svg style="width:15px;height:15px"><use href="#nx-mark"/></svg></span>
-        <span class="brand__name">Démo</span>
-        <span class="demo__badge">En direct</span>
-        <span class="demo__actions">
-          <button class="btn btn--sm btn--quiet" data-act="demo-reset"><i class="fas fa-rotate-left"></i> Réinitialiser</button>
-          <button class="btn btn--sm btn--primary" data-act="register">Ouvrir le vrai éditeur</button>
-        </span>
-      </div>
-
-      <div class="demo__grid">
-        <div class="demo__pal" id="demoPal">
-          <h5>Mise en page</h5>
-          <button class="demo-block" draggable="true" data-block="heading"><i class="fas fa-heading"></i> Titre</button>
-          <button class="demo-block" draggable="true" data-block="text"><i class="fas fa-align-left"></i> Paragraphe</button>
-          <button class="demo-block" draggable="true" data-block="button"><i class="fas fa-square"></i> Bouton</button>
-          <button class="demo-block" draggable="true" data-block="image"><i class="fas fa-image"></i> Image</button>
-          <h5>Blocs</h5>
-          <button class="demo-block" draggable="true" data-block="card"><i class="fas fa-id-card"></i> Carte</button>
-          <button class="demo-block" draggable="true" data-block="stats"><i class="fas fa-chart-simple"></i> Chiffres clés</button>
-          <button class="demo-block" draggable="true" data-block="divider"><i class="fas fa-minus"></i> Séparateur</button>
-          <h5>Astuce</h5>
-          <p class="hint" style="line-height:1.5">Glissez un bloc dans la page, ou cliquez simplement dessus pour l'ajouter.</p>
-        </div>
-
-        <div class="demo__stage">
-          <div class="demo__canvas" id="demoCanvas">
-            <div class="demo__empty" id="demoEmpty">
-              <svg class="nex nex--bob" viewBox="0 0 64 64"><use href="#nx-nex"/></svg>
-              <b>La page est vide</b>
-              <span>Glissez un bloc depuis la gauche pour démarrer.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="demo__side">
-          <div>
-            <h5 style="margin-bottom:10px">Propriétés</h5>
-            <div class="demo__props" id="demoProps">
-              <p class="hint">Sélectionnez un élément de la page pour le régler.</p>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
-            <h5>HTML généré</h5>
-            <pre class="demo__code" id="demoCode" aria-live="polite"></pre>
-            <button class="btn btn--sm btn--ghost btn--block" data-act="demo-copy"><i class="fas fa-copy"></i> Copier le HTML</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <p class="vid__note">Reconstitution de l'interface réelle, à vitesse réelle. <button type="button" class="linkish" data-act="try-demo">Ouvrir le studio et essayer</button>.</p>
   </div>
 </section>
 
@@ -1825,7 +1900,7 @@ p a:not([class]),
       </div>
       <div class="footer__col">
         <h5>Produit</h5>
-        <a href="#demo">Démo en ligne</a>
+        <a href="#demo">Démonstration</a>
         <a href="#features">Fonctionnalités</a>
         <a href="#pricing">Tarifs</a>
         <a data-act="register">Essai gratuit</a>
@@ -3397,307 +3472,18 @@ function answer(txt) {
 }
 
 </script>
-<script id="nx-demo">
+<script id="nx-hero">
 /* ════════════════════════════════════════════════════════════════
-   DÉMO INTERACTIVE DE LA LANDING
-   Un vrai mini-éditeur : on pose, on règle, le code s'écrit.
-   Même logique que le studio, en réduit.
+   ILLUSTRATION DU HERO
+   ════════════════════════════════════════════════════════════════
+   Elle vivait avec la démo interactive, qui a été retirée de la
+   page. Elle n'a rien à voir avec elle : c'est une vignette fixe,
+   elle vit donc maintenant seule.
    ════════════════════════════════════════════════════════════════ */
-
-const DEMO_PALETTE = {
-  heading: {
-    tag: 'h2', label: 'Titre', text: 'Votre titre accrocheur',
-    style: { fontSize: 30, color: null, align: 'left', weight: 700 }
-  },
-  text: {
-    tag: 'p', label: 'Paragraphe', text: 'Un paragraphe qui explique votre offre en une phrase claire, sans jargon.',
-    style: { fontSize: 15, color: null, align: 'left', weight: 400 }
-  },
-  button: {
-    tag: 'a', label: 'Bouton', text: 'Commencer maintenant',
-    style: { fontSize: 14, bg: null, color: '#ffffff', radius: 8, align: 'left' }
-  },
-  image: { tag: 'img', label: 'Image', style: { radius: 10, height: 130 } },
-  card: {
-    tag: 'div', label: 'Carte', text: 'Un bloc mis en valeur',
-    sub: 'Idéal pour présenter une fonctionnalité, un tarif ou un témoignage.',
-    style: { radius: 12, bg: null, align: 'left' }
-  },
-  stats: { tag: 'div', label: 'Chiffres clés', style: {} },
-  divider: { tag: 'hr', label: 'Séparateur', style: {} }
-};
-
-const DEMO_SWATCHES = ['#b8351c', '#2a4d8f', '#1f7a4d', '#9a6212', '#1a1917', '#7d776e'];
-
-let demoEls = [];
-let demoSel = null;
-let demoSeq = 0;
-
-function demoReset(seed) {
-  demoEls = seed ? [mk('heading'), mk('text'), mk('button')] : [];
-  demoSel = null;
-  demoRender();
-}
-
-function mk(kind) {
-  const def = DEMO_PALETTE[kind];
-  return {
-    id: 'el' + (++demoSeq),
-    kind,
-    text: def.text || '',
-    sub: def.sub || '',
-    style: Object.assign({}, def.style)
-  };
-}
-
-/* ── Rendu du plan de travail ───────────────────────────── */
-function demoRender() {
-  const canvas = $('#demoCanvas');
-  if (!canvas) return;
-  const empty = $('#demoEmpty');
-
-  // On retire les éléments rendus, on garde l'état vide
-  Array.from(canvas.children).forEach(c => { if (c !== empty) c.remove(); });
-  empty.style.display = demoEls.length ? 'none' : 'block';
-
-  demoEls.forEach(el => {
-    const w = document.createElement('div');
-    w.className = 'demo-el' + (demoSel === el.id ? ' sel' : '');
-    w.dataset.id = el.id;
-    w.innerHTML =
-      '<span class="demo-el__tag">' + esc(DEMO_PALETTE[el.kind].label) + '</span>' +
-      '<button class="demo-el__del" data-demo-del="' + el.id + '" aria-label="Supprimer"><i class="fas fa-times"></i></button>' +
-      demoInner(el);
-    canvas.appendChild(w);
-  });
-
-  demoRenderProps();
-  demoRenderCode();
-}
-
-function demoInner(el) {
-  const s = el.style;
-  const accent = 'var(--accent)';
-  switch (el.kind) {
-    case 'heading':
-      return '<h2 contenteditable="true" data-edit="' + el.id + '" style="font-size:' + s.fontSize + 'px;font-weight:' + s.weight +
-        ';text-align:' + s.align + ';color:' + (s.color || 'var(--ink)') + ';line-height:1.2;outline:none">' + esc(el.text) + '</h2>';
-    case 'text':
-      return '<p contenteditable="true" data-edit="' + el.id + '" style="font-size:' + s.fontSize + 'px;text-align:' + s.align +
-        ';color:' + (s.color || 'var(--ink-2)') + ';line-height:1.6;outline:none">' + esc(el.text) + '</p>';
-    case 'button':
-      return '<div style="text-align:' + s.align + '"><span contenteditable="true" data-edit="' + el.id +
-        '" style="display:inline-block;padding:10px 20px;border-radius:' + s.radius + 'px;background:' + (s.bg || accent) +
-        ';color:' + s.color + ';font-size:' + s.fontSize + 'px;font-weight:600;outline:none">' + esc(el.text) + '</span></div>';
-    case 'image':
-      return '<div style="height:' + s.height + 'px;border-radius:' + s.radius +
-        'px;background:var(--surface-3);display:grid;place-items:center;color:var(--ink-4);font-size:22px">' +
-        '<i class="fas fa-image"></i></div>';
-    case 'card':
-      return '<div style="padding:18px;border-radius:' + s.radius + 'px;border:1px solid var(--line);background:' +
-        (s.bg || 'var(--surface-2)') + ';text-align:' + s.align + '">' +
-        '<b contenteditable="true" data-edit="' + el.id + '" style="display:block;font-size:15px;margin-bottom:5px;outline:none">' + esc(el.text) + '</b>' +
-        '<span style="font-size:13px;color:var(--ink-2);line-height:1.55">' + esc(el.sub) + '</span></div>';
-    case 'stats':
-      return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center">' +
-        [['2,4k', 'Pages'], ['98 %', 'Satisfaits'], ['<1 s', 'Export']].map(x =>
-          '<div><b style="display:block;font-size:22px;font-weight:700;letter-spacing:-.03em">' + x[0] + '</b>' +
-          '<span style="font-size:11px;color:var(--ink-3)">' + x[1] + '</span></div>').join('') + '</div>';
-    case 'divider':
-      return '<hr style="border:0;border-top:1px solid var(--line);margin:4px 0">';
-  }
-  return '';
-}
-
-/* ── Panneau de propriétés contextuel ───────────────────── */
-function demoRenderProps() {
-  const host = $('#demoProps');
-  if (!host) return;
-  const el = demoEls.find(e => e.id === demoSel);
-  if (!el) { host.innerHTML = '<p class="hint">Sélectionnez un élément de la page pour le régler.</p>'; return; }
-
-  const s = el.style;
-  let html = '<div class="chip chip--accent" style="margin-bottom:4px">' + esc(DEMO_PALETTE[el.kind].label) + '</div>';
-
-  if ('fontSize' in s) {
-    html += row('Taille', '<input type="range" min="11" max="52" value="' + s.fontSize + '" data-demo-prop="fontSize">');
-  }
-  if ('align' in s) {
-    html += row('Alignement',
-      '<select data-demo-prop="align">' +
-      ['left:Gauche', 'center:Centré', 'right:Droite'].map(o => {
-        const [v, l] = o.split(':');
-        return '<option value="' + v + '"' + (s.align === v ? ' selected' : '') + '>' + l + '</option>';
-      }).join('') + '</select>');
-  }
-  if ('radius' in s) {
-    html += row('Arrondi', '<input type="range" min="0" max="28" value="' + s.radius + '" data-demo-prop="radius">');
-  }
-  if ('height' in s) {
-    html += row('Hauteur', '<input type="range" min="70" max="260" value="' + s.height + '" data-demo-prop="height">');
-  }
-
-  const colorKey = 'bg' in s ? 'bg' : ('color' in s ? 'color' : null);
-  if (colorKey) {
-    html += '<div style="margin-top:2px"><label style="font-size:var(--fs-2xs);color:var(--ink-3);display:block;margin-bottom:6px">' +
-      (colorKey === 'bg' ? 'Fond' : 'Couleur du texte') + '</label><div class="demo__swatches">' +
-      DEMO_SWATCHES.map(c => '<button class="demo__swatch" style="background:' + c + '" data-demo-color="' + c + '" aria-label="' + c + '"></button>').join('') +
-      '<input type="color" value="' + (s[colorKey] || '#b8351c') + '" data-demo-color-custom aria-label="Couleur personnalisée">' +
-      '</div></div>';
-  }
-
-  html += '<button class="btn btn--sm btn--danger btn--block" style="margin-top:6px" data-demo-del="' + el.id + '">' +
-    '<i class="fas fa-trash"></i> Supprimer ce bloc</button>';
-  host.innerHTML = html;
-}
-
-function row(label, control) {
-  return '<div class="demo__prop"><label>' + esc(label) + '</label>' + control + '</div>';
-}
-
-/* ── Code généré ────────────────────────────────────────── */
-function demoRenderCode() {
-  const host = $('#demoCode');
-  if (!host) return;
-  if (!demoEls.length) {
-    host.innerHTML = '<span style="color:var(--ink-4)">&lt;!-- Posez un bloc pour voir le code --&gt;</span>';
-    return;
-  }
-  const lines = demoEls.map(el => demoExport(el));
-  host.innerHTML = hl('<section class="page">\n' + lines.map(l => '  ' + l).join('\n') + '\n</section>');
-}
-
-function demoExport(el) {
-  const s = el.style;
-  switch (el.kind) {
-    case 'heading':
-      return '<h2 style="font-size:' + s.fontSize + 'px;font-weight:' + s.weight + ';text-align:' + s.align +
-        (s.color ? ';color:' + s.color : '') + '">' + el.text + '</h2>';
-    case 'text':
-      return '<p style="font-size:' + s.fontSize + 'px;text-align:' + s.align +
-        (s.color ? ';color:' + s.color : '') + '">' + el.text + '</p>';
-    case 'button':
-      return '<a href="#" style="display:inline-block;padding:10px 20px;border-radius:' + s.radius + 'px;background:' +
-        (s.bg || '#b8351c') + ';color:' + s.color + ';font-size:' + s.fontSize + 'px;font-weight:600">' + el.text + '</a>';
-    case 'image':
-      return '<img src="photo.jpg" alt="" style="width:100%;height:' + s.height + 'px;object-fit:cover;border-radius:' + s.radius + 'px">';
-    case 'card':
-      return '<div style="padding:18px;border-radius:' + s.radius + 'px;border:1px solid #e4e1db;text-align:' + s.align +
-        '"><b>' + el.text + '</b><span>' + el.sub + '</span></div>';
-    case 'stats':
-      return '<div class="stats"><div><b>2,4k</b><span>Pages</span></div><div><b>98 %</b><span>Satisfaits</span></div><div><b>&lt;1 s</b><span>Export</span></div></div>';
-    case 'divider':
-      return '<hr>';
-  }
-  return '';
-}
-
-/* Coloration syntaxique minimale, sans dépendance. */
-function hl(code) {
-  return esc(code)
-    .replace(/(&lt;\/?)([a-zA-Z0-9]+)/g, '$1<span class="t">$2</span>')
-    .replace(/([a-zA-Z-]+)=(&quot;[^&]*?&quot;)/g, '<span class="a">$1</span>=<span class="v">$2</span>');
-}
-
-/* ── Interactions ───────────────────────────────────────── */
-function demoAdd(kind, index) {
-  if (!DEMO_PALETTE[kind]) return;
-  const el = mk(kind);
-  if (typeof index === 'number' && index >= 0) demoEls.splice(index, 0, el);
-  else demoEls.push(el);
-  demoSel = el.id;
-  demoRender();
-}
-
-function initDemo() {
-  const canvas = $('#demoCanvas');
-  if (!canvas) return;
-  demoReset(true);
-
-  // Palette : clic pour ajouter, glisser pour poser
-  $$('#demoPal .demo-block').forEach(b => {
-    b.addEventListener('click', () => demoAdd(b.dataset.block));
-    b.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', b.dataset.block);
-      e.dataTransfer.effectAllowed = 'copy';
-      b.classList.add('dragging');
-    });
-    b.addEventListener('dragend', () => b.classList.remove('dragging'));
-  });
-
-  canvas.addEventListener('dragover', e => {
-    if (!e.dataTransfer.types.includes('text/plain')) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    canvas.classList.add('over');
-  });
-  canvas.addEventListener('dragleave', e => {
-    if (!canvas.contains(e.relatedTarget)) canvas.classList.remove('over');
-  });
-  canvas.addEventListener('drop', e => {
-    e.preventDefault();
-    canvas.classList.remove('over');
-    const kind = e.dataTransfer.getData('text/plain');
-    if (!DEMO_PALETTE[kind]) return;
-    // Insertion à la position du curseur
-    const items = $$('.demo-el', canvas);
-    let index = items.length;
-    for (let i = 0; i < items.length; i++) {
-      const r = items[i].getBoundingClientRect();
-      if (e.clientY < r.top + r.height / 2) { index = i; break; }
-    }
-    demoAdd(kind, index);
-  });
-
-  // Sélection
-  canvas.addEventListener('click', e => {
-    if (e.target.closest('[data-demo-del]')) return;
-    const el = e.target.closest('.demo-el');
-    demoSel = el ? el.dataset.id : null;
-    demoRender();
-  });
-
-  // Édition en ligne du texte
-  canvas.addEventListener('input', e => {
-    const t = e.target.closest('[data-edit]');
-    if (!t) return;
-    const el = demoEls.find(x => x.id === t.dataset.edit);
-    if (!el) return;
-    el.text = t.textContent;
-    demoRenderCode();
-  });
-}
-
-/* Réglages du panneau — délégués depuis le routeur global. */
-function demoSetProp(key, value) {
-  const el = demoEls.find(e => e.id === demoSel);
-  if (!el) return;
-  el.style[key] = isNaN(value) || value === '' ? value : Number(value);
-  demoRender();
-}
-function demoSetColor(c) {
-  const el = demoEls.find(e => e.id === demoSel);
-  if (!el) return;
-  if ('bg' in el.style) el.style.bg = c; else if ('color' in el.style) el.style.color = c;
-  demoRender();
-}
-function demoDelete(id) {
-  demoEls = demoEls.filter(e => e.id !== id);
-  if (demoSel === id) demoSel = null;
-  demoRender();
-}
-function demoCopy() {
-  const code = '<section class="page">\n' + demoEls.map(e => '  ' + demoExport(e)).join('\n') + '\n</section>';
-  if (!demoEls.length) { toast('Rien à copier', 'Posez au moins un bloc dans la page.', 'warn'); return; }
-  navigator.clipboard?.writeText(code).then(
-    () => toast('HTML copié', 'Collez-le où vous voulez — il est autonome.', 'ok'),
-    () => toast('Copie impossible', 'Sélectionnez le code manuellement.', 'warn')
-  );
-}
 
 /* ── Illustration du hero : même moteur, en lecture seule ─ */
 function initHeroArt() {
-  const host = $('#heroArt');
+  const host = document.getElementById('heroArt');
   if (!host) return;
   host.innerHTML =
     '<div style="background:var(--surface);border-radius:var(--r3);padding:22px;box-shadow:var(--sh-2)">' +
@@ -3722,13 +3508,29 @@ function initHeroArt() {
 </script>
 <script id="nx-video">
 /* ════════════════════════════════════════════════════════════════
-   DÉMONSTRATION ANIMÉE DE L'INTERFACE
+   DÉMONSTRATION ANIMÉE DU STUDIO
    ════════════════════════════════════════════════════════════════
-   Une capture d'écran ne montre pas comment on travaille, et une
-   vidéo hébergée ailleurs coûte une requête réseau, un lecteur tiers
-   et un consentement de plus. Ici, la séquence est jouée par le
-   document lui-même : trois chapitres qui correspondent aux trois
-   façons de modifier un fichier, avec la vraie disposition du studio.
+   Une capture d'écran ne montre pas comment on travaille. Une vidéo
+   hébergée ailleurs coûte une requête réseau, un lecteur tiers et un
+   consentement de plus. La séquence est donc jouée par le document
+   lui-même, avec la vraie disposition du studio et les vrais gestes.
+
+   Quatre partis pris, tous tirés de ce qui manquait à la version
+   précédente :
+
+   · Elle tourne en boucle, toute seule. Pas de bouton à presser :
+     on regarde, ou on ne regarde pas.
+
+   · Une légende nomme chaque geste au moment où il se produit. Sans
+     elle, on voit des rectangles bouger sans savoir ce qu'on est
+     censé comprendre.
+
+   · Le curseur est franc, avec une onde au clic. Un pointeur discret
+     se perd dans une interface chargée.
+
+   · L'ordre suit celui d'une vraie séance : on importe, on pose et
+     on règle, on demande à l'assistant, on ouvre le code, on
+     vérifie le rendu, on exporte.
 
    Si une vidéo est fournie (attribut src du <source> dans le
    balisage), c'est elle qui est lue : la reconstitution n'est qu'un
@@ -3749,180 +3551,246 @@ function initHeroArt() {
     mp4.hidden = false;
     mp4.setAttribute('controls', '');
     mp4.preload = 'metadata';
-    var hud = racine.querySelector('.vid__hud');
-    var piste = racine.querySelector('.vid__track');
-    if(hud) hud.hidden = true;
-    if(piste) piste.hidden = true;
-    var noteMp4 = document.querySelector('.vid__note');
-    if(noteMp4) noteMp4.hidden = true;
+    ['.vid__track', '.vid__chaps'].forEach(function(s){
+      var el = racine.querySelector(s); if(el) el.hidden = true;
+    });
+    var note = document.querySelector('.vid__note');
+    if(note) note.hidden = true;
     return;
   }
 
-  var cur = $('vidCur'), ghost = $('vidGhost'), pan = $('vidPan'),
-      src = $('vidSrc'), drop = $('vidDrop'), sel = $('vidSel'),
-      props = $('vidProps'), ai = $('vidAi'), msg = $('vidMsg'),
-      type = $('vidType'), code = $('vidCode'), codeTxt = $('vidCodeTxt'),
-      prog = $('vidProg'), temps = $('vidTime'), chaps = $('vidChaps'),
-      lecture = $('vidPlay'),
+  var cur = $('vidCur'), ghost = $('vidGhost'),
+      src = $('vidSrc'), drop = $('vidDrop'), dropL = $('vidDropL'), sel = $('vidSel'),
+      props = $('vidProps'), msg = $('vidMsg'), type = $('vidType'),
+      code = $('vidCode'), codeTxt = $('vidCodeTxt'),
+      prev = $('vidPrev'), prevIn = $('vidPrevIn'),
+      imp = $('vidImport'), menu = $('vidMenu'), menuZip = $('vidMenuZip'),
+      apercu = $('vidApercu'), layNew = $('vidLayNew'),
+      prog = $('vidProg'), chaps = $('vidChaps'),
+      leg = $('vidLeg'), legN = $('vidLegN'), legT = $('vidLegT'),
       onglets = racine.querySelectorAll('.vid__tabs i'),
-      railIa = racine.querySelector('.vid__ia'),
-      railCal = racine.querySelector('.vid__rail b'),
+      rails = racine.querySelectorAll('.vid__rail b'),
+      volets = racine.querySelectorAll('.vid__vol'),
       w = $('vidW'), wb = $('vidWb'), r = $('vidR'), rb = $('vidRb'),
-      sw = racine.querySelectorAll('.vid__sw em');
+      sw = racine.querySelectorAll('.vid__sw em'),
+      page = $('vidPage');
 
+  /* Le volet de code montre le vrai document, pas l'extrait retouché :
+     un éditeur qui n'afficherait que six lignes ne ressemblerait à rien. */
   var CODE =
-    '<span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"tarif"</span><span class="k">&gt;</span>\n'
+    '<span class="k">&lt;section</span> <span class="a">class</span>=<span class="v">"accueil"</span><span class="k">&gt;</span>\n'
+  + '  <span class="k">&lt;h1&gt;</span>Votre titre<span class="k">&lt;/h1&gt;</span>\n'
+  + '  <span class="k">&lt;p</span> <span class="a">class</span>=<span class="v">"intro"</span><span class="k">&gt;</span>Deux lignes de présentation.<span class="k">&lt;/p&gt;</span>\n'
+  + '  <span class="k">&lt;a</span> <span class="a">class</span>=<span class="v">"bouton"</span> <span class="a">href</span>=<span class="v">"#tarifs"</span><span class="k">&gt;</span>Commencer<span class="k">&lt;/a&gt;</span>\n'
+  + '<span class="k">&lt;/section&gt;</span>\n'
+  + '\n'
+  + '<span class="k">&lt;div</span> <span class="a">class</span>=<span class="v">"tarif"</span><span class="k">&gt;</span>\n'
   + '  <span class="k">&lt;span</span> <span class="a">class</span>=<span class="v">"badge"</span><span class="k">&gt;</span>Essentiel<span class="k">&lt;/span&gt;</span>\n'
   + '  <span class="k">&lt;strong&gt;</span>19 €<span class="k">&lt;/strong&gt;</span>\n'
+  + '  <span class="k">&lt;p&gt;</span><mark>sans engagement</mark><span class="k">&lt;/p&gt;</span>\n'
   + '  <span class="k">&lt;a</span> <span class="a">href</span>=<span class="v">"#"</span><span class="k">&gt;</span>Choisir<span class="k">&lt;/a&gt;</span>\n'
-  + '<span class="k">&lt;/div&gt;</span>';
+  + '<span class="k">&lt;/div&gt;</span>\n'
+  + '\n'
+  + '<span class="k">&lt;footer</span> <span class="a">class</span>=<span class="v">"bas"</span><span class="k">&gt;</span>\n'
+  + '  <span class="k">&lt;p&gt;</span>© 2026 Votre marque<span class="k">&lt;/p&gt;</span>\n'
+  + '<span class="k">&lt;/footer&gt;</span>';
 
-  /* Position du curseur, en pourcentage de la scène : la séquence
-     reste juste quelle que soit la largeur de l'écran. */
-  function vers(px, py, ms){
-    if(ms != null) cur.style.transitionDuration = ms + 'ms';
-    cur.style.transform = 'translate(' + px + 'px,' + py + 'px)';
-    ghost.style.transform = 'translate(' + (px + 12) + 'px,' + (py + 12) + 'px)';
-  }
+  /* ── Gestes élémentaires ──────────────────────────────── */
   function pt(fx, fy){
     var b = scene.getBoundingClientRect();
     return [Math.round(b.width * fx), Math.round(b.height * fy)];
   }
-  function bouge(fx, fy, ms){ var p = pt(fx, fy); vers(p[0], p[1], ms); }
-
-  function clic(){
-    cur.animate([{ transform: cur.style.transform + ' scale(1)' },
-                 { transform: cur.style.transform + ' scale(.82)' },
-                 { transform: cur.style.transform + ' scale(1)' }],
-                { duration: 220, easing: 'ease-out' });
+  function bouge(fx, fy, ms){
+    var p = pt(fx, fy);
+    cur.style.transitionDuration = (ms == null ? 600 : ms) + 'ms';
+    cur.style.transform = 'translate(' + p[0] + 'px,' + p[1] + 'px)';
+    ghost.style.transform = 'translate(' + (p[0] + 14) + 'px,' + (p[1] + 14) + 'px)';
+  }
+  function tape(){
+    cur.classList.remove('tape');
+    void cur.offsetWidth;
+    cur.classList.add('tape');
+  }
+  function legende(n, texte){
+    legN.textContent = n;
+    legT.textContent = texte;
+    leg.classList.add('on');
+  }
+  function volet(nom){
+    for(var i = 0; i < volets.length; i++)
+      volets[i].classList.toggle('on', volets[i].getAttribute('data-v') === nom);
+  }
+  function rail(nom){
+    for(var i = 0; i < rails.length; i++)
+      rails[i].classList.toggle('on', rails[i].getAttribute('data-r') === nom);
+  }
+  function vue(nom){
+    onglets[0].className = nom === 'code' ? '' : 'on';
+    onglets[1].className = nom === 'code' ? 'on' : '';
+    code.classList.toggle('on', nom === 'code');
+    prev.classList.toggle('on', nom === 'prev');
+    apercu.classList.toggle('on', nom === 'prev');
   }
 
   function remise(){
-    gen++;                       /* toute écriture en cours devient caduque */
+    gen++;
+    imp.className = 'vid__import';
     drop.className = 'vid__drop';
-    drop.style.width = ''; drop.style.background = '';
-    sel.style.width = '';
-    drop.innerHTML = '<i></i>';
+    drop.style.background = '';
+    dropL.className = 'vid__drop__l';
     sel.className = 'vid__sel';
-    ai.className = 'vid__ai';
     code.className = 'vid__code';
+    prev.className = 'vid__prev';
+    prevIn.innerHTML = '';
+    menu.className = 'vid__menu';
+    menuZip.className = 'vid__menu__z';
+    apercu.className = 'vid__apercu';
     codeTxt.innerHTML = '';
     msg.innerHTML = '';
     type.textContent = '';
     src.className = 'vid__it';
     ghost.className = 'vid__ghost';
+    layNew.className = '';
+    props.className = 'vid__props';
+    leg.classList.remove('on');
     onglets[0].className = 'on'; onglets[1].className = '';
-    railIa.className = 'vid__ia'; railCal.className = 'on';
-    w.textContent = '300'; wb.style.width = '52%';
-    r.textContent = '16';  rb.style.width = '34%';
+    rail('calques'); volet('calques');
+    w.textContent = '300'; wb.style.width = '50%';
+    r.textContent = '16';  rb.style.width = '32%';
     for(var i = 0; i < sw.length; i++) sw[i].className = i === 0 ? 'on' : '';
-    bouge(.30, .74, 0);
+    page.style.opacity = '';
+    bouge(.5, .6, 0);
   }
 
-  function ecrire(el, texte, pas, fin){
+  function ecrire(el, texte, pas){
     var i = 0, mien = gen;
     (function suite(){
       if(!enCours || mien !== gen) return;
       el.textContent = texte.slice(0, ++i);
       if(i < texte.length) minuteur = setTimeout(suite, pas);
-      else if(fin) fin();
     })();
   }
 
-  /* ── La séquence ──────────────────────────────────────────
-     Chaque étape : un instant (ms depuis le début) et un geste.
-     Les instants sont absolus, donc on peut sauter d'un chapitre à
-     l'autre sans rejouer ce qui précède. */
+  /* ── La séquence ──────────────────────────────────────── */
   var CHAPITRES = [
-    { t: 0,     nom: 'Glisser-déposer' },
-    { t: 7200,  nom: 'Demander à l\'IA' },
-    { t: 14200, nom: 'Éditer le code' }
+    { t: 0,     nom: 'Importer',  detail: 'Votre fichier HTML devient modifiable' },
+    { t: 6000,  nom: 'Composer',  detail: 'Glisser un bloc, régler ses propriétés' },
+    { t: 16500, nom: 'Demander',  detail: 'L\'assistant retouche la page' },
+    { t: 24500, nom: 'Vérifier',  detail: 'Le code réel, puis l\'aperçu' },
+    { t: 33500, nom: 'Exporter',  detail: 'Une page, ou un projet complet' }
   ];
-  var DUREE = 20500;
+  var DUREE = 41000;
 
   var ETAPES = [
-    /* ── 1. Glisser-déposer ───────────────────────────────── */
-    { t: 200,  f: function(){ remise(); } },
-    { t: 700,  f: function(){ bouge(.16, .42, 700); } },
-    { t: 1500, f: function(){ clic(); src.className = 'vid__it lift';
-                              ghost.className = 'vid__ghost on'; } },
-    { t: 1900, f: function(){ bouge(.63, .42, 1200); } },
-    { t: 3200, f: function(){ bouge(.66, .47, 500); } },
-    { t: 3800, f: function(){ ghost.className = 'vid__ghost';
-                              src.className = 'vid__it';
-                              drop.className = 'vid__drop in'; } },
-    { t: 4200, f: function(){ sel.className = 'vid__sel on'; clic(); } },
-    /* Réglage à la molette : la largeur et le rayon suivent. */
-    { t: 4900, f: function(){ bouge(.88, .33, 600); } },
-    { t: 5600, f: function(){
+    /* ── 1. Importer ───────────────────────────────────── */
+    { t: 100,  f: function(){ remise(); imp.className = 'vid__import on';
+                              legende(1, 'On dépose un fichier HTML existant.'); } },
+    { t: 900,  f: function(){ bouge(.62, .45, 900); } },
+    { t: 2000, f: function(){ imp.className = 'vid__import on depose'; tape(); } },
+    { t: 2600, f: function(){ legende(1, 'Chaque élément de la page devient un calque.'); } },
+    { t: 3400, f: function(){ imp.className = 'vid__import'; } },
+    { t: 4200, f: function(){ bouge(.13, .30, 700); } },
+
+    /* ── 2. Composer ───────────────────────────────────── */
+    { t: 6000, f: function(){ legende(2, 'On ouvre la bibliothèque de blocs.'); bouge(.035, .40, 600); } },
+    { t: 6800, f: function(){ tape(); rail('formes'); volet('formes'); } },
+    { t: 7600, f: function(){ bouge(.15, .30, 700); } },
+    { t: 8400, f: function(){ tape(); src.className = 'vid__it lift';
+                              ghost.className = 'vid__ghost on';
+                              legende(2, 'On attrape une carte tarif…'); } },
+    { t: 9000, f: function(){ bouge(.62, .38, 1300); } },
+    { t: 10400, f: function(){ bouge(.645, .42, 500);
+                               legende(2, '…et on la pose où on veut sur la page.'); } },
+    { t: 11100, f: function(){ ghost.className = 'vid__ghost'; src.className = 'vid__it';
+                               drop.className = 'vid__drop in';
+                               layNew.className = 'on neuf'; } },
+    { t: 11700, f: function(){ sel.className = 'vid__sel on'; tape();
+                               props.className = 'vid__props arme';
+                               legende(2, 'Sélectionnée, elle affiche ses réglages à droite.'); } },
+    { t: 12600, f: function(){ bouge(.885, .30, 700); } },
+    { t: 13400, f: function(){
         var v = 300, k = 0, mien = gen;
+        legende(2, 'On règle sa largeur au curseur.');
         (function pas(){
-          if(!enCours || mien !== gen || k++ > 18) return;
+          if(!enCours || mien !== gen || k++ > 20) return;
           v += 6; w.textContent = v;
-          wb.style.width = (52 + k * 1.4) + '%';
-          drop.style.width = (118 + k * 1.1) + 'px';
-          sel.style.width = (118 + k * 1.1) + 'px';
-          minuteur = setTimeout(pas, 45);
+          wb.style.width = (50 + k * 1.5) + '%';
+          drop.style.width = (116 + k * 1.2) + 'px';
+          sel.style.width = (116 + k * 1.2) + 'px';
+          minuteur = setTimeout(pas, 42);
         })();
       } },
-    { t: 6500, f: function(){ clic(); sw[1].className = 'on'; sw[0].className = '';
-                              drop.style.background = '#eaf0fa'; } },
+    { t: 14700, f: function(){ bouge(.9, .47, 500); } },
+    { t: 15300, f: function(){ tape(); sw[1].className = 'on'; sw[0].className = '';
+                               drop.style.background = '#eaf0fa';
+                               legende(2, 'Et sa couleur de fond, d\'un clic.'); } },
 
-    /* ── 2. Demander à l'IA ───────────────────────────────── */
-    { t: 7200,  f: function(){ bouge(.035, .86, 700); } },
-    { t: 8000,  f: function(){ clic(); railIa.className = 'vid__ia on';
-                               railCal.className = ''; ai.className = 'vid__ai on'; } },
-    { t: 8500,  f: function(){ bouge(.13, .88, 600); } },
-    { t: 9200,  f: function(){ clic();
-        ecrire(type, 'Ajoute une ligne « sans engagement » sous le prix', 34); } },
-    { t: 11400, f: function(){
+    /* ── 3. Demander ───────────────────────────────────── */
+    { t: 16500, f: function(){ legende(3, 'On peut aussi demander la modification.');
+                               bouge(.035, .82, 700); } },
+    { t: 17400, f: function(){ tape(); rail('ia'); volet('ia'); } },
+    { t: 18100, f: function(){ bouge(.14, .86, 600); } },
+    { t: 18800, f: function(){ tape();
+        ecrire(type, 'Ajoute « sans engagement » sous le prix', 36); } },
+    { t: 21000, f: function(){
         type.textContent = '';
-        msg.innerHTML = '<b class="me">Ajoute une ligne « sans engagement » sous le prix</b>';
+        msg.innerHTML = '<b class="me">Ajoute « sans engagement » sous le prix</b>';
+        legende(3, 'La demande est écrite en français, pas en code.');
       } },
-    { t: 12000, f: function(){
-        msg.innerHTML += '<b>C\'est fait — une ligne ajoutée sous le montant.</b>';
-        var l = document.createElement('i');
-        l.style.cssText = 'position:absolute;left:11px;top:62px;width:66px;height:5px;'
-          + 'border-radius:3px;background:#d5d1c9';
-        drop.appendChild(l);
+    { t: 22000, f: function(){
+        msg.innerHTML += '<b>C\'est fait, une ligne ajoutée sous le montant.</b>';
+        dropL.className = 'vid__drop__l on';
+        legende(3, 'L\'assistant modifie le document, tout de suite.');
       } },
-    { t: 12800, f: function(){ sel.className = 'vid__sel on'; } },
 
-    /* ── 3. Éditer le code ────────────────────────────────── */
-    { t: 14200, f: function(){ bouge(.30, .045, 800); } },
-    { t: 15100, f: function(){ clic(); onglets[0].className = '';
-                               onglets[1].className = 'on';
-                               code.className = 'vid__code on'; } },
-    { t: 15600, f: function(){
+    /* ── 4. Vérifier ───────────────────────────────────── */
+    { t: 24500, f: function(){ legende(4, 'Le code source est là, à côté.');
+                               bouge(.30, .045, 800); } },
+    { t: 25500, f: function(){ tape(); vue('code'); } },
+    { t: 26000, f: function(){
         var brut = CODE, i = 0, mien = gen;
         (function suite(){
           if(!enCours || mien !== gen) return;
-          /* On avance par balise pour que le surlignage reste valide
-             à chaque image — écrire du HTML caractère par caractère
-             produirait des balises coupées en deux. */
+          /* On avance balise par balise : écrire du HTML caractère par
+             caractère produirait des balises coupées en deux. */
           i = brut.indexOf('>', i + 1);
           if(i < 0){ codeTxt.innerHTML = brut; return; }
           codeTxt.innerHTML = brut.slice(0, i + 1);
-          minuteur = setTimeout(suite, 55);
+          minuteur = setTimeout(suite, 52);
         })();
       } },
-    { t: 18200, f: function(){ bouge(.62, .92, 700); } },
-    { t: 19100, f: function(){ clic(); } },
-    { t: 19600, f: function(){ code.className = 'vid__code';
-                               onglets[1].className = ''; onglets[0].className = 'on'; } }
+    { t: 28200, f: function(){ legende(4, 'Modifiable à la main : la page suit.'); } },
+    { t: 29500, f: function(){ bouge(.93, .045, 700); } },
+    { t: 30400, f: function(){ tape(); vue('prev');
+        /* La carte est recopiée telle quelle : un aperçu qui montrerait
+           un rectangle vide à la place du bloc posé raterait son sujet. */
+        prevIn.innerHTML = page.innerHTML
+          + '<div style="position:absolute;left:57%;top:24%;width:'
+          + (drop.style.width || '116px') + ';height:134px;overflow:hidden;'
+          + 'border-radius:8px;background:#eaf0fa;border:1px solid #e4e1db">'
+          + drop.innerHTML + '</div>';
+        legende(4, 'L\'aperçu montre la page telle qu\'elle sera.');
+      } },
+
+    /* ── 5. Exporter ───────────────────────────────────── */
+    { t: 33500, f: function(){ vue('canvas'); legende(5, 'Reste à repartir avec.');
+                               bouge(.92, .955, 800); } },
+    { t: 34600, f: function(){ tape(); menu.className = 'vid__menu on'; } },
+    { t: 35400, f: function(){ bouge(.83, .80, 600);
+                               legende(5, 'Un fichier HTML autonome…'); } },
+    { t: 36400, f: function(){ menuZip.className = 'vid__menu__z sur';
+                               bouge(.83, .865, 500);
+                               legende(5, '…ou un projet complet, prêt à mettre en ligne.'); } },
+    { t: 37400, f: function(){ tape(); } },
+    { t: 38000, f: function(){ menu.className = 'vid__menu';
+        prevIn.innerHTML = '';
+        legende(5, 'HTML, CSS, JS et médias séparés, serveur inclus.');
+      } },
+    { t: 40000, f: function(){ leg.classList.remove('on'); } }
   ];
 
-  /* ── Moteur de lecture ────────────────────────────────── */
-  var depart = 0, ecoule = 0, enCours = false, minuteur = 0, boucle = 0, joues = -1;
-  /* Les étapes qui écrivent lettre à lettre continuent après coup.
-     Si on saute de chapitre, celles d'avant doivent s'arrêter net —
-     sinon leur texte revient se poser par-dessus le nouveau. */
-  var gen = 0;
-
-  function fmt(ms){
-    var s = Math.floor(ms / 1000);
-    return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
-  }
+  /* ── Moteur ───────────────────────────────────────────── */
+  var depart = 0, ecoule = 0, enCours = false, minuteur = 0, boucle = 0, joues = -1, gen = 0;
 
   function tic(){
     if(!enCours) return;
@@ -3934,11 +3802,10 @@ function initHeroArt() {
       try{ ETAPES[i].f(); }catch(e){}
     }
     prog.style.width = (ecoule / DUREE * 100) + '%';
-    temps.textContent = fmt(ecoule);
     var actif = 0;
     for(var c = 0; c < CHAPITRES.length; c++) if(ecoule >= CHAPITRES[c].t) actif = c;
     var bs = chaps.children;
-    for(var k = 0; k < bs.length; k++) bs[k].className = k === actif ? 'on' : '';
+    for(var k = 0; k < bs.length; k++) bs[k].classList.toggle('on', k === actif);
     boucle = requestAnimationFrame(tic);
   }
 
@@ -3946,57 +3813,55 @@ function initHeroArt() {
     if(enCours) return;
     enCours = true;
     depart = Date.now() - ecoule;
-    lecture.innerHTML = '<i class="fas fa-pause"></i>';
     boucle = requestAnimationFrame(tic);
   }
   function pause(){
     enCours = false;
     clearTimeout(minuteur);
     cancelAnimationFrame(boucle);
-    lecture.innerHTML = '<i class="fas fa-play"></i>';
   }
   function aller(ms){
     clearTimeout(minuteur);
     ecoule = ms;
     joues = -1;
     remise();
-    /* Rejouer d'un coup tout ce qui précède l'instant visé : la scène
-       doit être dans l'état où la séquence l'aurait mise. */
     for(var i = 0; i < ETAPES.length && ETAPES[i].t <= ms; i++){
       joues = i;
       try{ ETAPES[i].f(); }catch(e){}
     }
     depart = Date.now() - ms;
     prog.style.width = (ms / DUREE * 100) + '%';
-    temps.textContent = fmt(ms);
     if(enCours){ cancelAnimationFrame(boucle); boucle = requestAnimationFrame(tic); }
   }
 
   CHAPITRES.forEach(function(c, i){
     var b = document.createElement('b');
-    b.textContent = (i + 1) + '. ' + c.nom;
+    b.innerHTML = (i + 1) + '. ' + c.nom + '<em>' + c.detail + '</em>';
     b.addEventListener('click', function(){ aller(c.t); jouer(); });
     chaps.appendChild(b);
   });
 
-  lecture.addEventListener('click', function(){ enCours ? pause() : jouer(); });
-
   /* Rien ne tourne hors de l'écran : une animation qu'on ne regarde
-     pas ne coûte que de la batterie. */
+     pas ne coûte que de la batterie. Et rien ne demande un clic :
+     la démonstration tourne, point. */
   var doux = false;
   try{ doux = window.matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){}
 
   if(doux){
-    aller(6900);            /* état parlant, sans mouvement */
+    aller(12200);
     pause();
-    lecture.title = 'Animation désactivée : mouvement réduit demandé par votre système';
   }else{
     remise();
     try{
       new IntersectionObserver(function(es){
         es.forEach(function(e){ e.isIntersecting ? jouer() : pause(); });
-      }, { threshold: .35 }).observe(racine);
+      }, { threshold: .3 }).observe(racine);
     }catch(e){ jouer(); }
+    try{
+      document.addEventListener('visibilitychange', function(){
+        if(document.hidden) pause();
+      });
+    }catch(e){}
   }
 
   window.addEventListener('resize', function(){ if(!enCours) aller(ecoule); });
@@ -4520,6 +4385,18 @@ select.prop-input{appearance:none;cursor:pointer;padding-right:26px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' fill='none'%3E%3Cpath d='M1 1.3 5 5.3l4-4' stroke='%2377778f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 9px center}
 input[type=color].prop-input{padding:2px;height:32px;cursor:pointer}
+/* Couleur : la pastille et son code hexadécimal sur une seule ligne.
+   Sans largeur imposée, le champ texte garde sa taille par défaut du
+   navigateur et déborde du panneau. */
+.color-picker-wrap{display:flex;align-items:center;gap:6px;min-width:0}
+.color-picker{flex:0 0 34px;width:34px;height:32px;padding:2px;cursor:pointer;
+  border-radius:8px;border:1px solid var(--border);background:var(--bg-2)}
+.color-text{flex:1 1 auto;min-width:0;width:100%;min-height:32px;padding:7px 9px;
+  border-radius:8px;background:var(--bg-2);border:1px solid var(--border);
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;
+  outline:none;transition:border-color .16s var(--ease),box-shadow .16s var(--ease)}
+.color-text:hover{border-color:var(--border-2)}
+.color-text:focus{border-color:var(--p2);}
 input[type=range].prop-input{padding:0;height:24px;background:transparent;border:0;accent-color:var(--p2);cursor:pointer}
 
 .btn-neon{
@@ -4687,7 +4564,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .ai-mode-chip.act{background:var(--p-soft);border-color:var(--p-line);color:var(--p)}
 .ai-mode-chip:hover{border-color:var(--p2);color:var(--p2)}
 .ai-mode-chip[data-mode="select"].act,.ai-mode-chip[data-mode="delete"].act{
-  background:var(--p-soft);border-color:var(--p3);color:var(--p3)}
+  background:var(--p-soft);border-color:var(--p-line);color:var(--p3)}
 .ai-welcome{text-align:center;padding:18px 12px}
 .ai-welcome-icon{font-size:30px;margin-bottom:8px}
 .ai-welcome h3{font-size:13px;color:var(--text);margin-bottom:5px;font-weight:700}
@@ -4883,6 +4760,77 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .nx-lib__bloc{justify-content:flex-start!important;gap:10px!important;padding:10px 12px!important}
 .nx-lib__bloc i{color:var(--p);font-size:13px}
 .nx-lib__bloc span{font-size:12px;color:var(--text)}
+
+/* ── Panneau des calques : lignes de hauteur fixe ────────── */
+#treeWrap{display:flex;flex-direction:column;gap:0;padding:0!important;background:transparent!important;
+  border:0!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+.nx-lay__barre{display:flex;align-items:center;gap:7px;padding:7px 9px;margin-bottom:7px;
+  border:1px solid var(--border);border-radius:9px;background:var(--bg-2)}
+.nx-lay__barre>i{font-size:10.5px;color:var(--text-faint);flex-shrink:0}
+.nx-lay__f{flex:1;min-width:0;border:0;background:none;color:var(--text);font-size:11.5px;outline:none}
+.nx-lay__f::placeholder{color:var(--text-faint)}
+.nx-lay__n{flex-shrink:0;font-family:var(--ff-mono,monospace);font-size:10px;color:var(--text-dim);
+  font-variant-numeric:tabular-nums}
+.nx-lay__vue{height:340px;overflow-y:auto;overflow-x:hidden;
+  border:1px solid var(--border);border-radius:10px;background:var(--bg-2);contain:strict}
+.nx-lay__corps{position:relative}
+.nx-lay__vide{padding:34px 16px;text-align:center;font-size:11.5px;color:var(--text-dim)}
+.layer-item{display:flex;align-items:center;gap:8px;height:34px;padding:0 9px;
+  border-radius:7px;cursor:pointer;color:var(--text-muted);
+  transition:background .12s var(--ease),color .12s var(--ease)}
+.layer-item:hover{background:var(--surface-hover);color:var(--text)}
+.layer-item.sel{background:var(--p-soft);border-color:var(--p-line);color:var(--p)}
+.layer-drag-handle{flex-shrink:0;font-size:9.5px;color:var(--text-faint);cursor:grab}
+.layer-name{flex:1;min-width:0;font-size:11.5px;line-height:1.2;text-align:left;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-item .layer-tools{flex-shrink:0;width:69px;justify-content:flex-end;
+  opacity:0;transition:opacity .12s var(--ease)}
+.layer-item:hover .layer-tools,.layer-item.sel .layer-tools{opacity:1}
+.layer-item .layer-del:hover{color:var(--err)}
+@media(max-width:1180px){.nx-lay__vue{height:260px}}
+
+/* nx-litteral */
+/* Pastilles de couleur : leur fond représente une couleur précise et
+   ne change pas avec le thème. Leur encre ne doit donc pas suivre le
+   thème non plus, sous peine de noir sur noir en thème clair. */
+.nx-swatch{color:#ffffff!important}
+.nx-swatch--clair{color:#1a1917!important}
+/* /nx-litteral */
+
+/* ── Recherche dans le code source ──────────────────────── */
+#searchBarCode{position:absolute;top:10px;right:16px;z-index:40;display:none;
+  align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);
+  border-radius:11px;background:var(--bg-1);box-shadow:var(--sh-3)}
+.nx-srch__ic{font-size:11px;color:var(--text-faint);margin:0 2px 0 4px}
+.nx-srch__in{width:230px;border:0;background:none;color:var(--text);
+  font-size:12.5px;outline:none;font-family:var(--ff-mono,'JetBrains Mono',monospace)}
+.nx-srch__in::placeholder{color:var(--text-faint);font-family:'Inter',sans-serif}
+.nx-srch__n{min-width:104px;text-align:right;font-size:11px;color:var(--text-dim);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.nx-srch__n.vide{color:var(--err)}
+.nx-srch__b{display:grid;place-items:center;min-width:25px;height:25px;padding:0 5px;
+  border-radius:6px;color:var(--text-dim);font-size:11px;font-weight:600;cursor:pointer;
+  transition:background .14s var(--ease),color .14s var(--ease)}
+.nx-srch__b:hover{background:var(--surface-hover);color:var(--text)}
+.nx-srch__b.on{background:var(--p-soft);color:var(--p)}
+.nx-srch__b u{text-decoration:underline;text-underline-offset:2px}
+.nx-srch__x:hover{background:var(--err);color:var(--bg-1)}
+.nx-srch__sep{width:1px;height:16px;background:var(--border)}
+
+/* Les marques sont superposées au champ de saisie : aucune marge,
+   aucun espacement, sinon tout le texte se décale d'un cran. */
+mark.nx-srch__hit{background:var(--warn);color:inherit;padding:0;margin:0;
+  border-radius:2px;box-shadow:0 0 0 1px var(--warn)}
+mark.nx-srch__hit.cur{background:var(--p);color:inherit;
+  text-decoration:underline;text-underline-offset:2px;
+  text-decoration-thickness:2px}
+@media(max-width:900px){.nx-srch__in{width:140px}.nx-srch__n{min-width:54px}}
+
+/* ── Destination d'un élément cliquable ─────────────────── */
+.nx-dest .prop-title i{color:var(--p)}
+.nx-dest__s{margin-bottom:8px}
+.nx-dest__v{margin-bottom:6px}
+.nx-dest__n{font-size:10.5px;line-height:1.5;color:var(--text-dim)}
 </style>
 </head>
 <body>
@@ -5177,7 +5125,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
         <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'button')"><i class="fas fa-stop"></i> <span>Bouton d'action</span></div>
         <!-- NEXUS v24 - Textes pré-stylés (titres pré-stylés à insertion 1-clic) -->
         <div class="cat-title" style="margin-top:12px;">Presets stylés (1 clic)</div>
-        <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'text-preset','hero-gradient')" onclick="nxInsertTextPreset('hero-gradient')" style="cursor:grab;border-color:var(--p);"><span style="background:var(--g1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;font-size:18px;">HERO Dégradé</span></div>
+        <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'text-preset','hero-gradient')" onclick="nxInsertTextPreset('hero-gradient')" style="cursor:grab;border-color:var(--p);"><span style="color:var(--p);font-weight:800;font-size:18px;">HERO Dégradé</span></div>
         <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'text-preset','hero-neon')" onclick="nxInsertTextPreset('hero-neon')" style="cursor:grab;border-color:var(--p2);"><span style="color:var(--p2);font-weight:800;font-size:16px;">TITRE Néon</span></div>
         <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'text-preset','subtitle-elegant')" onclick="nxInsertTextPreset('subtitle-elegant')" style="cursor:grab;"><span style="font-style:italic;color:var(--text-dim);font-size:14px;letter-spacing:.05em;">— Sous-titre élégant —</span></div>
         <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'text-preset','quote-large')" onclick="nxInsertTextPreset('quote-large')" style="cursor:grab;border-color:var(--p3);"><span style="font-size:13px;font-style:italic;">"Citation impactante avec effet"</span></div>
@@ -5991,8 +5939,8 @@ function renderUploads() {
         const safeName = _escAttr(m.name);
         if(m.type === 'img') previewHtml = \`<img src="\${safeUrl}" style="width:100%;height:100%;object-fit:cover; pointer-events:none;">\`;
         else if(m.type === 'video') previewHtml = \`<video src="\${safeUrl}" style="width:100%;height:100%;object-fit:cover; pointer-events:none;"></video>\`;
-        else if(m.type === 'doc' && m.name.toLowerCase().endsWith('.pdf')) previewHtml = \`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--p-ink);font-size:11px;text-align:center;padding:5px;background:var(--p3);"><div>📕<br>PDF<br><span style="font-size:9px;opacity:.7;">\${_escAttr(m.name.substring(0,12))}</span></div></div>\`;
-        else previewHtml = \`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--p-ink);font-size:12px;text-align:center;padding:5px;">📄<br>\${_escAttr(m.name.substring(0, 10))}</div>\`;
+        else if(m.type === 'doc' && m.name.toLowerCase().endsWith('.pdf')) previewHtml = \`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:11px;text-align:center;padding:5px;background:var(--p-soft);"><div>📕<br>PDF<br><span style="font-size:9px;opacity:.7;">\${_escAttr(m.name.substring(0,12))}</span></div></div>\`;
+        else previewHtml = \`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:12px;text-align:center;padding:5px;">📄<br>\${_escAttr(m.name.substring(0, 10))}</div>\`;
         return \`
         <div class="nx-upload-item" style="width:100%; height:80px; background:var(--bg-2); border-radius:6px; overflow:hidden; cursor:grab; border:1px solid var(--border-2); position:relative; transition:.15s;"
              title="Glissez sur le canvas OU cliquez pour insérer au centre"
@@ -6177,7 +6125,7 @@ function renderProjectsList() {
             <span style="font-size:10px; color:var(--text-muted);">🕒 \${p.date}</span>
             <div style="display:flex; gap:5px; margin-top:5px;">
                 <button class="btn-neon" style="flex:1; padding:6px; font-size:11px;" onclick="loadProject('\${p.id}')"><i class="fas fa-folder-open"></i> Ouvrir</button>
-                <button class="btn-neon" style="padding:6px; font-size:11px; background:var(--p3); border-color:var(--p3); color:var(--p3);" onclick="deleteProject('\${p.id}')"><i class="fas fa-trash"></i></button>
+                <button class="btn-neon" style="padding:6px; font-size:11px; background:var(--p-soft); border-color:var(--p3); color:var(--p3);" onclick="deleteProject('\${p.id}')"><i class="fas fa-trash"></i></button>
             </div>
         </div>
     \`).join('');
@@ -8359,8 +8307,8 @@ function renderProps(n) {
   if(n.tagName==='IMG') {
      h+=\`<div class="prop-group"><div class="prop-title">✨ Magie & Arrière-plan (100% Natif)</div>
      <div class="prop-row"><div class="prop-col"><label class="prop-label">Source URL</label><input type="text" class="prop-input" value="\${n.src}" oninput="if(window.selNodes[0]) window.selNodes[0].src=this.value" onchange="saveSnapAfterEdit()"></div></div>
-     <button class="btn-magic" style="margin-top:10px;" onclick="magicRemoveBgCanvas('white')"><i class="fas fa-magic"></i> <span data-fr="Effacer le Fond Blanc Pur" data-en="Erase Pure White Bg">Effacer le Fond Blanc Pur</span></button>
-     <button class="btn-magic" style="margin-top:5px; background:linear-gradient(135deg, #111, #333);" onclick="magicRemoveBgCanvas('black')"><i class="fas fa-magic"></i> <span data-fr="Effacer le Fond Noir Pur" data-en="Erase Pure Black Bg">Effacer le Fond Noir Pur</span></button>
+     <button class="btn-magic nx-swatch nx-swatch--clair" style="margin-top:10px;background-color:#f6f5f3;background-image:linear-gradient(135deg,#f6f5f3,#dcd8d2)" onclick="magicRemoveBgCanvas('white')"><i class="fas fa-magic"></i> <span data-fr="Effacer le Fond Blanc Pur" data-en="Erase Pure White Bg">Effacer le Fond Blanc Pur</span></button>
+     <button class="btn-magic nx-swatch" style="margin-top:5px;background-color:#1a1917;background-image:linear-gradient(135deg,#1a1917,#3b3835)" onclick="magicRemoveBgCanvas('black')"><i class="fas fa-magic"></i> <span data-fr="Effacer le Fond Noir Pur" data-en="Erase Pure Black Bg">Effacer le Fond Noir Pur</span></button>
      <p style="font-size:10px; color:var(--text-muted); margin-top:10px; text-align:center;">Une fois le fond supprimé physiquement, modifiez "Couleur Fond" pour le remplacer.</p>
      </div>\`;
   }
@@ -11159,7 +11107,7 @@ window.addEventListener('load', function(){
 }
 #nx21LassoLayer{position:fixed;inset:0;z-index:2147483645;cursor:crosshair;display:none;background:transparent;}
 .nx21-delkey-btn{
-  width:100%;margin-top:8px;padding:9px;background:var(--p3);
+  width:100%;margin-top:8px;padding:9px;background:var(--p-soft);
   border:1px solid var(--p3);border-radius:8px;color:var(--p3);font-weight:700;
   font-size:12px;cursor:pointer;transition:.2s;display:flex;align-items:center;
   justify-content:center;gap:7px;font-family:'Inter',sans-serif;
@@ -12995,9 +12943,26 @@ function nxPositionBar(){
   if(top < 62) top = fRect.top + maxB * scale + 12;
 
   var w = bar.offsetWidth || 320;
-  var left = Math.max(10, Math.min(window.innerWidth - w - 10, cx - w / 2));
+  /* La barre reste dans le plan de travail, pas seulement dans la
+     fenêtre : sinon elle recouvre le panneau des calques et l'on ne
+     sait plus à quoi elle se rapporte. */
+  var zone = document.getElementById('canvasWrap') || document.querySelector('.workspace');
+  var zr = zone ? zone.getBoundingClientRect() : null;
+  var gauche = zr ? Math.max(10, zr.left + 8) : 10;
+  var droite = zr ? Math.min(window.innerWidth - w - 10, zr.right - w - 8)
+                  : window.innerWidth - w - 10;
+  var left = (droite < gauche) ? gauche
+           : Math.max(gauche, Math.min(droite, cx - w / 2));
+
+  var haut = Math.max(8, top);
+  if(zr){
+    var h = bar.offsetHeight || 44;
+    /* Sous la barre basse, elle serait invisible. */
+    haut = Math.min(haut, Math.max(zr.top + 8, zr.bottom - h - 8));
+    haut = Math.max(haut, 8);
+  }
   bar.style.left = Math.round(left) + 'px';
-  bar.style.top = Math.round(Math.max(8, top)) + 'px';
+  bar.style.top = Math.round(haut) + 'px';
 }
 window.positionFloatMenu = nxPositionBar;
 
@@ -13182,6 +13147,10 @@ function nxRenamePage(i){
 }
 window.nxAddPage = nxAddPage;
 window.nxGoToPage = nxGoToPage;
+/* Les liens entre pages et les exports ont besoin de lire et de
+   ranger l'état des pages : on l'expose au lieu de le deviner. */
+window.nxSavePages = nxSavePages;
+window.nxSyncCurrentPage = nxCaptureCurrent;
 window.nxDeletePage = nxDeletePage;
 window.nxRenamePage = nxRenamePage;
 window.nxDuplicatePage = nxDuplicatePage;
@@ -13561,6 +13530,29 @@ var _nxStageCache = { h: 0, vp: '', valid: false };
 function nxInvalidateStage(){ _nxStageCache.valid = false; }
 window.nxInvalidateStage = nxInvalidateStage;
 
+/* ════════════════════════════════════════════════════════════════
+   POURQUOI LA MESURE SE FAIT SUR UNE HAUTEUR GELÉE
+   ════════════════════════════════════════════════════════════════
+   Le socle du document impose « body{min-height:100vh} », et le vh
+   d'un document vaut la hauteur de son cadre. Or le studio règle la
+   hauteur du cadre sur la hauteur mesurée. La mesure se nourrissait
+   donc d'elle-même :
+
+       cadre 1080 → contenu ≥ 1080 → cadre 1080 …  (inoffensif)
+       cadre 4000 → contenu ≥ 4000 → cadre 4000 …  (jamais rétréci)
+       « height:400vh » → contenu = 4 × cadre → cadre × 4 à chaque
+       passe, jusqu'à des dizaines de milliers de pixels.
+
+   C'est exactement le symptôme constaté : un document importé qui
+   paraît démesurément zoomé, avec un défilement sans fin, et une
+   scène qui ne redescend jamais même après avoir chargé une page
+   minuscule.
+
+   La correction tient en une phrase : on mesure toujours sur la même
+   hauteur de référence. Le vh y vaut une valeur fixe, le résultat ne
+   dépend plus de la mesure précédente, et la scène peut enfin
+   rétrécir.
+   ════════════════════════════════════════════════════════════════ */
 function nxCheapStageHeight(){
   var base = (typeof nxBaseHeight === 'function') ? nxBaseHeight() : 1080;
   var vp = (typeof activeViewport !== 'undefined') ? activeViewport : 'desktop';
@@ -13571,6 +13563,12 @@ function nxCheapStageHeight(){
     var fr = document.getElementById('previewFrame');
     var d = fr && fr.contentDocument;
     if(d && d.body){
+      /* Repère gelé le temps de la mesure. On remet ensuite exactement
+         ce qui était écrit, y compris rien du tout. */
+      var hauteurAvant = fr.style.height;
+      fr.style.height = base + 'px';
+      void d.documentElement.offsetHeight;   /* force le recalcul */
+
       /* 1. Le flux normal coûte une seule lecture. */
       var bottom = Math.max(d.body.scrollHeight || 0, d.documentElement.scrollHeight || 0);
 
@@ -13589,8 +13587,30 @@ function nxCheapStageHeight(){
         if(b > bottom) bottom = b;
       }
       h = Math.max(base, Math.ceil(bottom + 40));
+
+      /* Garde-fou : une page dont la hauteur est écrite en vh n'a pas
+         de hauteur d'équilibre. On borne plutôt que de laisser filer,
+         et on le dit une fois dans la console pour que ce ne soit pas
+         un mystère. */
+      var PLAFOND = base * 40;
+      if(h > PLAFOND){
+        if(!window.__nxPlafondDit){
+          window.__nxPlafondDit = true;
+          console.warn('[DropCode] Hauteur de page bornée à ' + PLAFOND
+            + ' px. Une hauteur exprimée en vh (par exemple height:400vh) '
+            + 'n\\'a pas de valeur stable dans un plan de travail.');
+        }
+        h = PLAFOND;
+      }
+
+      fr.style.height = hauteurAvant;
     }
-  }catch(e){}
+  }catch(e){
+    try{
+      var fr2 = document.getElementById('previewFrame');
+      if(fr2 && typeof hauteurAvant !== 'undefined') fr2.style.height = hauteurAvant;
+    }catch(e2){}
+  }
   _nxStageCache = { h: h, vp: vp, valid: true };
   return h;
 }
@@ -14386,13 +14406,24 @@ function nxProjectFiles(p){
   var F = [];
   var A = function(path, data){ F.push({ path: path, data: data }); };
 
-  A('index.html', p.html);
-  if(p.css) A('assets/css/styles.css',
-    '/* Styles du projet ' + titre + '.\\n'
-    + '   Regroupés depuis le document, dans l\\'ordre d\\'origine :\\n'
-    + '   cet ordre décide des priorités, ne le changez pas à la légère. */\\n\\n' + p.css + '\\n');
+  var pages = p.pages || [{ fichier: 'index.html', nom: titre, html: p.html }];
+  pages.forEach(function(pg){ A(pg.fichier, pg.html); });
+
+  /* Le CSS est réparti par rôle : on ouvre le fichier qui porte le nom
+     de ce qu'on veut changer, au lieu de fouiller une feuille unique. */
+  if(p.css){
+    var d = (typeof window.nxDecouperCss === 'function')
+      ? window.nxDecouperCss(p.css, titre) : { fichiers: [], index: null };
+    if(d.fichiers.length){
+      d.fichiers.forEach(function(f){ A(f.chemin, f.contenu); });
+      A(d.index.chemin, d.index.contenu);
+    } else {
+      A('assets/css/styles.css', '/* Styles du projet ' + titre + '. */\\n\\n' + p.css + '\\n');
+    }
+  }
   if(p.js) A('assets/js/app.js',
-    '/* Scripts du projet ' + titre + '. */\\n\\n' + p.js + '\\n');
+    '/* Scripts du projet ' + titre + '.\\n'
+    + '   Repris du document dans leur ordre d\\'exécution. */\\n\\n' + p.js + '\\n');
   for(var i = 0; i < p.assets.length; i++) F.push(p.assets[i]);
 
   A('assets/favicon.svg',
@@ -14505,14 +14536,24 @@ dans des fichiers séparés, comme dans n'importe quel projet web.
 
 ## Arborescence
 
-    index.html              la page
-    assets/css/styles.css   les styles, dans leur ordre d'origine
+    index.html              la page d'accueil
+    <autres>.html           une page par page du projet
+    assets/css/styles.css   n'importe que les cinq fichiers ci-dessous
+    assets/css/01-socle.css        variables, polices, remises à zéro
+    assets/css/02-mise-en-page.css structure, grilles, sections
+    assets/css/03-composants.css   boutons, cartes, formulaires, textes
+    assets/css/04-animations.css   animations et transitions
+    assets/css/05-adaptatif.css    règles selon la taille d'écran
     assets/js/app.js        les scripts de la page
     assets/img/             les médias, extraits du document
     server/server.js        un serveur statique sans dépendance
     Dockerfile              pour un déploiement en conteneur
     netlify.toml            configuration Netlify
     vercel.json             configuration Vercel
+
+Les fichiers CSS sont numérotés parce que l'ordre compte : une règle
+écrite plus bas l'emporte sur une règle écrite plus haut. Ajoutez les
+vôtres à la fin de styles.css, jamais au début.
 
 ## Voir le site en local
 
@@ -14563,24 +14604,42 @@ window.nxExportZip = async function(){
     if(typeof syncDataFromIframeImmediate === 'function') syncDataFromIframeImmediate();
     else if(typeof syncDataFromIframe === 'function') syncDataFromIframe();
 
-    var interne = await nxBuildInner();
     var nomProjet = nxSlug((typeof currentProjectName !== 'undefined' && currentProjectName)
       ? currentProjectName : (document.getElementById('projName') || {}).value || 'projet-dropcode');
 
-    var decoupe = nxSplitDocument(interne, nomProjet);
+    /* Un fichier HTML par page, liens réécrits en relatif : c'est ce
+       qui distingue un site d'une page unique. */
+    var pages = (typeof window.nxPreparerPages === 'function')
+      ? await window.nxPreparerPages('fichiers')
+      : [{ id:'p1', nom:'Page 1', fichier:'index.html', html: await nxBuildInner(), titre:'' }];
 
-    /* La version verrouillée est celle de l'export d'un seul fichier :
-       même sérialisation, même coque, donc mêmes positions au pixel. */
+    var decoupes = pages.map(function(p){ return nxSplitDocument(p.html, nomProjet); });
+    var titre = decoupes[0].titre;
+
+    /* Les styles et les scripts sont mis en commun : deux pages d'un
+       même site partagent leur feuille, sinon le visiteur la
+       télécharge autant de fois qu'il ouvre de pages. */
+    var cssTotal = [], jsTotal = [], assets = [], vus = {};
+    decoupes.forEach(function(d){
+      if(d.css && !vus['c' + d.css]){ vus['c' + d.css] = 1; cssTotal.push(d.css); }
+      if(d.js && !vus['j' + d.js]){ vus['j' + d.js] = 1; jsTotal.push(d.js); }
+      d.assets.forEach(function(a){ if(!vus['a' + a.path]){ vus['a' + a.path] = 1; assets.push(a); } });
+    });
+
     var fidele = '';
     try{
       var st = (typeof nxStage === 'function') ? nxStage(true) : { w: 1920, h: 1080 };
-      if(typeof nxFitShell === 'function') fidele = nxFitShell(interne, st.w, st.h, decoupe.titre);
+      var interneUnique = (typeof window.nxAssemblerPages === 'function')
+        ? window.nxAssemblerPages(await window.nxPreparerPages('unique'), titre)
+        : pages[0].html;
+      if(typeof nxFitShell === 'function') fidele = nxFitShell(interneUnique, st.w, st.h, titre);
     }catch(e){}
 
     var fichiers = nxProjectFiles({
-      nom: nomProjet, titre: decoupe.titre,
-      html: decoupe.html, css: decoupe.css, js: decoupe.js,
-      assets: decoupe.assets, fidele: fidele
+      nom: nomProjet, titre: titre,
+      pages: pages.map(function(p, i){ return { fichier: p.fichier, nom: p.nom, html: decoupes[i].html }; }),
+      css: cssTotal.join('\\n\\n'), js: jsTotal.join('\\n\\n'),
+      assets: assets, fidele: fidele
     });
 
     var blob = await nxMakeZip(fichiers);
@@ -15360,6 +15419,1303 @@ window.nxExportZip = async function(){
 })();
 
 <\/script>
+<script id="nx-units">
+/* ════════════════════════════════════════════════════════════════
+   UNITÉS D'ÉCRAN — résolues contre le viewport de conception
+   ════════════════════════════════════════════════════════════════
+   Un « 100vh » vaut la hauteur du cadre qui affiche la page. Or le
+   studio règle la hauteur du cadre sur la hauteur de la page. Les
+   deux se poursuivent :
+
+       une section en 100vh fait la hauteur du cadre,
+       donc la page fait au moins cette hauteur,
+       donc le cadre grandit,
+       donc la section grandit…
+
+   D'où les symptômes rapportés : un site importé qui paraît
+   démesurément agrandi, un défilement qui n'en finit plus, et une
+   hauteur de page qui ne redescend jamais.
+
+   Il n'existe pas de hauteur d'équilibre : c'est une propriété de la
+   définition même de vh, pas un défaut d'implémentation. La seule
+   sortie est de décider une bonne fois ce que vaut « un écran ».
+
+   Ici, un écran vaut le viewport de conception : 1920 × 1080 en
+   bureau, 820 × 1024 en tablette, 390 × 844 en mobile. Les hauteurs
+   écrites en vh sont converties en pixels une fois pour toutes, le
+   texte d'origine est conservé, et tout est recalculé quand on change
+   de format. La page rend alors pareil dans le plan de travail, dans
+   l'aperçu et dans le fichier exporté — ce qui est la promesse de
+   l'outil.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  /* vw n'a jamais posé problème : la largeur du cadre EST la largeur
+     de conception. On ne touche donc qu'aux unités de hauteur, plus
+     vmin et vmax qui dépendent des deux. */
+  var UNITES = /(-?\\d*\\.?\\d+)(dvh|svh|lvh|vh|vmin|vmax)\\b/g;
+
+  function viewport(){
+    var w = (typeof nxStageWidth === 'function') ? nxStageWidth() : 1920;
+    var h = (typeof nxBaseHeight === 'function') ? nxBaseHeight() : 1080;
+    return { w: w, h: h };
+  }
+
+  function convertir(texte, vp){
+    return texte.replace(UNITES, function(tout, nombre, unite){
+      var n = parseFloat(nombre);
+      var ref = unite === 'vmin' ? Math.min(vp.w, vp.h)
+              : unite === 'vmax' ? Math.max(vp.w, vp.h)
+              : vp.h;
+      /* Deux décimales : assez pour que rien ne bouge d'un pixel,
+         pas assez pour alourdir la feuille. */
+      return (Math.round(n * ref) / 100).toFixed(2).replace(/\\.?0+$/, '') + 'px';
+    });
+  }
+
+  function aDesUnites(t){
+    UNITES.lastIndex = 0;
+    return UNITES.test(t);
+  }
+
+  function appliquer(d){
+    if(!d || !d.body) return 0;
+    var vp = viewport();
+    var faits = 0;
+
+    /* 1. Les feuilles de style du document. L'original est gardé dans
+          un attribut : changer de format rejoue la conversion depuis
+          la source, jamais depuis un résultat déjà converti. */
+    var styles = d.querySelectorAll('style');
+    for(var i = 0; i < styles.length; i++){
+      var st = styles[i];
+      if(st.id && st.id.indexOf('dc-edit-') === 0) continue;   /* habillage */
+      if(st.id === 'dc-base-style' || st.id === 'nx-units-note') continue;
+      var source = st.getAttribute('data-nx-src');
+      if(source === null){
+        if(!aDesUnites(st.textContent)) continue;
+        source = st.textContent;
+        st.setAttribute('data-nx-src', source);
+      }
+      var sortie = convertir(source, vp);
+      if(sortie !== st.textContent){ st.textContent = sortie; faits++; }
+    }
+
+    /* 2. Les styles en ligne. */
+    var noeuds = d.body.querySelectorAll('[style]');
+    for(var j = 0; j < noeuds.length; j++){
+      var el = noeuds[j];
+      if(el.hasAttribute('data-nx-chrome')) continue;
+      var src2 = el.getAttribute('data-nx-style-src');
+      if(src2 === null){
+        var cur = el.getAttribute('style') || '';
+        if(!aDesUnites(cur)) continue;
+        src2 = cur;
+        el.setAttribute('data-nx-style-src', src2);
+      }
+      var out2 = convertir(src2, vp);
+      if(out2 !== el.getAttribute('style')){ el.setAttribute('style', out2); faits++; }
+    }
+
+    return faits;
+  }
+
+  var dernierAvis = 0;
+  function passer(){
+    var fr = document.getElementById('previewFrame');
+    var d = fr && fr.contentDocument;
+    if(!d) return;
+    var n = 0;
+    try{ n = appliquer(d); }catch(e){ return; }
+    if(n && Date.now() - dernierAvis > 8000){
+      dernierAvis = Date.now();
+      try{
+        if(typeof toast === 'function')
+          toast('Hauteurs en vh converties en pixels pour un rendu identique partout');
+      }catch(e){}
+    }
+    if(n){
+      try{ if(window.nxInvalidateStage) nxInvalidateStage(); }catch(e){}
+      try{ if(window.nxRefreshStage) nxRefreshStage(); }catch(e){}
+      try{ if(window.syncDataFromIframe) syncDataFromIframe(); }catch(e){}
+    }
+  }
+  window.nxResoudreUnites = passer;
+
+  /* Au chargement du plan de travail, et à chaque changement de format
+     puisque le viewport de référence change avec lui. */
+  var fr = document.getElementById('previewFrame');
+  if(fr) fr.addEventListener('load', function(){ setTimeout(passer, 160); });
+  [500, 1400, 3000].forEach(function(ms){ setTimeout(passer, ms); });
+
+  (function suivreFormat(){
+    if(typeof window.setVP !== 'function' || window.setVP.__nxUnites) return;
+    var vrai = window.setVP;
+    var enveloppe = function(){
+      var r = vrai.apply(this, arguments);
+      setTimeout(passer, 120);
+      return r;
+    };
+    enveloppe.__nxUnites = true;
+    window.setVP = enveloppe;
+  })();
+})();
+
+<\/script>
+<script id="nx-drop">
+/* ════════════════════════════════════════════════════════════════
+   OÙ ATTERRIT UN ÉLÉMENT DÉPOSÉ
+   ════════════════════════════════════════════════════════════════
+   Le studio rattachait l'élément déposé au conteneur qui se trouvait
+   sous le curseur, quel qu'il soit. Trois conséquences, toutes
+   constatées à l'usage :
+
+   · Déposé sur une barre de navigation en position:fixed, l'élément
+     devient fixe lui aussi. Il ne bouge plus avec la page : il colle
+     à l'écran. Vu de l'utilisateur, « les éléments bougent quand je
+     défile ».
+
+   · Déposé dans une carte de 200 px qui masque son débordement, une
+     maquette de 800 × 500 est rognée jusqu'à l'invisible. Vu de
+     l'utilisateur, « la maquette disparaît ».
+
+   · Déposé dans un conteneur en position:static, le studio passait ce
+     conteneur en position:relative. Il modifiait donc la feuille de
+     style de l'utilisateur sans le dire, et déplaçait au passage tout
+     ce qui s'y trouvait déjà positionné.
+
+   La règle appliquée ici : on part du conteneur visé et on remonte
+   jusqu'au premier qui sache vraiment héberger l'élément. Un
+   conteneur sait héberger s'il n'est ni fixe ni collant, s'il ne
+   rogne pas ce qu'on y met, s'il est assez grand, et s'il est déjà
+   positionné ou peut l'être sans dommage. À défaut, la page.
+
+   Les zones de dépôt explicites (l'écran d'une maquette, un cadre
+   média) restent prioritaires : elles existent précisément pour
+   recevoir quelque chose.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  function vue(d){ return d.defaultView || window; }
+
+  /* Un ancêtre fixe ou collant fait sortir l'élément du flux de la
+     page : il ne défilera plus avec elle. */
+  function chaineSaine(d, el){
+    var v = vue(d), n = el;
+    while(n && n !== d.body && n !== d.documentElement){
+      var pos = v.getComputedStyle(n).position;
+      if(pos === 'fixed' || pos === 'sticky') return false;
+      n = n.parentElement;
+    }
+    return true;
+  }
+
+  function rogne(d, el){
+    var cs = vue(d).getComputedStyle(el);
+    return cs.overflow !== 'visible' || cs.overflowX !== 'visible' || cs.overflowY !== 'visible';
+  }
+
+  /* Assez grand pour qu'au moins l'essentiel de l'élément se voie. */
+  function assezGrand(rect, l, h){
+    if(!l && !h) return true;
+    return rect.width >= l * 0.75 && rect.height >= h * 0.75;
+  }
+
+  function estZoneDeDepot(el){
+    return !!(el.classList && (el.classList.contains('dc-drop-target')
+      || el.classList.contains('cadre-container')));
+  }
+
+  /* Le conteneur peut-il ancrer un enfant en position absolue sans
+     qu'on touche à sa feuille de style ? */
+  function dejaAncre(d, el){
+    var p = vue(d).getComputedStyle(el).position;
+    return p === 'relative' || p === 'absolute' || p === 'sticky' || p === 'fixed';
+  }
+
+  /* Passer un conteneur en relative est sans effet visible SAUF s'il
+     contient déjà des enfants absolus : ceux-là changeraient de
+     référence et se déplaceraient. */
+  function passageSansDommage(d, el){
+    var v = vue(d);
+    var enfants = el.querySelectorAll('*');
+    for(var i = 0; i < enfants.length; i++){
+      var p = v.getComputedStyle(enfants[i]).position;
+      if(p === 'absolute') return false;
+    }
+    return true;
+  }
+
+  window.nxChoisirHote = function(d, cible, largeur, hauteur){
+    if(!d || !d.body) return null;
+    if(!cible || cible === d.body || cible === d.documentElement) return d.body;
+
+    /* Une zone de dépôt explicite gagne toujours : c'est sa raison
+       d'être, et l'utilisateur voit qu'elle s'allume. */
+    var zone = cible.closest && cible.closest('.dc-drop-target, .cadre-container');
+    if(zone && chaineSaine(d, zone)) return zone;
+
+    var n = cible;
+    while(n && n !== d.body && n !== d.documentElement){
+      var r = n.getBoundingClientRect();
+      var ok = chaineSaine(d, n)
+            && assezGrand(r, largeur, hauteur)
+            && !(rogne(d, n) && !assezGrand(r, largeur, hauteur))
+            && (dejaAncre(d, n) || passageSansDommage(d, n));
+      if(ok) return n;
+      n = n.parentElement;
+    }
+    return d.body;
+  };
+
+  /* ── Remplacement de la partie « dépôt intelligent » ──────────
+     On ne réécrit pas createEl : on lui retire seulement le droit de
+     choisir l'hôte, en interceptant l'appel. */
+  (function encadrerCreateEl(){
+    if(typeof window.createEl !== 'function' || window.createEl.__nxDrop) return;
+    var vrai = window.createEl;
+
+    var enveloppe = function(tag, x, y, target, custom, customName){
+      var d = null;
+      try{ d = document.getElementById('previewFrame').contentDocument; }catch(e){}
+      if(d && target && target !== d.body && target !== d.documentElement){
+        /* Les tailles typiques suffisent : on veut écarter une carte
+           de 200 px pour une maquette de 800, pas mesurer au pixel. */
+        var gros = /^mockup-|^3d-|^nx-bloc$/.test(String(tag));
+        var L = gros ? 700 : 120, H = gros ? 420 : 90;
+        var hote = window.nxChoisirHote(d, target, L, H);
+        if(hote && hote !== target){
+          target = hote;
+          try{
+            if(typeof toast === 'function' && hote === d.body)
+              toast('Posé sur la page : le conteneur visé ne pouvait pas l\\'accueillir');
+          }catch(e){}
+        }
+      }
+      return vrai.call(this, tag, x, y, target, custom, customName);
+    };
+    enveloppe.__nxDrop = true;
+    window.createEl = enveloppe;
+  })();
+
+  /* ── L'aperçu de la cible pendant le glisser ───────────────────
+     Le studio surlignait le conteneur survolé. Il doit surligner
+     celui qui recevra vraiment, sinon l'aperçu ment. */
+  (function corrigerLApercu(){
+    function poser(){
+      var fr = document.getElementById('previewFrame');
+      var d = fr && fr.contentDocument;
+      if(!d || !d.body) return;
+      if(d.getElementById('dc-edit-drop')) return;
+      var s = d.createElement('style');
+      s.id = 'dc-edit-drop';
+      s.textContent =
+        '.__dc_smart_target{outline:2px dashed var(--ok)!important;outline-offset:3px!important}'
+        + '.nx-hote-page{outline:2px dashed var(--p)!important;outline-offset:-4px!important}';
+      (d.head || d.documentElement).appendChild(s);
+    }
+    poser();
+    var fr = document.getElementById('previewFrame');
+    if(fr) fr.addEventListener('load', function(){ setTimeout(poser, 120); });
+    [600, 1800].forEach(function(ms){ setTimeout(poser, ms); });
+    if(window.nxSchedule) window.nxSchedule(poser);
+  })();
+})();
+
+<\/script>
+<script id="nx-layers-perf">
+/* ════════════════════════════════════════════════════════════════
+   PANNEAU DES CALQUES — n'afficher que ce qui est à l'écran
+   ════════════════════════════════════════════════════════════════
+   Le panneau écrivait une ligne de balisage par élément du document,
+   d'un seul bloc, à chaque synchronisation. Mesuré : 3 ms pour 500
+   éléments, 41 ms pour 1500, 80 ms pour 3000. La courbe est linéaire
+   et il n'y a pas de raison qu'elle s'arrête : une page un peu
+   fournie suffit à faire sauter des images, et c'est exactement ce
+   qu'on ressent comme « plus il y a d'éléments, plus ça rame ».
+
+   Or une liste de trois mille lignes dans un panneau de quatre cents
+   pixels n'en montre qu'une douzaine. On ne construit donc que
+   celles-là, plus une marge au-dessus et en dessous pour que le
+   défilement reste fluide. Le reste est représenté par deux cales de
+   la bonne hauteur, ce qui garde la barre de défilement juste.
+
+   Une ligne fait désormais une hauteur fixe. C'est ce qui rend le
+   calcul exact, et accessoirement ce qui met fin aux lignes sur deux
+   étages quand un titre est long.
+
+   Un champ de filtre complète le tout : sur un document fourni,
+   chercher est plus rapide que faire défiler.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+  var HAUTEUR = 34;      /* doit correspondre à la règle CSS */
+  var MARGE   = 8;       /* lignes rendues hors écran, de chaque côté */
+
+  var filtre = '';
+  var enCours = false;
+
+  function echapper(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* On cherche aussi dans les classes : sur un site importé, « card »
+     ou « hero » est souvent le seul nom que l'utilisateur connaisse.
+     La classe n'est pas dans la liste des calques, on va la chercher
+     dans le document, une fois, et on la garde sur l'entrée. La liste
+     étant reconstruite à chaque synchronisation, le cache meurt avec
+     elle et ne peut pas devenir faux. */
+  function classesDe(e){
+    if(e.__cls !== undefined) return e.__cls;
+    var c = '';
+    try{
+      var d = document.getElementById('previewFrame').contentDocument;
+      var n = d && d.querySelector('[data-dc-id="' + e.id + '"]');
+      if(n) c = (String(n.className || '') + ' ' + (n.id || '')).toLowerCase();
+    }catch(err){}
+    e.__cls = c;
+    return c;
+  }
+
+  function visibles(){
+    var liste = (typeof elements !== 'undefined' && elements) ? elements : [];
+    if(!filtre) return liste;
+    var f = filtre.toLowerCase();
+    return liste.filter(function(e){
+      return (e.tag && e.tag.toLowerCase().indexOf(f) >= 0)
+          || (e.text && String(e.text).toLowerCase().indexOf(f) >= 0)
+          || classesDe(e).indexOf(f) >= 0;
+    });
+  }
+
+  function ligne(e, selectionnes){
+    var sel = selectionnes.indexOf(e.id) >= 0 ? ' sel' : '';
+    var id = echapper(e.id);
+    return '<div class="layer-item' + sel + '" style="margin-left:' + (e.depth * 12) + 'px"'
+      + ' draggable="true" ondragstart="layerDragStart(event,\\'' + id + '\\')"'
+      + ' ondragover="layerDragOver(event)" ondrop="layerDrop(event,\\'' + id + '\\')"'
+      + ' onmouseenter="layerHover(\\'' + id + '\\')" onmouseleave="layerLeave(\\'' + id + '\\')"'
+      + ' onclick="layerClick(\\'' + id + '\\')">'
+      + '<i class="fas fa-grip-vertical layer-drag-handle"></i>'
+      + '<span class="layer-name">[' + echapper(e.tag) + '] ' + echapper(e.text || 'Élément') + '</span>'
+      + '<div class="layer-tools">'
+      + '<button type="button" title="Monter" onclick="ctxActionTree(\\'up\\',\\'' + id + '\\',event)"><i class="fas fa-arrow-up"></i></button>'
+      + '<button type="button" title="Descendre" onclick="ctxActionTree(\\'down\\',\\'' + id + '\\',event)"><i class="fas fa-arrow-down"></i></button>'
+      + '<button type="button" class="layer-del" title="Supprimer" onclick="ctxActionTree(\\'del\\',\\'' + id + '\\',event)"><i class="fas fa-trash"></i></button>'
+      + '</div></div>';
+  }
+
+  function coque(w){
+    if(w.querySelector('.nx-lay__corps')) return;
+    w.innerHTML =
+      '<div class="nx-lay__barre">'
+      + '<i class="fas fa-magnifying-glass"></i>'
+      + '<input type="search" class="nx-lay__f" placeholder="Filtrer les calques…" aria-label="Filtrer les calques">'
+      + '<b class="nx-lay__n"></b></div>'
+      + '<div class="nx-lay__vue"><div class="nx-lay__corps"></div></div>';
+    var champ = w.querySelector('.nx-lay__f');
+    var t = 0;
+    champ.addEventListener('input', function(){
+      clearTimeout(t);
+      t = setTimeout(function(){ filtre = champ.value.trim(); dessiner(true); }, 120);
+    });
+    w.querySelector('.nx-lay__vue').addEventListener('scroll', function(){ dessiner(false); });
+  }
+
+  function dessiner(remonter){
+    if(enCours) return;
+    var w = document.getElementById('treeWrap');
+    if(!w) return;
+    enCours = true;
+    try{
+      coque(w);
+      var vue = w.querySelector('.nx-lay__vue');
+      var corps = w.querySelector('.nx-lay__corps');
+      var compteur = w.querySelector('.nx-lay__n');
+      var liste = visibles();
+
+      compteur.textContent = liste.length ? liste.length : '';
+
+      if(!liste.length){
+        corps.style.paddingTop = '0px';
+        corps.style.height = 'auto';
+        corps.innerHTML = '<p class="nx-lay__vide">'
+          + (filtre ? 'Aucun calque ne correspond.' : 'La page est vide.') + '</p>';
+        enCours = false;
+        return;
+      }
+
+      if(remonter) vue.scrollTop = 0;
+
+      var sel = [];
+      try{
+        sel = (window.selNodes || []).map(function(n){ return n.getAttribute('data-dc-id'); });
+      }catch(e){}
+
+      var haut = vue.scrollTop;
+      var hauteurVue = vue.clientHeight || 320;
+      var debut = Math.max(0, Math.floor(haut / HAUTEUR) - MARGE);
+      var fin = Math.min(liste.length, Math.ceil((haut + hauteurVue) / HAUTEUR) + MARGE);
+
+      var html = '';
+      for(var i = debut; i < fin; i++) html += ligne(liste[i], sel);
+
+      /* Les cales portent la hauteur totale : la barre de défilement
+         reflète le document entier, pas seulement ce qui est rendu. */
+      corps.style.paddingTop = (debut * HAUTEUR) + 'px';
+      corps.style.height = (liste.length * HAUTEUR) + 'px';
+      corps.innerHTML = html;
+    }catch(e){
+      console.error('[calques]', e);
+    }
+    enCours = false;
+  }
+
+  window.nxDessinerCalques = dessiner;
+
+  /* On remplace renderTree sans toucher au reste : les gestionnaires
+     (clic, survol, glisser) sont ceux du studio, inchangés. */
+  if(typeof window.renderTree === 'function' && !window.renderTree.__nxWindow){
+    var enveloppe = function(){ dessiner(false); };
+    enveloppe.__nxWindow = true;
+    window.renderTree = enveloppe;
+  }
+})();
+
+<\/script>
+<script id="nx-search">
+/* ════════════════════════════════════════════════════════════════
+   RECHERCHE DANS LE CODE SOURCE
+   ════════════════════════════════════════════════════════════════
+   L'ancienne recherche marquait les occurrences en réinjectant des
+   balises <mark> dans une chaîne HTML DÉJÀ colorée par l'analyseur
+   syntaxique. Chercher « span », « class » ou « div » revenait donc
+   à marquer aussi les balises que la coloration venait elle-même
+   d'écrire : le surlignage se posait au mauvais endroit et le
+   balisage de la couche de couleur se retrouvait coupé en deux.
+   C'est pour cela que la recherche paraissait ne rien faire.
+
+   Ici, la coloration est faite d'abord, puis les occurrences sont
+   marquées en parcourant les NŒUDS DE TEXTE du résultat. Un nœud de
+   texte ne contient jamais de balise : on ne peut donc plus marquer
+   autre chose que ce que l'utilisateur voit.
+
+   Deux détails comptent autant que l'algorithme :
+
+   · La couche de couleur est superposée au champ de saisie, au
+     pixel près. Une marque qui ajoute la moindre marge décalerait
+     tout le texte en dessous. Les marques ne portent donc que des
+     couleurs et un soulignement, jamais d'espacement.
+
+   · Le compte affiché est le nombre d'occurrences réelles, et
+     l'occurrence courante se distingue des autres. Sans cela on ne
+     sait pas où l'on en est.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  var etat = { terme: '', occ: [], idx: -1, motEntier: false, respecterCasse: false };
+
+  function q(id){ return document.getElementById(id); }
+
+  /* ── La barre ────────────────────────────────────────────── */
+  function barre(){
+    var sb = q('searchBarCode');
+    if(!sb || sb.__nxNeuve) return sb;
+    sb.__nxNeuve = true;
+    sb.innerHTML =
+      '<i class="fas fa-magnifying-glass nx-srch__ic" aria-hidden="true"></i>'
+      + '<input type="text" id="searchInput" class="nx-srch__in" placeholder="Rechercher dans le code…" '
+      + 'autocomplete="off" spellcheck="false" aria-label="Rechercher dans le code source">'
+      + '<span id="searchCount" class="nx-srch__n">0</span>'
+      + '<button type="button" class="nx-srch__b" id="nxSrchCase" title="Respecter la casse">Aa</button>'
+      + '<button type="button" class="nx-srch__b" id="nxSrchMot" title="Mot entier"><u>ab</u></button>'
+      + '<span class="nx-srch__sep"></span>'
+      + '<button type="button" class="nx-srch__b" id="nxSrchPrev" title="Précédent (Maj+Entrée)"><i class="fas fa-chevron-up"></i></button>'
+      + '<button type="button" class="nx-srch__b" id="nxSrchNext" title="Suivant (Entrée)"><i class="fas fa-chevron-down"></i></button>'
+      + '<span class="nx-srch__sep"></span>'
+      + '<button type="button" class="nx-srch__b nx-srch__x" id="nxSrchClose" title="Fermer (Échap)"><i class="fas fa-xmark"></i></button>';
+
+    var champ = q('searchInput');
+    var minuteur = 0;
+    /* Un correctif hérité intercepte les événements du champ pour les
+       empêcher d'atteindre les raccourcis clavier du studio, et coupe
+       au passage ceux dont on a besoin. On écoute donc au niveau du
+       document, en phase de capture : là, rien ne peut nous précéder. */
+    if(!document.__nxSrchCapture){
+      document.__nxSrchCapture = true;
+      document.addEventListener('input', function(e){
+        if(!e.target || e.target.id !== 'searchInput') return;
+        clearTimeout(minuteur);
+        var v = e.target.value;
+        minuteur = setTimeout(function(){ chercher(v); }, 110);
+      }, true);
+    }
+    champ.addEventListener('input', function(){
+      clearTimeout(minuteur);
+      minuteur = setTimeout(function(){ chercher(champ.value); }, 110);
+    });
+    champ.addEventListener('keydown', function(e){
+      e.stopPropagation();
+      if(e.key === 'Enter'){ e.preventDefault(); aller(etat.idx + (e.shiftKey ? -1 : 1)); }
+      else if(e.key === 'Escape'){ e.preventDefault(); fermer(); }
+    }, true);
+    ['keypress','keyup'].forEach(function(ev){
+      champ.addEventListener(ev, function(e){ e.stopPropagation(); }, true);
+    });
+
+    q('nxSrchPrev').addEventListener('click', function(){ aller(etat.idx - 1); });
+    q('nxSrchNext').addEventListener('click', function(){ aller(etat.idx + 1); });
+    q('nxSrchClose').addEventListener('click', fermer);
+    q('nxSrchCase').addEventListener('click', function(){
+      etat.respecterCasse = !etat.respecterCasse;
+      this.classList.toggle('on', etat.respecterCasse);
+      chercher(etat.terme);
+    });
+    q('nxSrchMot').addEventListener('click', function(){
+      etat.motEntier = !etat.motEntier;
+      this.classList.toggle('on', etat.motEntier);
+      chercher(etat.terme);
+    });
+    return sb;
+  }
+
+  /* ── Les occurrences, sur le texte brut ──────────────────── */
+  function trouver(texte, terme){
+    var occ = [];
+    if(!terme) return occ;
+    var esc = terme.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&');
+    /* \\b ne fonctionne pas devant un caractère accentué : on borne
+       nous-mêmes avec ce qui n'est pas une lettre, un chiffre ou un
+       tiret bas. */
+    var motif = etat.motEntier
+      ? '(?:^|[^\\\\p{L}\\\\p{N}_])(' + esc + ')(?![\\\\p{L}\\\\p{N}_])'
+      : '(' + esc + ')';
+    var drapeaux = 'gu' + (etat.respecterCasse ? '' : 'i');
+    var re;
+    try{ re = new RegExp(motif, drapeaux); }
+    catch(e){ re = new RegExp('(' + esc + ')', 'g' + (etat.respecterCasse ? '' : 'i')); }
+    var m;
+    while((m = re.exec(texte)) !== null){
+      var debut = m.index + (m[0].length - m[1].length);
+      occ.push({ d: debut, f: debut + m[1].length });
+      if(re.lastIndex === m.index) re.lastIndex++;
+    }
+    return occ;
+  }
+
+  /* ── Marquer dans la couche de couleur ───────────────────── */
+  function marquer(ov, occ){
+    if(!occ.length) return [];
+    var parcours = document.createTreeWalker(ov, NodeFilter.SHOW_TEXT, null);
+    var noeuds = [], n;
+    while((n = parcours.nextNode())) noeuds.push(n);
+
+    var marques = [];
+    var pos = 0, io = 0;
+    for(var i = 0; i < noeuds.length && io < occ.length; i++){
+      var t = noeuds[i], len = t.nodeValue.length, fin = pos + len;
+      /* On traite toutes les occurrences qui commencent dans ce nœud.
+         Une occurrence à cheval sur deux nœuds n'existe pas : la
+         coloration ne coupe jamais au milieu d'un mot de contenu. */
+      while(io < occ.length && occ[io].d >= pos && occ[io].d < fin){
+        var o = occ[io];
+        var local = o.d - pos;
+        var longueur = Math.min(o.f, fin) - o.d;
+        var reste = t.splitText(local);
+        var apres = reste.splitText(longueur);
+        var mk = document.createElement('mark');
+        mk.className = 'nx-srch__hit';
+        mk.textContent = reste.nodeValue;
+        reste.parentNode.replaceChild(mk, reste);
+        marques.push(mk);
+        /* On repart du texte qui suit la marque. */
+        t = apres;
+        pos = o.d + longueur;
+        len = t.nodeValue.length;
+        fin = pos + len;
+        io++;
+      }
+      pos = fin;
+    }
+    return marques;
+  }
+
+  /* On cherche dans le TEXTE AFFICHÉ, pas dans la valeur du champ.
+     L'analyseur syntaxique ne recopie pas tout : il laisse tomber la
+     déclaration de type et quelques commentaires. Quarante-sept
+     caractères d'écart suffisent à décaler chaque marque, et la
+     dernière occurrence tombait alors hors du dernier nœud de texte.
+     Le texte affiché est de toute façon le seul repère qui compte :
+     c'est celui que l'utilisateur lit. */
+  function peindre(){
+    var ta = q('codeEditorFull'), ov = q('codeOverlay');
+    if(!ta || !ov) return;
+    var brut = ta.value;
+    ov.innerHTML = (typeof highlightHTML === 'function')
+      ? highlightHTML(brut)
+      : brut.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    etat.texte = ov.textContent || '';
+    etat.occ = trouver(etat.texte, etat.terme);
+    if(etat.idx >= etat.occ.length) etat.idx = etat.occ.length ? 0 : -1;
+    if(etat.idx < 0 && etat.occ.length) etat.idx = 0;
+
+    etat.marques = marquer(ov, etat.occ);
+    ov.scrollTop = ta.scrollTop;
+    ov.scrollLeft = ta.scrollLeft;
+    majCourante();
+  }
+
+  function majCourante(){
+    if(!etat.marques) return;
+    for(var i = 0; i < etat.marques.length; i++){
+      etat.marques[i].classList.toggle('cur', i === etat.idx);
+    }
+  }
+
+  function compteur(){
+    var c = q('searchCount');
+    if(!c) return;
+    if(!etat.terme){ c.textContent = ''; c.classList.remove('vide'); return; }
+    if(!etat.occ.length){ c.textContent = 'aucun résultat'; c.classList.add('vide'); return; }
+    c.classList.remove('vide');
+    c.textContent = (etat.idx + 1) + ' sur ' + etat.occ.length
+      + (etat.occ.length > 1 ? ' occurrences' : ' occurrence');
+  }
+
+  function chercher(terme){
+    var ta = q('codeEditorFull');
+    if(!ta) return;
+    etat.terme = terme || '';
+    etat.idx = 0;
+    peindre();
+    compteur();
+    if(etat.occ.length) montrer(0, false);
+  }
+
+  function montrer(i, focaliser){
+    var ta = q('codeEditorFull');
+    if(!ta || !etat.occ.length) return;
+    var o = etat.occ[i];
+    try{
+      /* La ligne se compte dans le texte affiché ; le champ et la
+         couche de couleur partagent la même hauteur de ligne. */
+      var lignes = (etat.texte || '').slice(0, o.d).split('\\n').length;
+      var lh = parseFloat(getComputedStyle(ta).lineHeight) || 20;
+      ta.scrollTop = Math.max(0, (lignes - 5) * lh);
+      var ov = q('codeOverlay');
+      if(ov){ ov.scrollTop = ta.scrollTop; ov.scrollLeft = ta.scrollLeft; }
+
+      /* La sélection dans le champ est un confort : on ne la pose que
+         si les deux textes comptent le même nombre d'occurrences,
+         donc si les rangs correspondent à coup sûr. */
+      var brutes = trouver(ta.value, etat.terme);
+      if(brutes.length === etat.occ.length && brutes[i]){
+        ta.setSelectionRange(brutes[i].d, brutes[i].f);
+      }
+    }catch(e){}
+    if(focaliser){ var si = q('searchInput'); if(si) si.focus(); }
+  }
+
+  function aller(i){
+    if(!etat.occ.length) return;
+    if(i < 0) i = etat.occ.length - 1;
+    if(i >= etat.occ.length) i = 0;
+    etat.idx = i;
+    majCourante();
+    compteur();
+    montrer(i, true);
+  }
+
+  function ouvrir(){
+    barre();
+    var sb = q('searchBarCode');
+    if(sb) sb.style.display = 'flex';
+    var si = q('searchInput');
+    if(si){ si.focus(); si.select(); }
+  }
+  function fermer(){
+    var sb = q('searchBarCode');
+    if(sb) sb.style.display = 'none';
+    etat.terme = ''; etat.occ = []; etat.idx = -1;
+    peindre(); compteur();
+    var ta = q('codeEditorFull'); if(ta) ta.focus();
+  }
+
+  window.doSearch = function(){ var si = q('searchInput'); chercher(si ? si.value : ''); };
+  window.navSearch = function(d){ aller(etat.idx + d); };
+  window.toggleSearch = function(){
+    var sb = q('searchBarCode');
+    if(sb && sb.style.display === 'flex') fermer(); else ouvrir();
+  };
+  window.nxRecherche = { ouvrir: ouvrir, fermer: fermer, etat: etat };
+
+  /* La couche de couleur doit être repeinte quand le texte change ou
+     quand on revient sur l'onglet du code. */
+  (function brancher(){
+    var ta = q('codeEditorFull');
+    if(ta && !ta.__nxSrch){
+      ta.__nxSrch = true;
+      var t = 0;
+      ta.addEventListener('input', function(){
+        clearTimeout(t);
+        t = setTimeout(function(){ peindre(); compteur(); }, 160);
+      });
+      ta.addEventListener('scroll', function(){
+        var ov = q('codeOverlay');
+        if(ov){ ov.scrollTop = ta.scrollTop; ov.scrollLeft = ta.scrollLeft; }
+      });
+    }
+    document.addEventListener('keydown', function(e){
+      if((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')){
+        var tabs = document.querySelectorAll('.v-tab');
+        if(tabs[1] && tabs[1].classList.contains('act')){ e.preventDefault(); ouvrir(); }
+      }
+      if(e.key === 'Escape'){
+        var sb = q('searchBarCode');
+        if(sb && sb.style.display === 'flex') fermer();
+      }
+    }, true);
+  })();
+
+  /* srchHL était l'ancienne peinture : on la remplace pour que tout
+     le studio passe par le même chemin. */
+  window.srchHL = peindre;
+  window.updateHighlight = function(){
+    var tabs = document.querySelectorAll('.v-tab');
+    if(!(tabs[1] && tabs[1].classList.contains('act'))) return;
+    peindre();
+  };
+  window.nxFlushHighlight = window.updateHighlight;
+
+  if(window.nxSchedule) window.nxSchedule(function(){ barre(); });
+  barre();
+})();
+
+<\/script>
+<script id="nx-pages-links">
+/* ════════════════════════════════════════════════════════════════
+   DESTINATION D'UN ÉLÉMENT CLIQUABLE
+   ════════════════════════════════════════════════════════════════
+   Le projet accepte plusieurs pages depuis un moment, mais rien ne
+   permettait d'aller de l'une à l'autre : on pouvait les créer, pas
+   les relier. Un bouton restait un bouton qui ne mène nulle part.
+
+   Ici, tout élément cliquable reçoit une destination, choisie dans
+   une liste : une page du projet, une adresse extérieure, une ancre
+   dans la page, ou rien. La destination est écrite dans le document
+   lui-même (un href et un attribut), donc elle survit à l'export, au
+   réimport et à une reprise à la main dans le code.
+
+   Les deux exports n'en font pas la même chose, et c'est voulu :
+
+   · Le fichier HTML unique embarque toutes les pages et les montre
+     à tour de rôle. Une seule adresse, rien à héberger.
+
+   · L'archive ZIP écrit une page par fichier, reliées par des liens
+     relatifs. Chaque page a son adresse, se partage et s'indexe :
+     c'est un vrai site.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  function slug(s, i){
+    var t = String(s || '').toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return t || ('page-' + (i + 1));
+  }
+
+  /* Un identifiant stable, attribué une fois. L'index ne peut pas
+     servir : supprimer la page 2 ferait pointer tous les liens vers
+     la mauvaise page. */
+  function assurerIds(){
+    if(typeof nxPages === 'undefined' || !nxPages) return [];
+    for(var i = 0; i < nxPages.length; i++){
+      if(!nxPages[i].id) nxPages[i].id = 'p' + (i + 1) + '-' + Math.random().toString(36).slice(2, 7);
+    }
+    try{ if(window.nxSavePages) nxSavePages(); }catch(e){}
+    return nxPages;
+  }
+  window.nxAssurerIdsPages = assurerIds;
+
+  function listePages(){
+    assurerIds();
+    if(typeof nxPages === 'undefined' || !nxPages) return [];
+    return nxPages.map(function(p, i){
+      return { id: p.id, nom: p.name || ('Page ' + (i + 1)), fichier: (i === 0 ? 'index' : slug(p.name, i)) + '.html', idx: i };
+    });
+  }
+  window.nxListePages = listePages;
+
+  function pageParId(id){
+    var l = listePages();
+    for(var i = 0; i < l.length; i++) if(l[i].id === id) return l[i];
+    return null;
+  }
+
+  /* ── Écrire la destination dans le document ───────────────── */
+  window.nxDefinirDestination = function(el, type, valeur){
+    if(!el) return;
+    try{ if(typeof saveSnap === 'function') saveSnap(); }catch(e){}
+
+    el.removeAttribute('data-nx-page');
+    el.removeAttribute('data-nx-lien');
+
+    if(type === 'page'){
+      var p = pageParId(valeur);
+      if(!p) return;
+      el.setAttribute('data-nx-page', valeur);
+      el.setAttribute('data-nx-lien', 'page');
+      if(el.tagName === 'A') el.setAttribute('href', '#' + valeur);
+      el.setAttribute('title', 'Va vers « ' + p.nom + ' »');
+    } else if(type === 'url'){
+      el.setAttribute('data-nx-lien', 'url');
+      if(el.tagName === 'A'){
+        el.setAttribute('href', valeur || '#');
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener');
+      } else {
+        el.setAttribute('data-nx-url', valeur || '');
+      }
+    } else if(type === 'ancre'){
+      el.setAttribute('data-nx-lien', 'ancre');
+      if(el.tagName === 'A') el.setAttribute('href', valeur || '#');
+    } else {
+      if(el.tagName === 'A') el.setAttribute('href', '#');
+      el.removeAttribute('target');
+      el.removeAttribute('data-nx-url');
+      el.removeAttribute('title');
+    }
+    try{ if(window.syncDataFromIframe) syncDataFromIframe(); }catch(e){}
+    try{ if(typeof toast === 'function') toast('Destination enregistrée'); }catch(e){}
+  };
+
+  /* ── Le réglage dans le panneau de propriétés ─────────────── */
+  function estCliquable(n){
+    if(!n) return false;
+    var t = n.tagName;
+    if(t === 'A' || t === 'BUTTON') return true;
+    if(n.getAttribute && n.getAttribute('role') === 'button') return true;
+    /* Un bloc qui ressemble à un bouton en est un pour l'utilisateur. */
+    if(t === 'DIV' || t === 'SPAN'){
+      try{
+        var cl = String(n.className || '').toLowerCase();
+        if(/btn|button|cta|lien|link/.test(cl)) return true;
+      }catch(e){}
+    }
+    return false;
+  }
+
+  function bloc(n){
+    var pages = listePages();
+    var actuelle = n.getAttribute('data-nx-page') || '';
+    var type = n.getAttribute('data-nx-lien') || (actuelle ? 'page' : '');
+    var href = n.getAttribute('href') || n.getAttribute('data-nx-url') || '';
+    if(!type && href && href !== '#') type = href.charAt(0) === '#' ? 'ancre' : 'url';
+
+    var opts = '<option value="">Aucune destination</option>';
+    opts += '<optgroup label="Pages du projet">';
+    for(var i = 0; i < pages.length; i++){
+      opts += '<option value="page:' + pages[i].id + '"'
+        + (type === 'page' && actuelle === pages[i].id ? ' selected' : '') + '>'
+        + pages[i].nom + '</option>';
+    }
+    opts += '</optgroup><optgroup label="Autre">'
+      + '<option value="url:"' + (type === 'url' ? ' selected' : '') + '>Adresse web…</option>'
+      + '<option value="ancre:"' + (type === 'ancre' ? ' selected' : '') + '>Ancre dans la page…</option>'
+      + '</optgroup>';
+
+    var champ = '';
+    if(type === 'url' || type === 'ancre'){
+      champ = '<input type="text" class="prop-input nx-dest__v" placeholder="'
+        + (type === 'url' ? 'https://exemple.fr' : '#section') + '" value="'
+        + String(href).replace(/"/g, '&quot;') + '">';
+    }
+
+    return '<div class="prop-group nx-dest">'
+      + '<div class="prop-title"><i class="fas fa-arrow-up-right-from-square"></i> '
+      + '<span>Au clic, aller vers</span></div>'
+      + '<select class="prop-input nx-dest__s">' + opts + '</select>'
+      + champ
+      + (type === 'page' ? '<p class="nx-dest__n">Le lien fonctionne dans l\\'aperçu et dans les deux exports.</p>' : '')
+      + '</div>';
+  }
+
+  function poser(){
+    var panneau = document.getElementById('propsPanel');
+    if(!panneau) return;
+    var sel = (window.selNodes || []);
+    if(sel.length !== 1){
+      var v = panneau.querySelector('.nx-dest');
+      if(v) v.remove();
+      return;
+    }
+    var n = sel[0];
+    if(!estCliquable(n)){
+      var v2 = panneau.querySelector('.nx-dest');
+      if(v2) v2.remove();
+      return;
+    }
+    var existant = panneau.querySelector('.nx-dest');
+    var html = bloc(n);
+    if(existant){
+      if(existant.getAttribute('data-sig') === html) return;
+      existant.outerHTML = html;
+    } else {
+      panneau.insertAdjacentHTML('afterbegin', html);
+    }
+    var neuf = panneau.querySelector('.nx-dest');
+    if(!neuf) return;
+    neuf.setAttribute('data-sig', html);
+
+    var choix = neuf.querySelector('.nx-dest__s');
+    var val = neuf.querySelector('.nx-dest__v');
+    choix.addEventListener('change', function(){
+      var v = choix.value;
+      if(!v){ window.nxDefinirDestination(n, '', ''); poser(); return; }
+      var sep = v.indexOf(':');
+      var type = v.slice(0, sep), arg = v.slice(sep + 1);
+      if(type === 'page') window.nxDefinirDestination(n, 'page', arg);
+      else window.nxDefinirDestination(n, type, '');
+      poser();
+    });
+    if(val){
+      val.addEventListener('change', function(){
+        var t = choix.value.slice(0, choix.value.indexOf(':'));
+        window.nxDefinirDestination(n, t || 'url', val.value);
+      });
+    }
+  }
+  window.nxPoserDestination = poser;
+
+  /* renderProps réécrit tout le panneau : on repasse après lui. */
+  (function suivreRenderProps(){
+    if(typeof window.renderProps !== 'function' || window.renderProps.__nxDest) return;
+    var vrai = window.renderProps;
+    var env = function(){
+      var r = vrai.apply(this, arguments);
+      try{ poser(); }catch(e){}
+      return r;
+    };
+    env.__nxDest = true;
+    window.renderProps = env;
+  })();
+
+  /* ── Naviguer dans l'aperçu du studio ─────────────────────── */
+  (function navigationStudio(){
+    function brancher(){
+      var fr = document.getElementById('previewFrame');
+      var d = fr && fr.contentDocument;
+      if(!d || !d.body) return;
+      if(d.getElementById('dc-edit-nav')) return;
+      var m = d.createElement('meta');
+      m.id = 'dc-edit-nav';
+      m.setAttribute('data-nx-chrome', '1');
+      (d.head || d.documentElement).appendChild(m);
+      d.addEventListener('click', function(e){
+        var a = e.target.closest && e.target.closest('[data-nx-page]');
+        if(!a) return;
+        var enEdition = (typeof isEditMode === 'undefined') ? true : isEditMode;
+        if(enEdition) return;            /* en édition, cliquer sélectionne */
+        e.preventDefault();
+        var p = pageParId(a.getAttribute('data-nx-page'));
+        if(p && window.nxGoToPage){ nxGoToPage(p.idx); try{ toast('Page « ' + p.nom + ' »'); }catch(err){} }
+      }, true);
+    }
+    brancher();
+    var fr = document.getElementById('previewFrame');
+    if(fr) fr.addEventListener('load', function(){ setTimeout(brancher, 140); });
+    [700, 2000].forEach(function(ms){ setTimeout(brancher, ms); });
+    if(window.nxSchedule) window.nxSchedule(brancher);
+  })();
+
+  /* ── Le contenu de toutes les pages, pour les exports ─────── */
+  window.nxToutesLesPages = async function(){
+    assurerIds();
+    if(typeof nxPages === 'undefined' || !nxPages || !nxPages.length){
+      var seul = await nxBuildInner();
+      return [{ id: 'p1', nom: 'Page 1', fichier: 'index.html', html: seul }];
+    }
+    /* La page courante n'est pas encore rangée dans le tableau. */
+    try{ if(window.nxSyncCurrentPage) nxSyncCurrentPage(); }catch(e){}
+    var courant = nxPageIdx;
+    var sortie = [];
+    var liste = listePages();
+    for(var i = 0; i < nxPages.length; i++){
+      if(i !== courant){
+        try{ nxGoToPage(i); }catch(e){}
+        await new Promise(function(r){ setTimeout(r, 420); });
+      }
+      var html = await nxBuildInner();
+      sortie.push({ id: liste[i].id, nom: liste[i].nom, fichier: liste[i].fichier, html: html });
+    }
+    if(nxPageIdx !== courant){
+      try{ nxGoToPage(courant); }catch(e){}
+      await new Promise(function(r){ setTimeout(r, 420); });
+    }
+    return sortie;
+  };
+})();
+
+<\/script>
+<script id="nx-export-multi">
+/* ════════════════════════════════════════════════════════════════
+   EXPORTS — un fichier qui se suffit, ou un projet qui se travaille
+   ════════════════════════════════════════════════════════════════
+   Deux sorties, deux usages, et c'est assumé :
+
+   · Le fichier HTML embarque toutes les pages du projet et les
+     montre à tour de rôle. Une adresse, aucun hébergement à prévoir,
+     parfait pour envoyer une maquette.
+
+   · L'archive ZIP écrit une page par fichier et découpe la feuille
+     de style par rôle : socle, mise en page, composants, animations,
+     adaptatif. On ne cherche plus une règle dans deux mille lignes,
+     on ouvre le fichier qui porte son nom.
+
+   Le découpage est fait en lisant les accolades, pas à l'expression
+   régulière : une règle CSS contient des accolades imbriquées (les
+   media queries, les keyframes) et une coupe approximative produit
+   des fichiers qui ne compilent pas.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  /* ══════════════════════════════════════════════════════════
+     1. DÉCOUPAGE D'UNE FEUILLE DE STYLE
+     ══════════════════════════════════════════════════════════ */
+
+  /* Découpe en règles de premier niveau en suivant les accolades. */
+  function reglesDe(css){
+    var out = [], i = 0, n = css.length, debut = 0, prof = 0, dansChaine = null, dansComm = false;
+    while(i < n){
+      var c = css[i], d = css[i + 1];
+      if(dansComm){ if(c === '*' && d === '/'){ dansComm = false; i += 2; continue; } i++; continue; }
+      if(dansChaine){ if(c === '\\\\'){ i += 2; continue; } if(c === dansChaine) dansChaine = null; i++; continue; }
+      if(c === '/' && d === '*'){ dansComm = true; i += 2; continue; }
+      if(c === '"' || c === "'"){ dansChaine = c; i++; continue; }
+      if(c === '{'){ prof++; i++; continue; }
+      if(c === '}'){
+        prof--;
+        i++;
+        if(prof <= 0){ prof = 0; out.push(css.slice(debut, i).trim()); debut = i; }
+        continue;
+      }
+      if(c === ';' && prof === 0){
+        i++;
+        out.push(css.slice(debut, i).trim());   /* @import, @charset… */
+        debut = i;
+        continue;
+      }
+      i++;
+    }
+    var reste = css.slice(debut).trim();
+    if(reste) out.push(reste);
+    return out.filter(Boolean);
+  }
+
+  var FAMILLES = [
+    { f: '01-socle.css',        titre: 'Socle : variables, polices, remises à zéro' },
+    { f: '02-mise-en-page.css', titre: 'Mise en page : structure, grilles, sections' },
+    { f: '03-composants.css',   titre: 'Composants : boutons, cartes, formulaires, textes' },
+    { f: '04-animations.css',   titre: 'Animations et transitions' },
+    { f: '05-adaptatif.css',    titre: 'Adaptatif : règles selon la taille d\\'écran' }
+  ];
+
+  function famille(regle){
+    var tete = regle.split('{')[0].trim();
+    var bas = tete.toLowerCase();
+    if(/^@media|^@container|^@supports/.test(bas)) return 4;
+    if(/^@keyframes|^@-webkit-keyframes/.test(bas)) return 3;
+    if(/^@font-face|^@import|^@charset|^@property/.test(bas)) return 0;
+    if(/^:root|^\\*|^html\\b|^body\\b|^::?selection|^\\*,|^:where\\(/.test(bas)) return 0;
+
+    var corps = regle.slice(regle.indexOf('{') + 1).toLowerCase();
+    if(/animation\\s*:|transition\\s*:/.test(corps) && !/color|background|border|font/.test(corps)) return 3;
+
+    if(/^(header|nav|footer|main|aside|section|article|\\.container|\\.wrap|\\.grid|\\.row|\\.col|\\.layout|\\.page|\\.sidebar)\\b/.test(bas))
+      return 1;
+    /* Une règle qui ne parle que d'encombrement est de la mise en page. */
+    var mep = (corps.match(/display\\s*:|grid-|flex|position\\s*:|width\\s*:|height\\s*:|margin|padding|gap\\s*:|inset/g) || []).length;
+    var apparence = (corps.match(/color\\s*:|background|border|font|shadow|radius|opacity|fill|stroke/g) || []).length;
+    if(mep >= 3 && mep > apparence) return 1;
+    return 2;
+  }
+
+  function decouperCss(css, titreProjet){
+    var paquets = [[], [], [], [], []];
+    reglesDe(css).forEach(function(r){ paquets[famille(r)].push(r); });
+
+    var fichiers = [], importes = [];
+    for(var i = 0; i < FAMILLES.length; i++){
+      if(!paquets[i].length) continue;
+      var entete = '/* ' + FAMILLES[i].titre + '\\n'
+        + '   Projet : ' + titreProjet + '\\n'
+        + '   ' + paquets[i].length + ' règle' + (paquets[i].length > 1 ? 's' : '') + '.\\n'
+        + '   L\\'ordre à l\\'intérieur du fichier est celui du document d\\'origine :\\n'
+        + '   c\\'est lui qui décide des priorités, ne le bousculez pas sans raison. */\\n\\n';
+      fichiers.push({ chemin: 'assets/css/' + FAMILLES[i].f, contenu: entete + paquets[i].join('\\n\\n') + '\\n' });
+      importes.push(FAMILLES[i].f);
+    }
+    if(!fichiers.length) return { fichiers: [], index: null };
+
+    var index = '/* Feuille principale du projet ' + titreProjet + '.\\n'
+      + '   Elle n\\'existe que pour charger les autres dans le bon ordre.\\n'
+      + '   Ajoutez vos propres fichiers à la fin, jamais au début :\\n'
+      + '   ce qui vient après l\\'emporte. */\\n\\n'
+      + importes.map(function(f){ return '@import url("' + f + '");'; }).join('\\n') + '\\n';
+    return { fichiers: fichiers, index: { chemin: 'assets/css/styles.css', contenu: index } };
+  }
+  window.nxDecouperCss = decouperCss;
+
+  /* ══════════════════════════════════════════════════════════
+     2. PLUSIEURS PAGES DANS UN SEUL FICHIER
+     ══════════════════════════════════════════════════════════ */
+
+  function corpsEtTete(html){
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    return { tete: doc.head ? Array.from(doc.head.children) : [],
+             corps: doc.body ? doc.body.innerHTML : '',
+             attrs: doc.body ? Array.from(doc.body.attributes) : [],
+             titre: (doc.title || '').trim() };
+  }
+
+  var ROUTEUR =
+    '(function(){\\n'
+  + '  var pages = Array.prototype.slice.call(document.querySelectorAll("[data-nx-page-id]"));\\n'
+  + '  if(pages.length < 2) return;\\n'
+  + '  function montrer(id, pousser){\\n'
+  + '    var trouve = false;\\n'
+  + '    pages.forEach(function(p){\\n'
+  + '      var ok = p.getAttribute("data-nx-page-id") === id;\\n'
+  + '      if(ok) trouve = true;\\n'
+  + '      p.style.display = ok ? "contents" : "none";\\n'
+  + '    });\\n'
+  + '    if(!trouve){ pages[0].style.display = "contents"; id = pages[0].getAttribute("data-nx-page-id"); }\\n'
+  /* Ouvert depuis le disque, un navigateur refuse pushState. Le
+     reste doit continuer de marcher : on tente, et sinon on se
+     contente de changer le fragment. */
+  + '    if(pousser && location.hash.slice(1) !== id){\\n'
+  + '      try{ history.pushState(null, "", "#" + id); }\\n'
+  + '      catch(e){ try{ location.hash = id; }catch(e2){} }\\n'
+  + '    }\\n'
+  + '    window.scrollTo(0, 0);\\n'
+  + '    document.title = (document.querySelector(\\'[data-nx-page-id="\\' + id + \\'"]\\')\\n'
+  + '      || {}).getAttribute && document.querySelector(\\'[data-nx-page-id="\\' + id + \\'"]\\').getAttribute("data-nx-page-nom") || document.title;\\n'
+  + '  }\\n'
+  + '  document.addEventListener("click", function(e){\\n'
+  + '    var a = e.target.closest && e.target.closest("[data-nx-page]");\\n'
+  + '    if(!a) return;\\n'
+  + '    e.preventDefault();\\n'
+  + '    montrer(a.getAttribute("data-nx-page"), true);\\n'
+  + '  });\\n'
+  + '  window.addEventListener("popstate", function(){ montrer(location.hash.slice(1), false); });\\n'
+  + '  montrer(location.hash.slice(1) || pages[0].getAttribute("data-nx-page-id"), false);\\n'
+  + '})();';
+
+  window.nxAssemblerPages = function(pages, titre){
+    if(pages.length === 1) return pages[0].html;
+
+    var teteVue = {}, tete = [];
+    var corps = '';
+    var attrsCorps = '';
+
+    pages.forEach(function(p, i){
+      var d = corpsEtTete(p.html);
+      d.tete.forEach(function(el){
+        var k = el.outerHTML;
+        if(teteVue[k]) return;
+        teteVue[k] = true;
+        tete.push(k);
+      });
+      if(i === 0){
+        attrsCorps = d.attrs.map(function(a){ return ' ' + a.name + '="' + a.value.replace(/"/g, '&quot;') + '"'; }).join('');
+      }
+      /* display:contents : l'enveloppe ne produit aucune boîte, donc
+         la mise en page est celle qu'on avait sans elle. C'est ce qui
+         permet d'emballer une page sans la déformer. */
+      corps += '\\n<div data-nx-page-id="' + p.id + '" data-nx-page-nom="'
+        + String(p.nom).replace(/"/g, '&quot;') + '"'
+        + ' style="display:' + (i === 0 ? 'contents' : 'none') + '">\\n'
+        + p.corpsSeul + '\\n</div>\\n';
+    });
+
+    return '<!DOCTYPE html>\\n<html lang="fr">\\n<head>\\n'
+      + tete.join('\\n') + '\\n</head>\\n<body' + attrsCorps + '>\\n'
+      + corps
+      + '\\n<script data-nx-routeur="1">\\n' + ROUTEUR + '\\n<\\/script>\\n'
+      + '</body>\\n</html>\\n';
+  };
+
+  /* Prépare chaque page : son corps seul, ses liens réécrits. */
+  window.nxPreparerPages = async function(mode){
+    var pages = await window.nxToutesLesPages();
+    var liste = window.nxListePages();
+    var parId = {};
+    liste.forEach(function(p){ parId[p.id] = p; });
+
+    return pages.map(function(p){
+      var d = corpsEtTete(p.html);
+      var tmp = new DOMParser().parseFromString(p.html, 'text/html');
+      /* En mode « fichiers séparés », un lien vers une page devient un
+         lien relatif ordinaire. En mode « fichier unique », il reste
+         une ancre que le routeur intercepte. */
+      tmp.querySelectorAll('[data-nx-page]').forEach(function(a){
+        var cible = parId[a.getAttribute('data-nx-page')];
+        if(!cible) return;
+        if(mode === 'fichiers'){
+          if(a.tagName === 'A') a.setAttribute('href', cible.fichier);
+          else a.setAttribute('data-nx-url', cible.fichier);
+        } else if(a.tagName === 'A'){
+          a.setAttribute('href', '#' + cible.id);
+        }
+      });
+      return {
+        id: p.id, nom: p.nom, fichier: p.fichier,
+        html: '<!DOCTYPE html>\\n' + tmp.documentElement.outerHTML + '\\n',
+        corpsSeul: tmp.body ? tmp.body.innerHTML : '',
+        titre: d.titre || p.nom
+      };
+    });
+  };
+
+  /* ══════════════════════════════════════════════════════════
+     3. EXPORT HTML : toutes les pages, un seul fichier
+     ══════════════════════════════════════════════════════════ */
+  (function remplacerExportCode(){
+    var vrai = window.exportCode;
+    window.exportCode = async function(){
+      try{
+        var pages = await window.nxPreparerPages('unique');
+        if(pages.length < 2 && typeof vrai === 'function') return vrai.apply(this, arguments);
+
+        var titre = pages[0].titre || 'Page DropCode';
+        var interne = window.nxAssemblerPages(pages, titre);
+        var st = (typeof nxStage === 'function') ? nxStage(true) : { w: 1920, h: 1080 };
+        var doc = (typeof nxFitShell === 'function') ? nxFitShell(interne, st.w, st.h, titre) : interne;
+
+        var blob = new Blob([doc], { type: 'text/html' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = 'dropcode-site.html';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+        try{ toast(pages.length + ' pages exportées dans un seul fichier'); }catch(e){}
+      }catch(e){
+        console.error('[export html]', e);
+        if(typeof vrai === 'function') return vrai.apply(this, arguments);
+      }
+    };
+  })();
+})();
+
+<\/script>
 </body>
 </html>`;
 }
@@ -15472,8 +16828,8 @@ const ACTIONS = {
                         () => toast('Copie impossible', 'Sélectionnez le lien manuellement.', 'warn')),
 
   /* Démo de la landing */
-  'demo-reset':     () => { demoReset(true); toast('Démo réinitialisée', null, 'info', 2200); },
-  'demo-copy':      () => demoCopy(),
+  /* La démo interactive a été retirée : une seule démonstration sur
+     la page, celle qui montre le vrai studio. */
 
   /* Espace client */
   'save-profile': () => {
@@ -15740,7 +17096,6 @@ function boot() {
   renderWall();
   refreshAuthUI();
   initHeroArt();
-  initDemo();
   initReveal();
   initScroll();
   initCookies();
