@@ -2417,6 +2417,35 @@ function goToId(id) {
 }
 NX.goToId = goToId;
 
+/* ── Téléchargements ────────────────────────────────────────
+   Révoquer l'adresse d'un fichier une seconde après le clic fait
+   échouer l'enregistrement dès que le navigateur demande où ranger le
+   fichier : la personne prend plus d'une seconde à choisir, et Chrome
+   annonce « connexion perdue ». On garde l'adresse dix minutes, et on
+   nettoie à la fermeture de la page. */
+const _nxSorties = [];
+function download(contenu, nom, type){
+  const blob = (contenu instanceof Blob) ? contenu
+    : new Blob([contenu], { type: type || 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  _nxSorties.push({ url, blob });
+  const a = document.createElement('a');
+  a.href = url; a.download = nom; a.rel = 'noopener';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { try{ a.remove(); }catch(e){} }, 1000);
+  setTimeout(() => {
+    const i = _nxSorties.findIndex(s => s.url === url);
+    if(i >= 0){ try{ URL.revokeObjectURL(url); }catch(e){} _nxSorties.splice(i, 1); }
+  }, 600000);
+}
+NX.download = download;
+window.addEventListener('pagehide', () => {
+  _nxSorties.forEach(s => { try{ URL.revokeObjectURL(s.url); }catch(e){} });
+  _nxSorties.length = 0;
+});
+
 </script>
 <script id="nx-auth">
 /* ════════════════════════════════════════════════════════════════
@@ -2720,11 +2749,7 @@ function exportUserData() {
     dump.data[k] = store.get(ukey(k), []);
   });
   const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'dropcode-nexus-donnees-' + NX.user.email.replace(/[^a-z0-9]/gi, '-') + '.json';
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  NX.download(blob, 'dropcode-nexus-donnees-' + NX.user.email.replace(/[^a-z0-9]/gi, '-') + '.json');
   toast('Export généré', 'Vos données ont été téléchargées au format JSON.', 'ok');
 }
 NX.exportUserData = exportUserData;
@@ -4346,6 +4371,25 @@ img,svg,video{display:block;max-width:100%}
 .bt-btn.act-feature{background:var(--p-soft);color:var(--p2)}
 .bt-sep{width:1px;height:18px;background:var(--border-2);margin:0 4px;flex-shrink:0}
 .bt-mode{background:var(--p-soft);color:var(--ok)}
+/* Trois densités pour la barre du bas. C'est le module 42 qui choisit :
+   il mesure la barre au lieu de parier sur la largeur de la fenêtre.
+   On replie d'abord les libellés secondaires — ceux marqués hide-sm —
+   et on garde le plus longtemps possible « Édition » et « Exporter »,
+   les deux seuls qu'on cherche vraiment des yeux. */
+.bottom-toolbar.bt--compact .bt-btn span.hide-sm{display:none}
+.bottom-toolbar.bt--compact .bt-btn{padding:0 10px}
+.bottom-toolbar.bt--compact .bt-sep{margin:0 2px}
+.bottom-toolbar.bt--mini .bt-btn span{display:none}
+.bottom-toolbar.bt--mini .bt-btn{padding:0 8px;min-width:30px;height:30px;gap:0}
+.bottom-toolbar.bt--mini .bt-sep{margin:0 1px}
+.bottom-toolbar.bt--mini{gap:0;padding:4px}
+/* Idem pour la barre haute. */
+.topbar.tb--compact .vp-btn span.hide-sm{display:none}
+.topbar.tb--compact .vp-btn{padding:0 9px}
+.topbar.tb--compact .logo em{display:none}
+.topbar.tb--mini .vp-btn span{display:none}
+.topbar.tb--mini .logo span{display:none}
+.topbar.tb--mini{gap:6px;padding:0 8px}
 .bt-mode:hover{background:var(--p-soft);color:var(--ok)}
 .bt-mode.locked{background:var(--surface-hover);color:var(--text-dim)}
 .bt-export{background:var(--g1);color:var(--p-ink);box-shadow:var(--sh-2)}
@@ -11660,7 +11704,8 @@ console.log('%c✅ NEXUS v21 patches actifs','color:var(--p2);font-weight:bold;f
 <style id="nx-editor-responsive">
 /* Libellés masqués quand la largeur manque, jamais le bouton lui-même. */
 @media(max-width:1300px){ .hide-sm{display:none} }
-@media(max-width:1100px){ .bt-btn span:not(.hide-sm){display:none} .bt-btn{padding:0 11px} }
+/* La densité de la barre du bas est mesurée par le module 42 : plus de
+   seuil en pixels, qui ignorait la place réellement disponible. */
 </style>
 <script id="nx-consolidated-patches">
 /* ═══════════════ NEXUS v22 — EDITOR PATCHES (intra-iframe) ═══════════════ */
@@ -12093,6 +12138,53 @@ async function openFullscreenPreview(){
 }
 window.openFullscreenPreview = openFullscreenPreview;
 
+/* ════════════════════════════════════════════════════════════════
+   TÉLÉCHARGEMENT
+   ════════════════════════════════════════════════════════════════
+   Chaque export créait son adresse blob et la révoquait une seconde
+   plus tard. Quand le navigateur est réglé sur « demander où
+   enregistrer », le téléchargement attend que la personne choisisse un
+   dossier : au-delà d'une seconde l'adresse n'existe plus et Chrome
+   affiche « Échec — connexion perdue ». Ce n'est pas le réseau, c'est
+   nous qui coupions la source.
+
+   On garde donc l'adresse vivante dix minutes, on retient le blob pour
+   qu'il ne soit pas ramassé entre-temps, et on nettoie à la fermeture
+   de la page. Une adresse blob ne coûte que sa mémoire.
+   ════════════════════════════════════════════════════════════════ */
+var _nxSorties = [];
+function nxTelecharger(contenu, nom, type){
+  var blob = (contenu instanceof Blob) ? contenu
+    : new Blob([contenu], { type: type || 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  _nxSorties.push({ url: url, blob: blob });
+  window.__nxDerniereUrl = url;   /* repère de diagnostic */
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = nom;
+  a.rel = 'noopener';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ try{ a.remove(); }catch(e){} }, 1000);
+  setTimeout(function(){ nxOublier(url); }, 600000);
+  return url;
+}
+function nxOublier(url){
+  for(var i = _nxSorties.length - 1; i >= 0; i--){
+    if(_nxSorties[i].url !== url) continue;
+    try{ URL.revokeObjectURL(url); }catch(e){}
+    _nxSorties.splice(i, 1);
+  }
+}
+window.nxTelecharger = nxTelecharger;
+try{
+  window.addEventListener('pagehide', function(){
+    _nxSorties.forEach(function(s){ try{ URL.revokeObjectURL(s.url); }catch(e){} });
+    _nxSorties = [];
+  });
+}catch(e){}
+
 /* ── Export ─────────────────────────────────────────────── */
 async function exportCode(){
   try{ syncDataFromIframeImmediate(); }catch(e){}
@@ -12101,12 +12193,7 @@ async function exportCode(){
   var inner = await nxBuildInner();
   var html = nxFitShell(inner, st.w, st.h, 'Page DropCode');
   try{
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    a.download = 'dropcode-page.html';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){ try{ URL.revokeObjectURL(a.href); a.remove(); }catch(e){} }, 1200);
+    nxTelecharger(html, 'dropcode-page.html');
     toast('Export téléchargé — identique au plan de travail ✓');
   }catch(e){ toast('Export impossible : ' + e.message, 'err'); }
 }
@@ -13162,18 +13249,64 @@ function nxSavePages(){
 }
 function nxCaptureCurrent(){
   try{ nxPages[nxPageIdx].html = getClean(); }catch(e){}
+  nxRangerHisto(nxPageIdx);
 }
+
+/* ════════════════════════════════════════════════════════════════
+   UNE HISTOIRE PAR PAGE
+   ════════════════════════════════════════════════════════════════
+   L'historique d'annulation était unique pour tout le projet. On
+   posait un bloc sur la page 1, on passait sur la page 2, on faisait
+   Ctrl+Z — et c'est l'état de la page 1 qui se chargeait dans la
+   page 2. Les éléments avaient donc l'air de suivre d'une page à
+   l'autre. Chaque page garde maintenant sa propre pile.
+
+   Les piles restent en mémoire : trente instantanés par page dans le
+   stockage local feraient sauter le quota du navigateur au troisième
+   projet. Ce qui est rangé durablement, c'est le contenu des pages. */
+var nxHistos = {};
+
+function nxRangerHisto(i){
+  try{
+    nxHistos[i] = {
+      hist: (typeof historyStack !== 'undefined' && historyStack) ? historyStack.slice() : [],
+      redo: (typeof redoStack !== 'undefined' && redoStack) ? redoStack.slice() : []
+    };
+  }catch(e){}
+}
+function nxSortirHisto(i, htmlCharge){
+  try{
+    var h = nxHistos[i];
+    historyStack = (h && h.hist) ? h.hist.slice() : [];
+    redoStack    = (h && h.redo) ? h.redo.slice() : [];
+    /* Une pile vide rendrait le premier Ctrl+Z inopérant : on y place
+       l'état qui vient d'être chargé, qui est le point de départ. */
+    if(!historyStack.length && htmlCharge) historyStack.push(htmlCharge);
+  }catch(e){}
+}
+/* Les index servent de clés : retirer une page décale les suivantes. */
+function nxDecalerHistos(supprime){
+  var neuf = {};
+  Object.keys(nxHistos).forEach(function(k){
+    var n = +k;
+    if(n === supprime) return;
+    neuf[n > supprime ? n - 1 : n] = nxHistos[k];
+  });
+  nxHistos = neuf;
+}
+
 function nxGoToPage(i){
   if(i === nxPageIdx || i < 0 || i >= nxPages.length) return;
   nxCaptureCurrent();
   nxPageIdx = i;
   var html = nxPages[i].html;
+  var charge = html || '<section style="padding:80px 40px;text-align:center;min-height:100vh"><h1 style="font-size:44px">'
+    + nxPages[i].name + '</h1><p style="opacity:.7">Page vierge — posez vos premiers blocs.</p></section>';
   try{
-    if(html) loadIntoIframe(html);
-    else loadIntoIframe('<section style="padding:80px 40px;text-align:center;min-height:100vh"><h1 style="font-size:44px">' +
-      nxPages[i].name + '</h1><p style="opacity:.7">Page vierge — posez vos premiers blocs.</p></section>');
+    loadIntoIframe(charge);
     clearSelection(); renderTree();
   }catch(e){}
+  nxSortirHisto(i, charge);
   nxSavePages(); nxRenderPages();
   if(window.nxRefreshStage) window.nxRefreshStage();
 }
@@ -13193,11 +13326,17 @@ function nxDuplicatePage(){
 }
 function nxDeletePage(i){
   if(nxPages.length <= 1){ try{ toast('Un projet contient au moins une page', 'err'); }catch(e){} return; }
+  /* Sans cette capture, supprimer une page perdait les retouches non
+     encore rangées de la page ouverte. */
+  if(i !== nxPageIdx) nxCaptureCurrent();
   nxPages.splice(i, 1);
+  nxDecalerHistos(i);
+  if(nxPageIdx > i) nxPageIdx--;
   if(nxPageIdx >= nxPages.length) nxPageIdx = nxPages.length - 1;
   nxSavePages();
   var html = nxPages[nxPageIdx].html;
-  try{ if(html) loadIntoIframe(html); renderTree(); }catch(e){}
+  try{ if(html){ loadIntoIframe(html); } renderTree(); }catch(e){}
+  nxSortirHisto(nxPageIdx, html);
   nxRenderPages();
   try{ toast('Page supprimée'); }catch(e){}
 }
@@ -14723,14 +14862,18 @@ window.nxExportZip = async function(){
     });
 
     var blob = await nxMakeZip(fichiers);
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = nomProjet + '.zip';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    /* Adresse blob gardée vivante : la révoquer tout de suite fait
+       échouer le téléchargement dès que le navigateur demande où
+       enregistrer (« connexion perdue »). */
+    if(typeof window.nxTelecharger === 'function'){
+      window.nxTelecharger(blob, nomProjet + '.zip');
+    } else {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = nomProjet + '.zip';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 600000);
+    }
     t('Projet exporté : ' + fichiers.length + ' fichiers');
   }catch(e){
     console.error('[export zip]', e);
@@ -17104,12 +17247,7 @@ window.nxExportZip = async function(){
         var st = (typeof nxStage === 'function') ? nxStage(true) : { w: 1920, h: 1080 };
         var doc = (typeof nxFitShell === 'function') ? nxFitShell(interne, st.w, st.h, titre) : interne;
 
-        var blob = new Blob([doc], { type: 'text/html' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = 'dropcode-site.html';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+        window.nxTelecharger(doc, 'dropcode-site.html');
         try{ toast(pages.length + ' pages exportées dans un seul fichier'); }catch(e){}
       }catch(e){
         console.error('[export html]', e);
@@ -17344,6 +17482,612 @@ window.NX_SHELL_VIE = \`
 \`;
 
 <\/script>
+<script id="nx-ecran">
+/* ════════════════════════════════════════════════════════════════
+   S'ADAPTER À L'ÉCRAN QU'ON A VRAIMENT
+   ════════════════════════════════════════════════════════════════
+   Les barres d'outils se repliaient sur des seuils de largeur de
+   FENÊTRE. Or ce qui compte, c'est la place qui leur reste une fois le
+   rail, le panneau de gauche et le panneau de propriétés servis. Sur un
+   MacBook Air 13 pouces, la fenêtre fait 1440 px mais le plan de
+   travail seulement 740 : la barre du bas dépassait de 85 px, et les
+   derniers boutons — « Exporter » compris — se retrouvaient hors de
+   portée, coupés derrière le bord.
+
+   On mesure donc la barre elle-même. Trois états, du plus confortable
+   au plus serré, et on prend le premier qui tient. Cela marche quelle
+   que soit la langue, la police du système ou la taille de texte du
+   navigateur — autant de choses qu'un seuil en pixels ignore.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  var ETATS = ['', 'bt--compact', 'bt--mini'];
+
+  function ajuster(el, etats, prefixe){
+    if(!el) return;
+    etats.forEach(function(c){ if(c) el.classList.remove(c); });
+    for(var i = 0; i < etats.length; i++){
+      if(etats[i]) el.classList.add(etats[i]);
+      /* 2 px de tolérance : les sous-pixels d'une mise à l'échelle
+         système (125 % sous Windows, écrans Retina) suffisent à faire
+         croire à un débordement qui n'existe pas. */
+      if(el.scrollWidth <= el.clientWidth + 2) return;
+      if(i < etats.length - 1 && etats[i]) el.classList.remove(etats[i]);
+    }
+  }
+
+  /* ── Le zoom par défaut doit tenir dans la place disponible ──
+     Le studio ouvrait toujours à 50 %. Sur un 13 pouces, 1920 px de
+     conception à 50 % font 960 px pour un plan de travail de 740 :
+     la page était coupée à gauche et à droite dès l'ouverture, et rien
+     ne le disait. On cadre sur la largeur réelle, tant que personne
+     n'a touché au zoom — après quoi c'est son choix qui compte. */
+  var zoomManuel = false;
+
+  function brancherZoom(){
+    ['changeZoom', 'setVP'].forEach(function(nom){
+      var vrai = window[nom];
+      if(typeof vrai !== 'function' || vrai.__nxSuivi) return;
+      var suivi = function(){ zoomManuel = true; return vrai.apply(this, arguments); };
+      suivi.__nxSuivi = true;
+      window[nom] = suivi;
+    });
+  }
+
+  function cadrer(){
+    if(zoomManuel) return;
+    var wrap = document.getElementById('canvasWrap');
+    if(!wrap || typeof window.nxStageWidth !== 'function') return;
+    var dispo = wrap.clientWidth - 56;          /* marge de respiration */
+    if(dispo < 140) return;
+    var vise = Math.floor(dispo / window.nxStageWidth() * 100);
+    if(vise > 100) vise = 100;                  /* jamais agrandi d'office */
+    if(vise < 10) vise = 10;
+    if(typeof currentZoom === 'undefined' || Math.abs(vise - currentZoom) < 2) return;
+    currentZoom = vise;
+    var lbl = document.getElementById('zoomLabel');
+    if(lbl) lbl.innerText = currentZoom + '%';
+    try{ if(typeof updateStageSize === 'function') updateStageSize(); }catch(e){}
+  }
+
+  function passer(){
+    ajuster(document.querySelector('.bottom-toolbar'), ETATS);
+    ajuster(document.querySelector('.topbar'), ['', 'tb--compact', 'tb--mini']);
+    cadrer();
+  }
+
+  var attente = 0;
+  function planifier(){
+    if(attente) cancelAnimationFrame(attente);
+    attente = requestAnimationFrame(function(){ attente = 0; passer(); });
+  }
+
+  function brancher(){
+    brancherZoom();
+    passer();
+    try{
+      var zone = document.querySelector('.workspace');
+      if(zone && window.ResizeObserver) new ResizeObserver(planifier).observe(zone);
+    }catch(e){}
+    window.addEventListener('resize', planifier, { passive: true });
+    /* Les panneaux s'ouvrent et se ferment : la place change sans que
+       la fenêtre bouge. */
+    try{
+      new MutationObserver(planifier).observe(document.body, {
+        subtree: true, attributes: true, attributeFilter: ['class']
+      });
+    }catch(e){}
+    /* Le chargement des polices redimensionne les libellés. */
+    try{ if(document.fonts && document.fonts.ready) document.fonts.ready.then(planifier); }catch(e){}
+    /* Les fonctions de zoom sont définies par un script chargé après
+       celui-ci : on repasse les envelopper une fois la page prête. */
+    setTimeout(function(){ brancherZoom(); passer(); }, 600);
+    setTimeout(function(){ brancherZoom(); passer(); }, 2000);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', brancher);
+  else brancher();
+
+  window.nxAjusterBarres = passer;
+})();
+
+<\/script>
+<script id="nx-bloc-code">
+/* ════════════════════════════════════════════════════════════════
+   LE BLOC DE CODE
+   ════════════════════════════════════════════════════════════════
+   Il existait, mais il ne servait à rien : un <pre> contenant
+   « console.log("Hello World") » écrit en dur, sans coloration, et
+   surtout impossible à modifier — aucun contenteditable, donc un
+   double-clic ne donnait rien. On pouvait le poser, pas s'en servir.
+
+   Ici il devient un vrai composant :
+
+     · on écrit dedans (double-clic), avec Entrée qui saute une ligne
+       et Tabulation qui indente — dans un bloc de code, ce sont les
+       deux touches qu'on utilise ;
+     · le code est coloré, dans le langage choisi, avec des couleurs
+       ÉCRITES EN CLAIR pour qu'elles survivent à l'export ;
+     · un bouton « Copier » qui fonctionne aussi dans le fichier livré,
+       sans dépendre d'un script extérieur ;
+     · une barre qui annonce le langage, comme partout ailleurs.
+
+   La coloration est refaite à chaque sortie d'édition, jamais pendant :
+   colorier sous les doigts de quelqu'un qui tape déplace le curseur à
+   chaque frappe.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  var C = {
+    fond:'#141312', trait:'#2a2724', texte:'#e6e1da', faible:'#8d857c',
+    cle:'#e08a6a', chaine:'#9bc78f', nombre:'#e0b45a', comm:'#7d766d',
+    balise:'#e08a6a', attr:'#c9b78a', prop:'#8fb3ee'
+  };
+
+  var LANGUES = {
+    js:   'JavaScript',
+    html: 'HTML',
+    css:  'CSS',
+    json: 'JSON',
+    texte:'Texte'
+  };
+
+  function echapper(s){
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* ── Coloration ────────────────────────────────────────────
+     Un seul passage, une seule expression par langage : colorier en
+     plusieurs passes revient à recolorier ce qu'on vient d'écrire, et
+     les balises finissent imbriquées n'importe comment. */
+  function colorier(code, langue){
+    var t = echapper(code);
+    if(langue === 'texte') return t;
+
+    function span(couleur, contenu){
+      return '<span style="color:' + couleur + '">' + contenu + '</span>';
+    }
+
+    if(langue === 'html'){
+      return t.replace(
+        /(&lt;!--[\\s\\S]*?--&gt;)|(&lt;\\/?)([a-zA-Z][\\w-]*)|([a-zA-Z-]+)(=)("[^"]*"|'[^']*')/g,
+        function(m, comm, ouvre, nom, attr, eg, val){
+          if(comm) return span(C.comm, comm);
+          if(ouvre) return span(C.faible, ouvre) + span(C.balise, nom);
+          return span(C.attr, attr) + span(C.faible, eg) + span(C.chaine, val);
+        });
+    }
+
+    if(langue === 'css'){
+      return t.replace(
+        /(\\/\\*[\\s\\S]*?\\*\\/)|([a-zA-Z-]+)(\\s*:)|(#[0-9a-fA-F]{3,8}\\b|\\b\\d+(?:\\.\\d+)?(?:px|rem|em|%|vh|vw|s|ms|deg|fr)?\\b)|(@[a-zA-Z-]+)/g,
+        function(m, comm, prop, deuxPoints, val, at){
+          if(comm) return span(C.comm, comm);
+          if(prop) return span(C.prop, prop) + span(C.faible, deuxPoints);
+          if(val)  return span(C.nombre, val);
+          return span(C.cle, at);
+        });
+    }
+
+    /* js et json */
+    var motsCles = 'const|let|var|function|return|if|else|for|while|do|switch|case|break|'
+      + 'continue|new|class|extends|import|export|from|default|async|await|try|catch|'
+      + 'finally|throw|typeof|instanceof|delete|this|super|yield|null|undefined|true|false';
+    return t.replace(
+      new RegExp(
+        '(\\\\/\\\\/[^\\\\n]*|\\\\/\\\\*[\\\\s\\\\S]*?\\\\*\\\\/)'          /* commentaires */
+      + '|("(?:[^"\\\\\\\\]|\\\\\\\\.)*"|\\'(?:[^\\'\\\\\\\\]|\\\\\\\\.)*\\')' /* chaînes */
+      + '|\\\\b(' + motsCles + ')\\\\b'                        /* mots-clés */
+      + '|\\\\b(\\\\d+(?:\\\\.\\\\d+)?)\\\\b'                        /* nombres */
+      + '|\\\\b([A-Za-z_$][\\\\w$]*)(?=\\\\s*\\\\()', 'g'),        /* appels */
+      function(m, comm, chaine, cle, nombre, appel){
+        if(comm)   return span(C.comm, comm);
+        if(chaine) return span(C.chaine, chaine);
+        if(cle)    return span(C.cle, cle);
+        if(nombre) return span(C.nombre, nombre);
+        return span(C.prop, appel);
+      });
+  }
+
+  /* ── Fabrication du bloc ───────────────────────────────── */
+  /* Le presse-papiers moderne refuse de servir quand le document n'a pas
+     le focus — dans un cadre, une fenêtre en arrière-plan, un aperçu. On
+     retombe alors sur la vieille méthode, qui marche partout. */
+  var COPIE = "(function(b){var c=b.closest('[data-nx-code]').querySelector('code');"
+    + "var t=c.innerText;var f=function(){try{var a=document.createElement('textarea');"
+    + "a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);"
+    + "a.select();document.execCommand('copy');a.remove();}catch(e){}};"
+    + "try{if(navigator.clipboard&&navigator.clipboard.writeText)"
+    + "navigator.clipboard.writeText(t).catch(f);else f();}catch(e){f();}"
+    + "var o=b.getAttribute('data-nx-libelle')||'Copier';b.textContent='Copié';"
+    + "setTimeout(function(){b.textContent=o;},1400);})(this)";
+
+  var EXEMPLES = {
+    js:   'function saluer(nom){\\n  const message = "Bonjour " + nom;\\n  console.log(message);\\n  return message;\\n}\\n\\nsaluer("Adnan");',
+    html: '<section class="accueil">\\n  <h1>Votre titre</h1>\\n  <p>Une ligne de présentation.</p>\\n</section>',
+    css:  '.carte {\\n  padding: 24px;\\n  border-radius: 14px;\\n  background: #ffffff;\\n}',
+    json: '{\\n  "nom": "projet",\\n  "version": "1.0.0",\\n  "prive": true\\n}',
+    texte:'Collez ici le texte de votre choix.'
+  };
+
+  function nxCreerBlocCode(doc, langue, code){
+    langue = LANGUES[langue] ? langue : 'js';
+    code = (code === undefined) ? EXEMPLES[langue] : code;
+
+    var hote = doc.createElement('div');
+    hote.setAttribute('data-nx-code', langue);
+    hote.setAttribute('data-dc-id', 'dc-' + Date.now());
+    hote.style.cssText = 'position:absolute;width:520px;background:' + C.fond
+      + ';border:1px solid ' + C.trait + ';border-radius:12px;overflow:hidden;'
+      + 'box-shadow:0 18px 44px rgba(20,18,16,.24);'
+      + "font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;";
+
+    var barre = doc.createElement('div');
+    barre.setAttribute('data-nx-code-bar', '1');
+    barre.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;'
+      + 'padding:9px 14px;background:#1b1917;border-bottom:1px solid ' + C.trait + ';';
+    barre.innerHTML =
+      '<span data-nx-code-lang="1" style="font-size:11px;font-weight:600;letter-spacing:.06em;'
+      + 'text-transform:uppercase;color:' + C.faible + '">' + LANGUES[langue] + '</span>'
+      + '<button type="button" data-nx-code-copy="1" data-nx-libelle="Copier" onclick="' + COPIE + '"'
+      + ' style="border:1px solid ' + C.trait + ';background:transparent;color:' + C.faible + ';'
+      + 'font:600 11px/1 inherit;padding:5px 11px;border-radius:6px;cursor:pointer">Copier</button>';
+
+    var pre = doc.createElement('pre');
+    pre.style.cssText = 'margin:0;padding:16px 18px;overflow:auto;max-height:420px;'
+      + 'font:500 13px/1.75 inherit;color:' + C.texte + ';white-space:pre;tab-size:2;';
+    var el = doc.createElement('code');
+    el.setAttribute('data-dc-id', 'dc-' + (Date.now() + 1));
+    el.style.cssText = 'font:inherit;color:inherit;background:none;display:block;';
+    el.innerHTML = colorier(code, langue);
+    pre.appendChild(el);
+
+    hote.appendChild(barre);
+    hote.appendChild(pre);
+    return hote;
+  }
+  window.nxCreerBlocCode = nxCreerBlocCode;
+
+  /* ── Insertion par la palette ──────────────────────────── */
+  (function remplacerCreateEl(){
+    var vrai = window.createEl;
+    if(typeof vrai !== 'function') return;
+    window.createEl = function(tag, x, y, target, custom, customName){
+      if(tag !== 'codeblock') return vrai.apply(this, arguments);
+      try{
+        var doc = document.getElementById('previewFrame').contentDocument;
+        if(typeof saveSnap === 'function') saveSnap();
+        var n = nxCreerBlocCode(doc, 'js');
+        var hote = (target && target.appendChild) ? target : doc.body;
+        if(window.nxChoisirHote) hote = window.nxChoisirHote(doc, hote, 520, 200) || hote;
+        n.style.left = Math.round(x || 80) + 'px';
+        n.style.top  = Math.round(y || 80) + 'px';
+        hote.appendChild(n);
+        try{ clearSelection(); addToSelection(n); renderProps(n); }catch(e){}
+        try{ syncDataFromIframe(); renderTree(); }catch(e){}
+        /* Le bloc peut dépasser le bas de la page : la scène doit
+           s'agrandir tout de suite, sinon il est posé hors du cadre. */
+        try{ if(window.nxInvalidateStage) window.nxInvalidateStage();
+             if(window.nxRefreshStage) window.nxRefreshStage();
+             else if(typeof updateStageSize === 'function') updateStageSize(); }catch(e){}
+        try{ toast('Bloc de code posé — double-cliquez pour écrire dedans'); }catch(e){}
+        return n;
+      }catch(e){
+        console.error('[bloc de code]', e);
+        return vrai.apply(this, arguments);
+      }
+    };
+  })();
+
+  /* ── Écrire dans le bloc ───────────────────────────────── */
+  function texteDe(el){
+    /* innerText respecte les retours à la ligne visibles ; textContent
+       les perdrait sur un contenu déjà colorié. */
+    return el.innerText.replace(/ /g, ' ');
+  }
+
+  function entrerEdition(code){
+    if(code.getAttribute('contenteditable') === 'true') return;
+    var brut = texteDe(code);
+    code.setAttribute('data-nx-brut', '1');
+    code.textContent = brut;                 /* on retire la coloration */
+    code.setAttribute('contenteditable', 'true');
+    code.setAttribute('spellcheck', 'false');
+    code.style.outline = '1px solid ' + C.prop;
+    code.style.outlineOffset = '4px';
+    try{ code.focus(); }catch(e){}
+  }
+
+  function sortirEdition(code){
+    if(code.getAttribute('contenteditable') !== 'true') return;
+    var hote = code.closest('[data-nx-code]');
+    var langue = hote ? (hote.getAttribute('data-nx-code') || 'js') : 'js';
+    var brut = texteDe(code);
+    code.removeAttribute('contenteditable');
+    code.removeAttribute('data-nx-brut');
+    code.style.outline = '';
+    code.style.outlineOffset = '';
+    code.innerHTML = colorier(brut, langue);
+    try{ if(typeof saveSnap === 'function') saveSnap(); }catch(e){}
+    try{ if(typeof syncDataFromIframe === 'function') syncDataFromIframe(); }catch(e){}
+  }
+
+  function insererTexte(doc, txt){
+    var sel = doc.getSelection();
+    if(!sel || !sel.rangeCount) return;
+    var r = sel.getRangeAt(0);
+    r.deleteContents();
+    var noeud = doc.createTextNode(txt);
+    r.insertNode(noeud);
+    r.setStartAfter(noeud); r.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r);
+  }
+
+  function brancherCanvas(){
+    var fr = document.getElementById('previewFrame');
+    var doc = fr && fr.contentDocument;
+    if(!doc || !doc.body) return;
+    if(doc.getElementById('nx-code-branche')) return;
+    var marque = doc.createElement('meta');
+    marque.id = 'nx-code-branche';
+    (doc.head || doc.body).appendChild(marque);
+
+    doc.addEventListener('dblclick', function(e){
+      var code = e.target && e.target.closest ? e.target.closest('[data-nx-code] code') : null;
+      if(!code) return;
+      e.preventDefault(); e.stopPropagation();
+      entrerEdition(code);
+    }, true);
+
+    doc.addEventListener('keydown', function(e){
+      var code = e.target && e.target.closest ? e.target.closest('[data-nx-code] code') : null;
+      if(!code || code.getAttribute('contenteditable') !== 'true') return;
+      if(e.key === 'Enter'){
+        /* Sans cela le navigateur insère un <div> ou un <br> : le code
+           récupéré ensuite n'a plus ses retours à la ligne. */
+        e.preventDefault();
+        insererTexte(doc, '\\n');
+      } else if(e.key === 'Tab'){
+        e.preventDefault();
+        insererTexte(doc, '  ');
+      } else if(e.key === 'Escape'){
+        e.preventDefault();
+        sortirEdition(code);
+      }
+      e.stopPropagation();          /* Suppr ne doit pas effacer le bloc */
+    }, true);
+
+    doc.addEventListener('paste', function(e){
+      var code = e.target && e.target.closest ? e.target.closest('[data-nx-code] code') : null;
+      if(!code || code.getAttribute('contenteditable') !== 'true') return;
+      e.preventDefault();
+      var txt = (e.clipboardData || window.clipboardData).getData('text/plain');
+      insererTexte(doc, txt);
+    }, true);
+
+    doc.addEventListener('focusout', function(e){
+      var code = e.target && e.target.closest ? e.target.closest('[data-nx-code] code') : null;
+      if(code) setTimeout(function(){ sortirEdition(code); }, 0);
+    }, true);
+  }
+  window.nxBrancherBlocCode = brancherCanvas;
+
+  /* Le document du plan de travail est réécrit à chaque import et à
+     chaque changement de page : on se rebranche. */
+  (function veiller(){
+    brancherCanvas();
+    setInterval(brancherCanvas, 1500);
+    var vrai = window.nxRebindCanvas;
+    window.nxRebindCanvas = function(){
+      try{ if(typeof vrai === 'function') vrai.apply(this, arguments); }catch(e){}
+      brancherCanvas();
+    };
+  })();
+
+  /* ── Choix du langage dans le panneau de propriétés ────── */
+  function ajouterChoixLangue(n){
+    var hote = n && n.closest ? n.closest('[data-nx-code]') : null;
+    if(!hote) return;
+    var panneau = document.getElementById('propsPanel') || document.querySelector('.props-container');
+    if(!panneau || panneau.querySelector('.nx-code-langue')) return;
+    var bloc = document.createElement('div');
+    bloc.className = 'prop-group nx-code-langue';
+    bloc.innerHTML = '<div class="prop-title">Langage du bloc</div>'
+      + '<select class="prop-input nx-code-langue__s">'
+      + Object.keys(LANGUES).map(function(k){
+          return '<option value="' + k + '"' + (k === hote.getAttribute('data-nx-code') ? ' selected' : '')
+            + '>' + LANGUES[k] + '</option>';
+        }).join('')
+      + '</select>';
+    panneau.insertBefore(bloc, panneau.firstChild);
+    bloc.querySelector('select').addEventListener('change', function(){
+      var langue = this.value;
+      hote.setAttribute('data-nx-code', langue);
+      var etiq = hote.querySelector('[data-nx-code-lang]');
+      if(etiq) etiq.textContent = LANGUES[langue];
+      var code = hote.querySelector('code');
+      if(code) code.innerHTML = colorier(texteDe(code), langue);
+      try{ saveSnap(); syncDataFromIframe(); }catch(e){}
+    });
+  }
+
+  (function brancherProps(){
+    var vrai = window.renderProps;
+    if(typeof vrai !== 'function'){ setTimeout(brancherProps, 400); return; }
+    window.renderProps = function(n){
+      var r = vrai.apply(this, arguments);
+      try{ setTimeout(function(){ ajouterChoixLangue(n); }, 30); }catch(e){}
+      return r;
+    };
+  })();
+
+})();
+
+<\/script>
+<script id="nx-export-csv">
+/* ════════════════════════════════════════════════════════════════
+   EXPORT CSV — l'inventaire du contenu
+   ════════════════════════════════════════════════════════════════
+   Le HTML et le ZIP livrent le site. Le CSV livre ce qu'il y a DEDANS,
+   sous une forme qu'un tableur sait ouvrir : une ligne par élément de
+   contenu, avec sa page, son type, son texte, son lien et sa taille.
+
+   À quoi ça sert, concrètement : relire tous les textes du site sans
+   ouvrir chaque page, vérifier qu'aucun lien ne pointe encore vers un
+   « # », donner la colonne « texte » à traduire, ou compter ce qu'il
+   reste à écrire. C'est l'usage réel d'un CSV sur un site : pas le
+   site lui-même, son contenu.
+
+   Deux choix assumés :
+
+   · le point-virgule comme séparateur, parce qu'un tableur configuré en
+     français ouvre un fichier à virgules dans une seule colonne ;
+   · un BOM en tête, sans quoi les accents arrivent en charabia dans
+     Excel. Les deux ensemble donnent un fichier qui s'ouvre d'un clic.
+   ════════════════════════════════════════════════════════════════ */
+
+(function(){
+
+  var SEP = ';';
+
+  function champ(v){
+    v = (v === null || v === undefined) ? '' : String(v);
+    v = v.replace(/\\s+/g, ' ').trim();
+    /* RFC 4180 : on double les guillemets et on entoure tout. Entourer
+       systématiquement évite d'avoir à se demander si un texte contient
+       un séparateur, un retour à la ligne ou une virgule décimale. */
+    return '"' + v.replace(/"/g, '""') + '"';
+  }
+
+  function ligne(cells){ return cells.map(champ).join(SEP); }
+
+  var TYPES = {
+    h1:'Titre 1', h2:'Titre 2', h3:'Titre 3', h4:'Titre 4', h5:'Titre 5', h6:'Titre 6',
+    p:'Paragraphe', span:'Texte', li:'Élément de liste', blockquote:'Citation',
+    a:'Lien', button:'Bouton', img:'Image', video:'Vidéo', iframe:'Cadre intégré',
+    input:'Champ', textarea:'Zone de texte', select:'Liste déroulante',
+    label:'Étiquette', th:'En-tête de tableau', td:'Cellule', pre:'Bloc de code'
+  };
+
+  function typeDe(el){
+    var t = el.tagName.toLowerCase();
+    if(el.closest && el.closest('[data-nx-code]') && t === 'code') return 'Bloc de code';
+    return TYPES[t] || t;
+  }
+
+  /* Les éléments qui portent du contenu, pas les boîtes qui les rangent. */
+  var SELECTEUR = 'h1,h2,h3,h4,h5,h6,p,li,blockquote,a,button,img,video,iframe,'
+    + 'input,textarea,select,label,th,td,[data-nx-code] code';
+
+  function section(el){
+    var s = el.closest ? el.closest('section,header,footer,nav,main,article,aside') : null;
+    if(!s) return '';
+    var titre = s.querySelector('h1,h2,h3');
+    var nom = s.tagName.toLowerCase();
+    if(s.id) nom += ' #' + s.id;
+    if(titre && titre !== el) nom += ' — ' + (titre.textContent || '').trim().slice(0, 40);
+    return nom;
+  }
+
+  function lignesDuDocument(html, nomPage, fichier){
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var out = [];
+    var vus = 0;
+    doc.querySelectorAll(SELECTEUR).forEach(function(el){
+      var t = el.tagName.toLowerCase();
+      var texte = (t === 'img') ? (el.getAttribute('alt') || '')
+                : (t === 'input' || t === 'textarea') ? (el.getAttribute('placeholder') || el.value || '')
+                : (el.textContent || '');
+      var lien = el.getAttribute('href') || el.getAttribute('src') || '';
+      /* Un conteneur dont tout le texte vient d'un enfant déjà listé
+         ferait doublon : on ne garde que les feuilles de contenu. */
+      if(!texte.trim() && !lien) return;
+      if(t !== 'img' && t !== 'video' && t !== 'iframe'
+         && el.querySelector(SELECTEUR)) return;
+      vus++;
+      out.push([
+        nomPage,
+        fichier,
+        section(el),
+        typeDe(el),
+        t,
+        el.id || el.getAttribute('data-dc-id') || '',
+        texte,
+        lien,
+        el.getAttribute('class') || ''
+      ]);
+    });
+    return out;
+  }
+
+  window.nxConstruireCsv = async function(){
+    var entete = ['Page', 'Fichier', 'Section', 'Type', 'Balise',
+                  'Identifiant', 'Texte', 'Lien ou source', 'Classes'];
+    var lignes = [ligne(entete)];
+    var pages;
+    try{
+      pages = await window.nxToutesLesPages();
+    }catch(e){
+      pages = [{ nom: 'Page 1', fichier: 'index.html', html: await window.nxBuildInner() }];
+    }
+    pages.forEach(function(p){
+      lignesDuDocument(p.html, p.nom, p.fichier || 'index.html')
+        .forEach(function(r){ lignes.push(ligne(r)); });
+    });
+    /* Le BOM d'abord : c'est lui qui dit au tableur que le fichier est
+       en UTF-8. Sans lui, « Réserver » s'affiche « RÃ©server ». */
+    return { texte: '﻿' + lignes.join('\\r\\n') + '\\r\\n', nb: lignes.length - 1 };
+  };
+
+  window.nxExportCsv = async function(){
+    try{
+      try{ if(typeof syncDataFromIframeImmediate === 'function') syncDataFromIframeImmediate(); }catch(e){}
+      try{ if(typeof window.nxSyncCurrentPage === 'function') window.nxSyncCurrentPage(); }catch(e){}
+      var r = await window.nxConstruireCsv();
+      var nom = 'contenu-du-projet.csv';
+      if(typeof window.nxTelecharger === 'function'){
+        window.nxTelecharger(r.texte, nom, 'text/csv;charset=utf-8');
+      } else {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([r.texte], { type: 'text/csv;charset=utf-8' }));
+        a.download = nom; document.body.appendChild(a); a.click(); a.remove();
+      }
+      try{ toast(r.nb + ' lignes de contenu exportées (séparateur point-virgule)'); }catch(e){}
+    }catch(e){
+      console.error('[export csv]', e);
+      try{ toast('Export CSV impossible : ' + (e && e.message ? e.message : 'erreur'), 'err'); }catch(e2){}
+    }
+  };
+
+  /* ── Entrée dans le menu d'export ──────────────────────── */
+  (function ajouterAuMenu(){
+    function poser(){
+      var menu = document.querySelector('.nx-exp-menu');
+      if(!menu || menu.querySelector('[data-nx-exp="csv"]')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('data-nx-exp', 'csv');
+      b.innerHTML = '<i class="fas fa-file-csv"></i>'
+        + '<span><b>Contenu du projet (.csv)</b>Une ligne par texte, lien et image, '
+        + 'toutes pages confondues — pour relire, traduire ou vérifier dans un tableur.</span>';
+      menu.appendChild(b);
+      menu.addEventListener('click', function(e){
+        var t = e.target.closest('[data-nx-exp="csv"]');
+        if(!t) return;
+        e.stopPropagation();
+        menu.hidden = true;
+        window.nxExportCsv();
+      });
+    }
+    poser();
+    [600, 1600, 3200].forEach(function(ms){ setTimeout(poser, ms); });
+  })();
+
+})();
+
+<\/script>
 </body>
 </html>`;
 }
@@ -17518,10 +18262,7 @@ const ACTIONS = {
   },
   'dl-codes': () => {
     const codes = store.get(ukey('2fa_codes'), []);
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([codes.join('\n')], { type: 'text/plain' }));
-    a.download = 'dropcode-codes-secours.txt'; a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 800);
+    NX.download(codes.join('\n'), 'dropcode-codes-secours.txt');
     toast('Codes téléchargés', 'Conservez-les hors de votre navigateur.', 'ok');
   },
   shortcuts: () => showShortcuts()
@@ -17662,10 +18403,7 @@ function downloadInvoice(id) {
     'Statut      : ' + (inv.status === 'paid' ? 'Payée' : 'À venir'), '',
     'Document généré en version beta — valeur non contractuelle.'
   ].filter(Boolean).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([lines], { type: 'text/plain;charset=utf-8' }));
-  a.download = inv.id + '.txt'; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 800);
+  NX.download(lines, inv.id + '.txt');
   toast('Facture téléchargée', inv.id, 'ok');
 }
 
