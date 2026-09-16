@@ -4108,7 +4108,8 @@ return `<!DOCTYPE html>
   --border:#e4e1db; --border-2:#d5d1c9;
   --p:#b8351c; --p-ink:#ffffff; --p-soft:#fdeee9; --p-line:#f4c4b6;
   --p2:#2a4d8f; --p3:#b3301f;
-  --ok:#1b6c44; --warn:#8a570f; --err:#b3301f;
+  --ok:#1b6c44; --ok-soft:#e6f4ec; --ok-line:#b6dcc6;
+  --warn:#8a570f; --err:#b3301f;
   --text:#1a1917; --text-muted:#55514b; --text-dim:#6b655c; --text-faint:#796f63;
   --g1:var(--p);
   --canvas-bg:#edeae5; --canvas-dot:rgba(26,25,23,.1);
@@ -4124,7 +4125,8 @@ return `<!DOCTYPE html>
   --border:#2e2b28; --border-2:#3b3835;
   --p:#f56d4e; --p-ink:#1a0d09; --p-soft:#2a1713; --p-line:#5a2b1f;
   --p2:#8fb3ee; --p3:#f0796a;
-  --ok:#5cc48c; --warn:#e0aa5a; --err:#f0796a;
+  --ok:#5cc48c; --ok-soft:#12241a; --ok-line:#24452f;
+  --warn:#e0aa5a; --err:#f0796a;
   --text:#f5f3f0; --text-muted:#b5aea6; --text-dim:#a0978d; --text-faint:#918a80;
   --g1:var(--p);
   --canvas-bg:#0e0d0c; --canvas-dot:rgba(245,243,240,.09);
@@ -4140,7 +4142,8 @@ return `<!DOCTYPE html>
     --border:#2e2b28; --border-2:#3b3835;
     --p:#f56d4e; --p-ink:#1a0d09; --p-soft:#2a1713; --p-line:#5a2b1f;
     --p2:#8fb3ee; --p3:#f0796a;
-    --ok:#5cc48c; --warn:#e0aa5a; --err:#f0796a;
+    --ok:#5cc48c; --ok-soft:#12241a; --ok-line:#24452f;
+  --warn:#e0aa5a; --err:#f0796a;
     --text:#f5f3f0; --text-muted:#b5aea6; --text-dim:#a0978d; --text-faint:#918a80;
     --canvas-bg:#0e0d0c; --canvas-dot:rgba(245,243,240,.09);
     --sh-1:0 1px 2px var(--bg-2);
@@ -4186,7 +4189,7 @@ img,svg,video{display:block;max-width:100%}
   color:var(--text-dim);cursor:pointer;transition:background var(--ease) .16s,color var(--ease) .16s;
 }
 .lm-item i{font-size:17px;transition:transform .16s var(--ease)}
-.lm-item span{font-size:9px;font-weight:600;letter-spacing:.02em;text-align:center;line-height:1.2;
+.lm-item span{font-size:10px;font-weight:600;letter-spacing:.02em;text-align:center;line-height:1.2;
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lm-item:hover{background:var(--surface-hover);color:var(--text)}
 .lm-item.act{background:var(--p-soft);color:var(--p)}
@@ -4207,6 +4210,12 @@ img,svg,video{display:block;max-width:100%}
 }
 .panel-header i{color:var(--p);font-size:13px}
 .panel-content{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px;display:none;width:var(--panel);flex-shrink:0}
+/* L'en-tête vit dans le contenu : on annule la marge intérieure pour
+   qu'il aille d'un bord à l'autre, comme son filet le suggère. */
+.panel-content .panel-header{width:calc(100% + 28px);margin:-14px -14px 0;align-self:stretch;flex-shrink:0}
+/* Le panneau de l'assistant n'a pas de marge intérieure : son en-tête
+   n'a donc rien à compenser. */
+#p-ai-chat > .panel-header{width:100%;margin:0}
 .panel-content.act{display:flex;flex-direction:column;gap:14px}
 
 /* ── Panneau de propriétés ──────────────────────────────── */
@@ -4239,7 +4248,7 @@ img,svg,video{display:block;max-width:100%}
 }
 .logo b{width:24px;height:24px;border-radius:7px;background:var(--g1);display:grid;place-items:center;flex-shrink:0}
 .logo b svg{width:13px;height:13px}
-.logo em{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;
+.logo em{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
   color:var(--text-dim);text-transform:uppercase}
 
 .canvas-controls{display:flex;align-items:center;gap:3px;padding:3px;border-radius:var(--rf);
@@ -4253,7 +4262,11 @@ img,svg,video{display:block;max-width:100%}
 }
 .vp-btn:hover{background:var(--surface-hover);color:var(--text)}
 .vp-btn.act{background:var(--p-soft);color:var(--p)}
-.vp-btn.on{background:var(--p-soft);color:var(--ok);border-color:var(--p-line)}
+.vp-btn.on{background:var(--ok-soft,var(--p-soft));color:var(--ok);border-color:var(--ok-line,var(--p-line))}
+/* État « placement libre » : un bouton neutre mais bien visible, dans les
+   deux thèmes — pas un contour vide où le libellé a disparu. */
+.vp-btn.libre{background:var(--bg-2);color:var(--text);border-color:var(--border-2)}
+.vp-btn.libre:hover{background:var(--bg-3);color:var(--text)}
 .vp-btn.prim{background:var(--g1);color:var(--p-ink);box-shadow:var(--sh-2)}
 .vp-btn.prim:hover{color:var(--p-ink);box-shadow:var(--sh-3)}
 .vp-sep{width:1px;height:18px;background:var(--border-2);margin:0 3px;flex-shrink:0}
@@ -4340,6 +4353,15 @@ img,svg,video{display:block;max-width:100%}
 
 /* ── Palettes ───────────────────────────────────────────── */
 .palette-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+/* Les palettes comptent maintenant plusieurs centaines de vignettes.
+   Sans cette ligne, ouvrir « Formes » ou « Emojis » demande au
+   navigateur de calculer la mise en page de tout le panneau d'un coup :
+   80 ms de blocage à chaque ouverture. Avec elle, il ne travaille que
+   sur ce qui est à l'écran, et la taille annoncée évite que la barre de
+   défilement saute pendant qu'on descend. */
+.palette-item,.nx-lib__item{content-visibility:auto;contain-intrinsic-size:auto 62px}
+.nx-lib__txt,.nx-lib__bloc{contain-intrinsic-size:auto 44px}
+.palette-item.nx-emoji{contain-intrinsic-size:auto 38px}
 .palette-item{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
   padding:13px 9px;border-radius:10px;border:1px solid var(--border);background:var(--bg-2);
@@ -4354,7 +4376,7 @@ img,svg,video{display:block;max-width:100%}
 .palette-item.wide i{font-size:15px}
 .palette-item span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .cat-title{grid-column:1/-1;margin:14px 0 3px;font-family:'JetBrains Mono',monospace;
-  font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--text-faint)}
+  font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--text-faint)}
 .cat-title:first-child{margin-top:0}
 .web-import-box{display:flex;gap:5px;padding:4px;border-radius:10px;border:1px solid var(--border);background:var(--bg-2)}
 .web-import-box input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--text);font-size:11.5px;padding:6px 8px}
@@ -4367,7 +4389,7 @@ img,svg,video{display:block;max-width:100%}
 .prop-group{padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border)}
 .prop-group:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
 .prop-title{display:flex;align-items:center;gap:7px;margin-bottom:11px;
-  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
   letter-spacing:.13em;text-transform:uppercase;color:var(--p)}
 .prop-row{display:flex;gap:8px;margin-bottom:9px;align-items:center}
 .prop-row:last-child{margin-bottom:0}
@@ -4440,7 +4462,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .ctx-item.danger:hover{background:var(--p-soft)}
 .ctx-item.danger:hover i{color:var(--err)}
 .ctx-sep{height:1px;background:var(--border);margin:5px 0}
-.ctx-shortcut{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9.5px;
+.ctx-shortcut{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;
   color:var(--text-faint);background:var(--surface-hover);padding:2px 6px;border-radius:4px}
 
 /* ── Notifications ──────────────────────────────────────── */
@@ -4543,9 +4565,9 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
   border:1px solid var(--border);flex-shrink:0;background:var(--bg-2)}
 .ai-attach-thumb img,.ai-attach-thumb video{width:100%;height:100%;object-fit:cover}
 .ai-attach-doc{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:1px;font-size:8px;color:var(--text);text-align:center;padding:2px;background:var(--bg-3)}
+  gap:1px;font-size:10px;color:var(--text);text-align:center;padding:2px;background:var(--bg-3)}
 .ai-attach-remove{position:absolute;top:-3px;right:-3px;width:15px;height:15px;border-radius:50%;
-  background:var(--err);color:var(--bg-1);font-size:8px;display:grid;place-items:center;z-index:10;line-height:1}
+  background:var(--err);color:var(--bg-1);font-size:10px;display:grid;place-items:center;z-index:10;line-height:1}
 .ai-textarea{width:100%;min-height:42px;max-height:110px;padding:10px 12px 0;background:transparent;
   border:0;outline:none;resize:none;color:var(--text);font-size:12px;line-height:1.5;font-family:inherit}
 .ai-input-actions{display:flex;align-items:center;gap:4px;padding:6px 8px;flex-wrap:wrap}
@@ -4556,8 +4578,8 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
   border:0;background:var(--g1);color:var(--p-ink);font-size:11.5px;font-weight:700;transition:box-shadow .16s,transform .16s}
 .ai-send-btn:hover{box-shadow:var(--sh-2);transform:translateY(-1px)}
 .ai-send-btn:disabled{opacity:.45;pointer-events:none}
-.ai-mode-bar{display:flex;gap:5px;padding:8px 12px;border-bottom:1px solid var(--border);
-  overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.ai-mode-bar{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px;border-bottom:1px solid var(--border);
+  flex-shrink:0}
 .ai-mode-bar::-webkit-scrollbar{display:none}
 .ai-mode-chip{flex-shrink:0;padding:4px 10px;border-radius:var(--rf);border:1px solid var(--border);
   color:var(--text-dim);font-size:10px;font-weight:700;white-space:nowrap;transition:all .16s}
@@ -4576,7 +4598,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .ai-select-info{display:flex;align-items:center;gap:7px;margin-bottom:6px;padding:6px 10px;border-radius:7px;
   background:var(--p-soft);border:1px solid var(--p-line);font-size:10.5px;color:var(--text-muted)}
 .ai-select-info strong{color:var(--p);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ai-msg-time{font-size:9px;color:var(--text-faint);margin-top:1px;padding:0 3px}
+.ai-msg-time{font-size:10px;color:var(--text-faint);margin-top:1px;padding:0 3px}
 .ai-msg.user .ai-msg-time{text-align:right}
 .ai-code-view-wrap{padding:8px 10px;border-top:1px solid var(--border)}
 
@@ -4617,7 +4639,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 }
 @media(max-width:1180px){
   :root{--rail:62px;--panel:250px;--props:260px}
-  .lm-item span{font-size:8.5px}
+  .lm-item span{font-size:10px}
   .logo em{display:none}
 }
 @media(max-width:1024px){
@@ -4649,13 +4671,13 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .nx-page:hover{border-color:var(--border-2);background:var(--bg-3)}
 .nx-page.on{border-color:var(--p);background:var(--p-soft)}
 .nx-page__n{width:18px;height:18px;border-radius:5px;background:var(--bg-3);color:var(--text-dim);
-  display:grid;place-items:center;font:700 9.5px/1 'JetBrains Mono',monospace;flex-shrink:0}
+  display:grid;place-items:center;font:700 10px/1 'JetBrains Mono',monospace;flex-shrink:0}
 .nx-page.on .nx-page__n{background:var(--p);color:var(--p-ink)}
 .nx-page__t{flex:1;min-width:0;font-size:11.5px;font-weight:500;color:var(--text-muted);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nx-page.on .nx-page__t{color:var(--text)}
 .nx-page__b{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;
-  color:var(--text-faint);font-size:9.5px;flex-shrink:0;opacity:0;transition:opacity .16s,background .16s}
+  color:var(--text-faint);font-size:10px;flex-shrink:0;opacity:0;transition:opacity .16s,background .16s}
 .nx-page:hover .nx-page__b{opacity:1}
 .nx-page__b:hover{background:var(--surface-hover);color:var(--text)}
 
@@ -4663,7 +4685,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .layer-item{position:relative}
 .layer-tools{margin-left:auto;display:flex;gap:2px;flex-shrink:0}
 .layer-tools button{width:21px;height:21px;border-radius:5px;display:grid;place-items:center;
-  color:var(--text-faint);font-size:9.5px;transition:background .15s,color .15s}
+  color:var(--text-faint);font-size:10px;transition:background .15s,color .15s}
 .layer-tools button:hover{background:var(--surface-hover);color:var(--text)}
 .layer-item.sel .layer-tools button{color:var(--text-muted)}
 
@@ -4690,12 +4712,12 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 
 /* ── Grille d'animation ─────────────────────────────────── */
 .nx-anim{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.nx-anim__cat{grid-column:1/-1;margin:9px 0 1px;font-size:9.5px;font-weight:700;
+.nx-anim__cat{grid-column:1/-1;margin:9px 0 1px;font-size:10px;font-weight:700;
   letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint)}
 .nx-anim__cat:first-child{margin-top:0}
 .nx-anim__btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
   min-height:60px;padding:9px 4px;border:1px solid var(--border);border-radius:9px;
-  background:var(--bg-2);color:var(--text-muted);font-size:9.5px;font-weight:600;line-height:1.2;
+  background:var(--bg-2);color:var(--text-muted);font-size:10px;font-weight:600;line-height:1.2;
   text-align:center;cursor:pointer;
   transition:border-color .14s var(--ease),background .14s var(--ease),color .14s var(--ease)}
 .nx-anim__btn i{font-size:15px;color:var(--p);transition:transform .18s var(--ease)}
@@ -4718,7 +4740,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 @media(max-width:1180px){.nx-anim{grid-template-columns:repeat(2,1fr)}}
 
 .nx-anim--4{grid-template-columns:repeat(4,1fr)}
-.nx-anim--4 .nx-anim__btn{min-height:52px;padding:7px 3px;font-size:9px}
+.nx-anim--4 .nx-anim__btn{min-height:54px;padding:7px 3px;font-size:10px}
 .nx-anim--4 .nx-anim__btn i{font-size:13px}
 .nx-anim__play--ghost{margin-top:12px;background:var(--bg-2);color:var(--text-muted);
   border:1px solid var(--border)}
@@ -4753,7 +4775,13 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
 .nx-lib>.cat-title{grid-column:1/-1}
 .nx-lib__vue{display:flex;align-items:center;justify-content:center;
   width:100%;height:40px;overflow:hidden;pointer-events:none}
-.nx-lib__item span{font-size:9.5px;line-height:1.25;text-align:center;
+/* La vignette n'est qu'un aperçu de 40 px. Les effets coûteux d'un
+   élément — flou d'arrière-plan, ombres portées, filtres — n'y changent
+   rien de visible mais coûtent une composition par vignette, et il y en
+   a plusieurs centaines. L'élément inséré, lui, les garde tous. */
+.nx-lib__vue *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:none!important;filter:none!important;animation:none!important;transition:none!important}
+.nx-lib__item span{font-size:10px;line-height:1.25;text-align:center;
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nx-lib__txt{justify-content:flex-start!important;padding:10px 12px!important}
 .nx-lib__txt b{font-size:12px;font-weight:600;color:var(--text)}
@@ -4780,7 +4808,7 @@ input[type=range].prop-input{padding:0;height:24px;background:transparent;border
   transition:background .12s var(--ease),color .12s var(--ease)}
 .layer-item:hover{background:var(--surface-hover);color:var(--text)}
 .layer-item.sel{background:var(--p-soft);border-color:var(--p-line);color:var(--p)}
-.layer-drag-handle{flex-shrink:0;font-size:9.5px;color:var(--text-faint);cursor:grab}
+.layer-drag-handle{flex-shrink:0;font-size:10px;color:var(--text-faint);cursor:grab}
 .layer-name{flex:1;min-width:0;font-size:11.5px;line-height:1.2;text-align:left;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .layer-item .layer-tools{flex-shrink:0;width:69px;justify-content:flex-end;
@@ -4907,16 +4935,16 @@ mark.nx-srch__hit.cur{background:var(--p);color:inherit;
         <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'shape-ribbon')"><i class="fas fa-ribbon"></i><span>Ruban</span></div>
         <!-- NEXUS v24 - Nouvelles formes de mise en page premium (10 ajouts non-destructifs) -->
         <div class="cat-title">Premium</div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','badge-star')" onclick="nxInsertForme('badge-star')" style="cursor:grab;"><div style="width:30px;height:30px;background:linear-gradient(135deg,var(--warn),#f59e0b);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);"></div><span style="font-size:9px;">Badge Étoile</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','badge-circle')" onclick="nxInsertForme('badge-circle')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--p-ink);font-size:10px;font-weight:bold;">%</div><span style="font-size:9px;">Badge Promo</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','banner-flag')" onclick="nxInsertForme('banner-flag')" style="cursor:grab;"><div style="width:35px;height:20px;background:var(--p3);clip-path:polygon(0 0,100% 0,90% 50%,100% 100%,0 100%);"></div><span style="font-size:9px;">Bannière Flag</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','banner-tape')" onclick="nxInsertForme('banner-tape')" style="cursor:grab;"><div style="width:35px;height:20px;background:var(--p2);clip-path:polygon(10% 0,90% 0,100% 50%,90% 100%,10% 100%,0 50%);"></div><span style="font-size:9px;">Ruban Cinema</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','splat')" onclick="nxInsertForme('splat')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p);border-radius:48% 32% 47% 53% / 36% 50% 50% 64%;"></div><span style="font-size:9px;">Tâche / Blob</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','quote-bubble')" onclick="nxInsertForme('quote-bubble')" style="cursor:grab;"><div style="width:35px;height:25px;background:#fff;border-radius:8px;color:#000;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:serif;">"</div><span style="font-size:9px;">Bulle Citation</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','frame-polaroid')" onclick="nxInsertForme('frame-polaroid')" style="cursor:grab;"><div style="width:25px;height:30px;background:#fff;padding:3px 3px 8px 3px;box-sizing:border-box;"><div style="width:100%;height:100%;background:#888;"></div></div><span style="font-size:9px;">Polaroid</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','burst-12')" onclick="nxInsertForme('burst-12')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p2);clip-path:polygon(50% 0,55% 25%,80% 25%,60% 40%,75% 65%,55% 55%,50% 100%,45% 55%,25% 65%,40% 40%,20% 25%,45% 25%);"></div><span style="font-size:9px;">Sunburst</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','chevron')" onclick="nxInsertForme('chevron')" style="cursor:grab;"><div style="width:30px;height:20px;background:var(--p);clip-path:polygon(0 0,75% 0,100% 50%,75% 100%,0 100%,25% 50%);"></div><span style="font-size:9px;">Chevron</span></div>
-        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','grid-pattern')" onclick="nxInsertForme('grid-pattern')" style="cursor:grab;"><div style="width:30px;height:30px;background-image:linear-gradient(var(--p-line) 1px,transparent 1px),linear-gradient(90deg,var(--p-line) 1px,transparent 1px);background-size:8px 8px;background-color:var(--bg-2);"></div><span style="font-size:9px;">Grille Pattern</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','badge-star')" onclick="nxInsertForme('badge-star')" style="cursor:grab;"><div style="width:30px;height:30px;background:linear-gradient(135deg,var(--warn),#f59e0b);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);"></div><span style="font-size:10px;">Badge Étoile</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','badge-circle')" onclick="nxInsertForme('badge-circle')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--p-ink);font-size:10px;font-weight:bold;">%</div><span style="font-size:10px;">Badge Promo</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','banner-flag')" onclick="nxInsertForme('banner-flag')" style="cursor:grab;"><div style="width:35px;height:20px;background:var(--p3);clip-path:polygon(0 0,100% 0,90% 50%,100% 100%,0 100%);"></div><span style="font-size:10px;">Bannière Flag</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','banner-tape')" onclick="nxInsertForme('banner-tape')" style="cursor:grab;"><div style="width:35px;height:20px;background:var(--p2);clip-path:polygon(10% 0,90% 0,100% 50%,90% 100%,10% 100%,0 50%);"></div><span style="font-size:10px;">Ruban Cinema</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','splat')" onclick="nxInsertForme('splat')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p);border-radius:48% 32% 47% 53% / 36% 50% 50% 64%;"></div><span style="font-size:10px;">Tâche / Blob</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','quote-bubble')" onclick="nxInsertForme('quote-bubble')" style="cursor:grab;"><div style="width:35px;height:25px;background:#fff;border-radius:8px;color:#000;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:serif;">"</div><span style="font-size:10px;">Bulle Citation</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','frame-polaroid')" onclick="nxInsertForme('frame-polaroid')" style="cursor:grab;"><div style="width:25px;height:30px;background:#fff;padding:3px 3px 8px 3px;box-sizing:border-box;"><div style="width:100%;height:100%;background:#888;"></div></div><span style="font-size:10px;">Polaroid</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','burst-12')" onclick="nxInsertForme('burst-12')" style="cursor:grab;"><div style="width:30px;height:30px;background:var(--p2);clip-path:polygon(50% 0,55% 25%,80% 25%,60% 40%,75% 65%,55% 55%,50% 100%,45% 55%,25% 65%,40% 40%,20% 25%,45% 25%);"></div><span style="font-size:10px;">Sunburst</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','chevron')" onclick="nxInsertForme('chevron')" style="cursor:grab;"><div style="width:30px;height:20px;background:var(--p);clip-path:polygon(0 0,75% 0,100% 50%,75% 100%,0 100%,25% 50%);"></div><span style="font-size:10px;">Chevron</span></div>
+        <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'nx-forme','grid-pattern')" onclick="nxInsertForme('grid-pattern')" style="cursor:grab;"><div style="width:30px;height:30px;background-image:linear-gradient(var(--p-line) 1px,transparent 1px),linear-gradient(90deg,var(--p-line) 1px,transparent 1px);background-size:8px 8px;background-color:var(--bg-2);"></div><span style="font-size:10px;">Grille Pattern</span></div>
         <!-- NEXUS v25 - BLOCS PRÊTS À POSER (sections complètes, drag-drop) -->
         <div class="cat-title">📦 Blocs prêts à poser</div>
         <div class="palette-item wide" draggable="true" ondragstart="paletteDrag(event,'nx-bloc','pricing-card')" onclick="window.nxInsertTemplate&&nxInsertTemplate('pricing-card')" style="cursor:grab;border-color:var(--warn);background:linear-gradient(135deg,var(--warn),var(--p-soft));"><i class="fas fa-tag" style="color:var(--warn);"></i> <span style="font-size:11px;">Carte Tarif (Pricing)</span></div>
@@ -5176,7 +5204,7 @@ mark.nx-srch__hit.cur{background:var(--p);color:inherit;
            Avantage : ne dépend pas du listener attaché à #mediaUploader (qui peut échouer
            si le script est interrompu par une erreur ailleurs). Toujours fonctionnel. -->
       <button class="btn-neon" onclick="targetMediaNode=null; window.nx26PickFile && window.nx26PickFile()">+ <span data-fr="Uploader depuis le PC" data-en="Upload from PC">Uploader depuis le PC</span></button>
-      <button class="btn-neon" style="margin-top:5px;font-size:10px;background:var(--p-soft);" onclick="document.getElementById('mediaUploader') && document.getElementById('mediaUploader').click()" title="Méthode legacy"><i class="fas fa-redo" style="font-size:9px;"></i> Méthode classique</button>
+      <button class="btn-neon" style="margin-top:5px;font-size:10px;background:var(--p-soft);" onclick="document.getElementById('mediaUploader') && document.getElementById('mediaUploader').click()" title="Méthode legacy"><i class="fas fa-redo" style="font-size:10px;"></i> Méthode classique</button>
       <p style="font-size:10px; color:var(--text-muted); margin-top:5px; text-align:center;">Vous pouvez aussi glisser-déposer des fichiers directement sur cette fenêtre.</p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:15px;" id="uploadsGrid">
         <p style="grid-column: 1 / -1; font-size:11px; color:var(--text-muted); text-align:center;">Aucun média local.</p>
@@ -6761,10 +6789,15 @@ function loadIntoIframe(html) {
 }
 function setupIframeEvents(doc) {
   const overlay = doc.getElementById('dc-overlay');
-  function upOv() { 
+  function upOv() {
+      const ov = (overlay && overlay.isConnected) ? overlay : doc.getElementById('dc-overlay');
+      const fm = document.getElementById('floatMenu');
+      if(!ov) return;
+      if(window.selNodes && window.selNodes.length)
+          window.selNodes = window.selNodes.filter(n => n && n.isConnected);
       if(!window.selNodes || window.selNodes.length === 0 || !isEditMode){
-          overlay.classList.remove('active');
-          document.getElementById('floatMenu').classList.add('hidden');
+          ov.classList.remove('active');
+          if(fm) fm.classList.add('hidden');
           return;
       } 
       let minT = Infinity, minL = Infinity, maxB = -Infinity, maxR = -Infinity;
@@ -6775,11 +6808,12 @@ function setupIframeEvents(doc) {
           if(r.bottom > maxB) maxB = r.bottom;
           if(r.right > maxR) maxR = r.right;
       });
-      overlay.style.top = (minT + doc.defaultView.scrollY) + 'px';
-      overlay.style.left = (minL + doc.defaultView.scrollX) + 'px';
-      overlay.style.width = (maxR - minL) + 'px';
-      overlay.style.height = (maxB - minT) + 'px';
-      const mbar = doc.getElementById('dc-mbar');
+      ov.style.top = (minT + doc.defaultView.scrollY) + 'px';
+      ov.style.left = (minL + doc.defaultView.scrollX) + 'px';
+      ov.style.width = (maxR - minL) + 'px';
+      ov.style.height = (maxB - minT) + 'px';
+      const mbar = doc.getElementById('dc-mbar') || ov.appendChild(
+          Object.assign(doc.createElement('div'), { id: 'dc-mbar' }));
       if(window.selNodes.length === 1 && window.selNodes[0].tagName.toLowerCase() === 'section') {
           mbar.innerHTML = \`<span id="dc-sec-drag" style="cursor:grab; padding:0 5px;" title="Glisser pour réorganiser"><i class="fas fa-grip-vertical"></i></span> <span style="font-weight:bold; margin-right:auto;">Section</span> <i class="fas fa-arrow-up" style="cursor:pointer; padding:0 5px;" title="Monter" onmousedown="event.stopPropagation(); window.moveSectionUp()"></i> <i class="fas fa-arrow-down" style="cursor:pointer; padding:0 5px;" title="Descendre" onmousedown="event.stopPropagation(); window.moveSectionDown()"></i>\`;
           mbar.setAttribute('draggable', 'true');
@@ -6791,9 +6825,9 @@ function setupIframeEvents(doc) {
           mbar.setAttribute('draggable', 'false');
       }
       doc.querySelectorAll('.dc-rh').forEach(rh => rh.style.display = window.selNodes.length > 1 ? 'none' : 'block');
-      overlay.classList.add('active'); 
-      if(window.selNodes.length === 1 && window.positionFloatMenu) window.positionFloatMenu(); 
-      else document.getElementById('floatMenu').classList.add('hidden');
+      ov.classList.add('active');
+      if(window.selNodes.length === 1 && window.positionFloatMenu) window.positionFloatMenu();
+      else if(fm) fm.classList.add('hidden');
   }
   window.forceUpOv = upOv;
   const handleIframeArrows = e => { 
@@ -6864,7 +6898,28 @@ function setupIframeEvents(doc) {
   doc.addEventListener('mouseup', finishSelection);
   doc.defaultView.addEventListener('mouseup', finishSelection);
   doc.defaultView.addEventListener('mouseleave', finishSelection);
-  const mbar = doc.getElementById('dc-mbar');
+  const mbar = (function(){
+      let m = doc.getElementById('dc-mbar');
+      if(m) return m;
+      let ov = doc.getElementById('dc-overlay');
+      if(!ov){
+          ov = doc.createElement('div');
+          ov.id = 'dc-overlay';
+          ['nw','n','ne','e','se','s','sw','w'].forEach(function(d){
+              const h = doc.createElement('div');
+              h.className = 'dc-rh rh-' + d;
+              h.setAttribute('data-d', d);
+              ov.appendChild(h);
+          });
+          (doc.body || doc.documentElement).appendChild(ov);
+      }
+      m = doc.createElement('div');
+      m.className = 'dc-mbar';
+      m.id = 'dc-mbar';
+      m.innerHTML = '<i class="fas fa-crosshairs"></i> Déplacer';
+      ov.insertBefore(m, ov.firstChild);
+      return m;
+  })();
   let dragSec = null;
   mbar.ondragstart = (e) => {
       if(window.selNodes.length === 1 && window.selNodes[0].tagName.toLowerCase() === 'section') {
@@ -8708,18 +8763,18 @@ window.toggleSmartDrop = function(){
     window._nxSmartDrop = !window._nxSmartDrop;
     const btn = document.getElementById('btnSmartDrop');
     if(!btn) return;
+    btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = '';
+    btn.classList.toggle('on', !!window._nxSmartDrop);
+    btn.classList.toggle('libre', !window._nxSmartDrop);
+    btn.setAttribute('aria-pressed', window._nxSmartDrop ? 'true' : 'false');
     if(window._nxSmartDrop){
-        btn.style.background = 'var(--p-soft)';
-        btn.style.borderColor = 'var(--ok)';
-        btn.style.color = 'var(--ok)';
-        btn.innerHTML = '<i class="fas fa-brain"></i> SMART';
-        if(typeof toast === 'function') toast('Mode SMART activé : éléments adaptatifs (flow naturel)');
+        btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> <span class="hide-sm">Smart</span>';
+        btn.title = 'Mode Smart : les éléments s\\'insèrent dans le flux du document. Cliquez pour passer en placement libre.';
+        if(typeof toast === 'function') toast('Mode Smart : les éléments suivent le flux du document');
     } else {
-        btn.style.background = 'var(--surface)';
-        btn.style.borderColor = 'var(--border)';
-        btn.style.color = '#fff';
-        btn.innerHTML = '<i class="fas fa-crosshairs"></i> LIBRE';
-        if(typeof toast === 'function') toast('Mode LIBRE activé : positionnement pixel-précis');
+        btn.innerHTML = '<i class="fas fa-crosshairs"></i> <span class="hide-sm">Libre</span>';
+        btn.title = 'Mode Libre : placement au pixel près. Cliquez pour revenir au mode Smart.';
+        if(typeof toast === 'function') toast('Mode Libre : placement au pixel près');
     }
 };
 /* ═══════════════ Fin Smart Drop Toggle v47 ═══════════════ */
@@ -11889,7 +11944,9 @@ function nxStageHeight(force){
         var b = r.bottom + (d.defaultView.scrollY || 0);
         if(b > maxBottom) maxBottom = b;
       }
-      h = Math.max(base, Math.ceil(maxBottom + 40));
+      /* Même règle que la mesure rapide : la scène épouse le contenu,
+         avec un plancher pour qu'une page vide reste manipulable. */
+      h = Math.ceil(Math.max(360, maxBottom));
     }
   }catch(e){}
   _nxHCache = { at: now, vp: vp, h: h };
@@ -12005,7 +12062,12 @@ function nxFitShell(inner, w, h, title){
     + 'if(window.visualViewport){window.visualViewport.addEventListener("resize",fit);}'
     + 'f.addEventListener("load",function(){fit();setTimeout(fit,150);setTimeout(fit,600);});'
     + 'setTimeout(fit,300);'
-    + '})();<' + '/scr' + 'ipt></body></html>';
+    + '})();<' + '/scr' + 'ipt>'
+    /* Le cadre ne défile pas : sans ce second script, les ancres ne
+       mènent nulle part, un en-tête fixe disparaît au premier
+       défilement et une fenêtre modale s'ouvre hors de l'écran. */
+    + '<scr' + 'ipt data-nx-vie="1">' + (window.NX_SHELL_VIE || '') + '<' + '/scr' + 'ipt>'
+    + '</body></html>';
 }
 window.nxFitShell = nxFitShell;
 
@@ -13394,7 +13456,12 @@ function nxBuildTplPanel(){
     h += '</div>';
   });
   box.innerHTML = h;
-  panel.insertBefore(box, panel.firstChild.nextSibling);
+  /* Après l'en-tête, pas avant : \`firstChild\` est un nœud de texte, donc
+     \`firstChild.nextSibling\` visait l'en-tête lui-même et le titre du
+     panneau se retrouvait au milieu de la liste. */
+  var entete = panel.querySelector(':scope > .panel-header');
+  if(entete) panel.insertBefore(box, entete.nextSibling);
+  else panel.insertBefore(box, panel.firstChild);
 }
 
 /* Réception du glisser-déposer de template sur le plan de travail. */
@@ -13569,8 +13636,17 @@ function nxCheapStageHeight(){
       fr.style.height = base + 'px';
       void d.documentElement.offsetHeight;   /* force le recalcul */
 
-      /* 1. Le flux normal coûte une seule lecture. */
-      var bottom = Math.max(d.body.scrollHeight || 0, d.documentElement.scrollHeight || 0);
+      /* 1. Fin réelle du flux. On lit la boîte du corps, PAS scrollHeight :
+         scrollHeight vaut au minimum la hauteur du cadre, donc une page de
+         650 px mesurée dans un cadre de 1080 renvoyait 1080 — d'où une
+         scène toujours d'un écran de haut et un grand vide sous le pied de
+         page. La boîte du corps, elle, s'arrête où le contenu s'arrête. */
+      var sy0 = d.defaultView.scrollY || 0;
+      var br = d.body.getBoundingClientRect();
+      var bottom = br.bottom + sy0;
+      /* Un enfant qui déborde de la boîte du corps ne l'agrandit pas. */
+      if((d.body.scrollHeight || 0) > (d.body.clientHeight || 0))
+        bottom = Math.max(bottom, br.top + sy0 + d.body.scrollHeight);
 
       /* 2. Les éléments hors flux n'étendent pas scrollHeight. On ne
          scanne QUE ceux-là — quelques dizaines — au lieu du document
@@ -13586,7 +13662,11 @@ function nxCheapStageHeight(){
         var b = r.bottom + sy;
         if(b > bottom) bottom = b;
       }
-      h = Math.max(base, Math.ceil(bottom + 40));
+      /* La scène épouse le contenu. Une page courte donne une page
+         courte : le reste du plan de travail est du plan de travail,
+         pas une feuille blanche vide. */
+      var MINI = 360;
+      h = Math.ceil(Math.max(MINI, bottom));
 
       /* Garde-fou : une page dont la hauteur est écrite en vh n'a pas
          de hauteur d'équilibre. On borne plutôt que de laisser filer,
@@ -14808,7 +14888,92 @@ window.nxExportZip = async function(){
     'eclat':           { cat:'Décor', nom:'Éclat', tag:'div', text:'',
       css:'width:130px;height:130px;background:'+C.accent+';clip-path:polygon(50% 0,58% 26%,80% 12%,74% 38%,100% 50%,74% 62%,80% 88%,58% 74%,50% 100%,42% 74%,20% 88%,26% 62%,0 50%,26% 38%,20% 12%,42% 26%);'+abs },
     'vague':           { cat:'Décor', nom:'Vague', tag:'div', text:'',
-      css:'width:260px;height:70px;background:'+C.bleuClair+';border-radius:0 0 50% 50%/0 0 100% 100%;'+abs }
+      css:'width:260px;height:70px;background:'+C.bleuClair+';border-radius:0 0 50% 50%/0 0 100% 100%;'+abs },
+
+    /* Géométrie de base — celle qui manque toujours au moment précis
+       où l'on en a besoin. */
+    'geo-triangle':    { cat:'Géométrie', nom:'Triangle', tag:'div', text:'',
+      css:'width:140px;height:120px;background:'+C.accent+';clip-path:polygon(50% 0,100% 100%,0 100%);'+abs },
+    'geo-losange':     { cat:'Géométrie', nom:'Losange', tag:'div', text:'',
+      css:'width:130px;height:130px;background:'+C.bleu+';clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);'+abs },
+    'geo-hexagone':    { cat:'Géométrie', nom:'Hexagone', tag:'div', text:'',
+      css:'width:140px;height:122px;background:'+C.vert+';clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);'+abs },
+    'geo-pentagone':   { cat:'Géométrie', nom:'Pentagone', tag:'div', text:'',
+      css:'width:134px;height:128px;background:'+C.ambre+';clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%);'+abs },
+    'geo-octogone':    { cat:'Géométrie', nom:'Octogone', tag:'div', text:'',
+      css:'width:132px;height:132px;background:'+C.prune+';clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);'+abs },
+    'geo-parallelo':   { cat:'Géométrie', nom:'Parallélogramme', tag:'div', text:'',
+      css:'width:180px;height:100px;background:'+C.encre+';clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);'+abs },
+    'geo-trapeze':     { cat:'Géométrie', nom:'Trapèze', tag:'div', text:'',
+      css:'width:180px;height:104px;background:'+C.bleu+';clip-path:polygon(16% 0,84% 0,100% 100%,0 100%);'+abs },
+    'geo-croix':       { cat:'Géométrie', nom:'Croix', tag:'div', text:'',
+      css:'width:120px;height:120px;background:'+C.accent+';clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);'+abs },
+    'geo-coeur':       { cat:'Géométrie', nom:'Cœur', tag:'div', text:'',
+      css:'width:130px;height:120px;background:'+C.accent+';clip-path:path(\\'M65 118 L12 66 A31 31 0 0 1 65 26 A31 31 0 0 1 118 66 Z\\');'+abs },
+    'geo-goutte':      { cat:'Géométrie', nom:'Goutte', tag:'div', text:'',
+      css:'width:110px;height:130px;background:'+C.bleu+';border-radius:50% 50% 50% 50%/62% 62% 38% 38%;transform:rotate(45deg);'+abs },
+    'geo-anneau':      { cat:'Géométrie', nom:'Anneau épais', tag:'div', text:'',
+      css:'width:140px;height:140px;border:22px solid '+C.ambre+';border-radius:50%;'+abs },
+    'geo-arc':         { cat:'Géométrie', nom:'Arc', tag:'div', text:'',
+      css:'width:160px;height:80px;border:14px solid '+C.accent+';border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-radius:160px 160px 0 0;'+abs },
+
+    /* Fonds et matières */
+    'fond-degrade':    { cat:'Matières', nom:'Dégradé', tag:'div', text:'',
+      css:'width:260px;height:180px;border-radius:16px;background:linear-gradient(135deg,'+C.accent+','+C.prune+');'+abs },
+    'fond-degrade-doux':{ cat:'Matières', nom:'Dégradé doux', tag:'div', text:'',
+      css:'width:260px;height:180px;border-radius:16px;background:linear-gradient(160deg,'+C.accentClair+','+C.bleuClair+');'+abs },
+    'fond-radial':     { cat:'Matières', nom:'Halo', tag:'div', text:'',
+      css:'width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 35% 30%,'+C.accentClair+',rgba(184,53,28,.05) 70%);'+abs },
+    'fond-verre':      { cat:'Matières', nom:'Verre dépoli', tag:'div', text:'',
+      css:'width:260px;height:160px;border-radius:18px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.75);backdrop-filter:blur(14px);box-shadow:0 18px 44px rgba(20,18,16,.12);'+abs },
+    'fond-quadrillage':{ cat:'Matières', nom:'Quadrillage', tag:'div', text:'',
+      css:'width:200px;height:200px;background-image:linear-gradient('+C.trait+' 1px,transparent 1px),linear-gradient(90deg,'+C.trait+' 1px,transparent 1px);background-size:20px 20px;'+abs },
+    'fond-chevrons':   { cat:'Matières', nom:'Chevrons', tag:'div', text:'',
+      css:'width:200px;height:200px;background:repeating-linear-gradient(-45deg,'+C.bleuClair+' 0 12px,'+C.blanc+' 12px 24px);'+abs },
+    'fond-bruit':      { cat:'Matières', nom:'Grain', tag:'div', text:'',
+      css:'width:200px;height:200px;border-radius:14px;background:'+C.fond+';background-image:radial-gradient('+C.trait2+' .8px,transparent .8px),radial-gradient('+C.trait2+' .8px,transparent .8px);background-size:7px 7px;background-position:0 0,3.5px 3.5px;'+abs },
+    'ombre-portee':    { cat:'Matières', nom:'Carte ombrée', tag:'div', text:'',
+      css:'width:240px;height:150px;border-radius:16px;background:'+C.blanc+';box-shadow:0 26px 60px rgba(20,18,16,.18);'+abs },
+
+    /* Flèches et repères */
+    'fleche-gauche':   { cat:'Traits', nom:'Flèche gauche', tag:'div', text:'',
+      css:'width:180px;height:34px;background:'+C.encre+';clip-path:polygon(100% 36%,26% 36%,26% 6%,0 50%,26% 94%,26% 64%,100% 64%);'+abs },
+    'fleche-haut':     { cat:'Traits', nom:'Flèche haut', tag:'div', text:'',
+      css:'width:34px;height:160px;background:'+C.encre+';clip-path:polygon(36% 100%,36% 26%,6% 26%,50% 0,94% 26%,64% 26%,64% 100%);'+abs },
+    'fleche-double':   { cat:'Traits', nom:'Double flèche', tag:'div', text:'',
+      css:'width:200px;height:30px;background:'+C.bleu+';clip-path:polygon(0 50%,16% 0,16% 32%,84% 32%,84% 0,100% 50%,84% 100%,84% 68%,16% 68%,16% 100%);'+abs },
+    'fleche-coude':    { cat:'Traits', nom:'Flèche coudée', tag:'div', text:'',
+      css:'width:140px;height:110px;border-left:3px solid '+C.encre+';border-bottom:3px solid '+C.encre+';border-bottom-left-radius:16px;'+abs },
+    'trait-vertical':  { cat:'Traits', nom:'Trait vertical', tag:'div', text:'',
+      css:'width:2px;height:220px;background:'+C.trait2+';'+abs },
+    'accolade':        { cat:'Traits', nom:'Accolade', tag:'div', text:'{',
+      css:'font:300 140px/1 Georgia,serif;color:'+C.trait2+';'+abs },
+    'puce-numero':     { cat:'Traits', nom:'Puce numérotée', tag:'div', text:'1',
+      css:'width:42px;height:42px;border-radius:50%;background:'+C.encre+';color:#fff;display:flex;align-items:center;justify-content:center;font:700 17px/1 Inter,sans-serif;'+abs },
+
+    /* Petits graphiques, sans bibliothèque */
+    'graph-barres':    { cat:'Graphiques', nom:'Barres', tag:'div', isHtml:true,
+      text:'<div style="display:flex;align-items:flex-end;gap:10px;height:100%">'
+        + [46,78,58,96,70,88].map(function(h){ return '<div style="flex:1;height:'+h+'%;border-radius:5px 5px 0 0;background:'+C.accent+'"></div>'; }).join('')
+        + '</div>',
+      css:'width:240px;height:150px;'+abs },
+    'graph-anneau':    { cat:'Graphiques', nom:'Anneau', tag:'div', text:'',
+      css:'width:150px;height:150px;border-radius:50%;background:conic-gradient('+C.accent+' 0 68%,'+C.trait+' 68% 100%);mask:radial-gradient(circle,transparent 54%,#000 55%);-webkit-mask:radial-gradient(circle,transparent 54%,#000 55%);'+abs },
+    'graph-jauge':     { cat:'Graphiques', nom:'Jauge', tag:'div', isHtml:true,
+      text:'<div style="height:100%;width:62%;border-radius:999px;background:'+C.vert+'"></div>',
+      css:'width:260px;height:14px;border-radius:999px;background:'+C.trait+';overflow:hidden;'+abs },
+    'graph-sparkline': { cat:'Graphiques', nom:'Courbe', tag:'div', isHtml:true,
+      text:'<svg viewBox="0 0 120 40" preserveAspectRatio="none" style="width:100%;height:100%">'
+        + '<polyline points="0,32 20,24 40,28 60,14 80,18 100,6 120,10" fill="none" stroke="'+C.accent+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      css:'width:220px;height:70px;'+abs },
+    'graph-points':    { cat:'Graphiques', nom:'Étapes', tag:'div', isHtml:true,
+      text:'<div style="display:flex;align-items:center;gap:0;width:100%">'
+        + [1,2,3].map(function(n,i){
+            return (i? '<div style="flex:1;height:3px;background:'+C.trait+'"></div>':'')
+              + '<div style="width:30px;height:30px;border-radius:50%;background:'+(n===1?C.accent:C.trait)+';color:'+(n===1?'#fff':C.encre3)+';display:grid;place-items:center;font:700 13px/1 Inter,sans-serif">'+n+'</div>';
+          }).join('')
+        + '</div>',
+      css:'width:260px;'+abs }
   };
 
   /* ── Presets de texte ────────────────────────────────────── */
@@ -14848,7 +15013,56 @@ window.nxExportZip = async function(){
     'bouton-rond':   { cat:'Boutons', nom:'Bouton pilule', tag:'a', text:'Nous écrire',
       css:'display:inline-block;padding:14px 32px;border-radius:999px;background:'+C.encre+';color:#fff;font:600 15px/1 Inter,sans-serif;text-decoration:none;'+abs },
     'lien-souligne': { cat:'Boutons', nom:'Lien souligné', tag:'a', text:'Lire la suite →',
-      css:'font:600 15px/1 Inter,sans-serif;color:'+C.accent+';text-decoration:none;border-bottom:2px solid '+C.accentClair+';padding-bottom:3px;'+abs }
+      css:'font:600 15px/1 Inter,sans-serif;color:'+C.accent+';text-decoration:none;border-bottom:2px solid '+C.accentClair+';padding-bottom:3px;'+abs },
+    'bouton-icone':  { cat:'Boutons', nom:'Bouton à icône', tag:'a', isHtml:true,
+      text:'<span style="font:700 15px/1 Inter,sans-serif">↓</span><span style="font:600 15px/1 Inter,sans-serif">Télécharger</span>',
+      css:'display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:10px;background:'+C.encre+';color:#fff;text-decoration:none;'+abs },
+    'bouton-double': { cat:'Boutons', nom:'Deux boutons', tag:'div', isHtml:true,
+      text:'<a href="#" style="padding:14px 28px;border-radius:10px;background:'+C.accent+';color:#fff;font:600 15px/1 Inter,sans-serif;text-decoration:none">Commencer</a>'
+        + '<a href="#" style="padding:14px 28px;border-radius:10px;border:1px solid '+C.trait2+';color:'+C.encre+';font:600 15px/1 Inter,sans-serif;text-decoration:none">Voir la démo</a>',
+      css:'display:inline-flex;gap:12px;'+abs },
+    'bouton-fantome':{ cat:'Boutons', nom:'Bouton discret', tag:'a', text:'Annuler',
+      css:'display:inline-block;padding:13px 26px;border-radius:10px;background:'+C.fond+';color:'+C.encre2+';font:600 15px/1 Inter,sans-serif;text-decoration:none;'+abs },
+
+    'titre-lettrine':{ cat:'Titres', nom:'Lettrine', tag:'p', isHtml:true,
+      text:'<span style="float:left;font:700 64px/.82 Georgia,serif;color:'+C.accent+';margin:4px 12px 0 0">A</span>'
+        + 'u commencement, un paragraphe ordinaire que la première lettre vient habiller. La lettrine tient sur trois lignes et rend tout de suite le texte plus soigné.',
+      css:'width:420px;font:400 16px/1.7 Inter,sans-serif;color:'+C.encre2+';margin:0;'+abs },
+    'titre-surligne':{ cat:'Titres', nom:'Titre surligné', tag:'h2', text:'Ce qui compte',
+      css:'font:700 40px/1.3 Inter,sans-serif;letter-spacing:-.025em;color:'+C.encre+';margin:0;background:linear-gradient(transparent 62%,'+C.accentClair+' 62%);display:inline;'+abs },
+    'titre-degrade': { cat:'Titres', nom:'Titre dégradé', tag:'h1', text:'Sans limite',
+      css:'font:800 58px/1.05 Inter,sans-serif;letter-spacing:-.035em;margin:0;background:linear-gradient(100deg,'+C.accent+','+C.prune+');-webkit-background-clip:text;background-clip:text;color:'+C.accent+';-webkit-text-fill-color:transparent;'+abs },
+    'titre-barre':   { cat:'Titres', nom:'Titre à filet', tag:'h2', text:'Nos services',
+      css:'font:700 34px/1.25 Inter,sans-serif;letter-spacing:-.02em;color:'+C.encre+';margin:0;padding-bottom:14px;border-bottom:3px solid '+C.accent+';display:inline-block;'+abs },
+
+    'texte-prix':    { cat:'Corps de texte', nom:'Prix', tag:'div', isHtml:true,
+      text:'<span style="font:800 46px/1 Inter,sans-serif;letter-spacing:-.04em;color:'+C.encre+'">49 €</span>'
+        + '<span style="font:400 15px/1 Inter,sans-serif;color:'+C.encre3+'"> / mois</span>'
+        + '<div style="font:400 13px/1.5 Inter,sans-serif;color:'+C.encre3+';margin-top:6px;text-decoration:line-through">79 € auparavant</div>',
+      css:'text-align:left;'+abs },
+    'texte-note':    { cat:'Corps de texte', nom:'Note en bas', tag:'p', text:'Offre valable jusqu\\'au 31 décembre. Sans engagement.',
+      css:'font:400 12px/1.6 Inter,sans-serif;color:'+C.encre3+';margin:0;max-width:52ch;'+abs },
+    'texte-etoiles': { cat:'Corps de texte', nom:'Note étoilée', tag:'div', isHtml:true,
+      text:'<span style="color:'+C.ambre+';font:400 20px/1 Inter,sans-serif;letter-spacing:2px">★★★★★</span>'
+        + '<span style="font:500 14px/1 Inter,sans-serif;color:'+C.encre3+';margin-left:10px">4,9 sur 212 avis</span>',
+      css:'display:flex;align-items:center;'+abs },
+    'texte-liste':   { cat:'Corps de texte', nom:'Liste à puces', isHtml:true, tag:'ul',
+      text:['Un premier point, court.','Un deuxième, un peu plus long pour voir le retour à la ligne.','Un troisième pour finir.']
+        .map(function(l){ return '<li style="margin-bottom:9px">'+l+'</li>'; }).join(''),
+      css:'width:340px;font:400 15px/1.65 Inter,sans-serif;color:'+C.encre2+';margin:0;padding-left:20px;'+abs },
+    'texte-code':    { cat:'Corps de texte', nom:'Bloc de code', isHtml:true, tag:'pre',
+      text:'&lt;section class="accueil"&gt;\\n  &lt;h1&gt;Votre titre&lt;/h1&gt;\\n&lt;/section&gt;',
+      css:'width:400px;background:'+C.nuit+';color:#e8e4de;padding:20px 22px;border-radius:12px;font:500 13.5px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;margin:0;overflow:auto;'+abs },
+    'texte-marque':  { cat:'Corps de texte', nom:'Texte marqué', tag:'span', text:'à retenir',
+      css:'font:600 15px/1 Inter,sans-serif;color:'+C.encre+';background:'+C.accentClair+';padding:5px 10px;border-radius:5px;'+abs },
+    'texte-duo':     { cat:'Corps de texte', nom:'Libellé et valeur', tag:'div', isHtml:true,
+      text:'<div style="font:500 12px/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:'+C.encre3+';margin-bottom:7px">Délai moyen</div>'
+        + '<div style="font:700 26px/1.2 Inter,sans-serif;color:'+C.encre+'">48 heures</div>',
+      css:abs },
+    'texte-signature':{ cat:'Corps de texte', nom:'Signature', tag:'div', isHtml:true,
+      text:'<div style="font:600 15px/1.3 Inter,sans-serif;color:'+C.encre+'">Prénom Nom</div>'
+        + '<div style="font:400 13px/1.5 Inter,sans-serif;color:'+C.encre3+'">Fonction · Entreprise</div>',
+      css:abs }
   };
 
   /* ── Blocs composés ──────────────────────────────────────── */
@@ -14982,6 +15196,178 @@ window.nxExportZip = async function(){
                 + '<div style="font:400 14px/1.6 Inter,sans-serif;color:'+C.encre3+'">'+s[2]+'</div></div>';
             }).join('')
         + '</div>'
+    },
+
+    'bloc-faq': {
+      nom:'Questions fréquentes',
+      css:'width:620px;'+abs,
+      html:[['Puis-je importer un site existant ?','Oui, n\\'importe quel fichier HTML.'],
+            ['L\\'export est-il vraiment complet ?','HTML, CSS et JS séparés, prêts à mettre en ligne.'],
+            ['Faut-il savoir coder ?','Non, mais le code reste accessible si vous le voulez.']]
+        .map(function(q){
+          return '<div style="padding:20px 0;border-bottom:1px solid '+C.trait+'">'
+            + '<div style="font:600 16px/1.4 Inter,sans-serif;color:'+C.encre+';margin-bottom:7px">'+q[0]+'</div>'
+            + '<div style="font:400 14.5px/1.65 Inter,sans-serif;color:'+C.encre3+'">'+q[1]+'</div></div>';
+        }).join('')
+    },
+
+    'bloc-produit': Object.assign(carte(
+      '<div style="aspect-ratio:4/3;border-radius:12px;background:'+C.fond+';margin-bottom:18px"></div>'
+      + '<div style="font:600 12px/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:'+C.encre3+';margin-bottom:8px">Catégorie</div>'
+      + '<h3 style="font:700 19px/1.3 Inter,sans-serif;color:'+C.encre+';margin:0 0 10px">Nom du produit</h3>'
+      + '<div style="display:flex;align-items:center;justify-content:space-between">'
+      + '<span style="font:800 22px/1 Inter,sans-serif;color:'+C.encre+'">39 €</span>'
+      + '<a href="#" style="padding:10px 18px;border-radius:8px;background:'+C.accent+';color:#fff;font:600 13.5px/1 Inter,sans-serif;text-decoration:none">Ajouter</a></div>', 300),
+      { nom:'Fiche produit' }),
+
+    'bloc-profil': Object.assign(carte(
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">'
+      + '<div style="width:56px;height:56px;border-radius:50%;background:'+C.bleuClair+'"></div>'
+      + '<div><div style="font:700 17px/1.3 Inter,sans-serif;color:'+C.encre+'">Prénom Nom</div>'
+      + '<div style="font:400 13.5px/1.4 Inter,sans-serif;color:'+C.encre3+'">Métier, ville</div></div></div>'
+      + '<p style="font:400 14.5px/1.65 Inter,sans-serif;color:'+C.encre2+';margin:0 0 18px">Deux phrases de présentation, le temps de se faire une idée.</p>'
+      + '<a href="#" style="display:inline-block;padding:11px 20px;border-radius:9px;border:1px solid '+C.trait2+';color:'+C.encre+';font:600 14px/1 Inter,sans-serif;text-decoration:none">Voir le profil</a>', 340),
+      { nom:'Carte profil' }),
+
+    'bloc-alerte': {
+      nom:'Message d\\'alerte',
+      css:'width:520px;background:'+C.accentClair+';border-left:4px solid '+C.accent+';border-radius:10px;padding:18px 22px;'+abs,
+      html:'<div style="font:600 14.5px/1.4 Inter,sans-serif;color:'+C.accent+';margin-bottom:5px">Attention</div>'
+        + '<div style="font:400 14px/1.6 Inter,sans-serif;color:'+C.encre2+'">Une ligne pour dire ce qui se passe et ce qu\\'il faut faire.</div>'
+    },
+
+    'bloc-recherche': {
+      nom:'Barre de recherche',
+      css:'width:480px;display:flex;gap:10px;'+abs,
+      html:'<input placeholder="Rechercher…" style="flex:1;padding:14px 18px;border:1px solid '+C.trait2+';border-radius:10px;font:400 15px/1 Inter,sans-serif;color:'+C.encre+'">'
+        + '<button style="padding:14px 24px;border:0;border-radius:10px;background:'+C.encre+';color:#fff;font:600 15px/1 Inter,sans-serif;cursor:pointer">Chercher</button>'
+    },
+
+    'bloc-onglets': {
+      nom:'Onglets',
+      css:'width:520px;'+abs,
+      html:'<div style="display:flex;gap:4px;border-bottom:1px solid '+C.trait+'">'
+        + ['Description','Caractéristiques','Avis'].map(function(t,i){
+            return '<div style="padding:13px 20px;font:600 14.5px/1 Inter,sans-serif;'
+              + (i===0 ? 'color:'+C.accent+';border-bottom:2px solid '+C.accent+';margin-bottom:-1px'
+                       : 'color:'+C.encre3)
+              + '">'+t+'</div>';
+          }).join('')
+        + '</div><div style="padding:22px 4px;font:400 14.5px/1.7 Inter,sans-serif;color:'+C.encre2+'">Le contenu du premier onglet.</div>'
+    },
+
+    'bloc-fil': {
+      nom:'Fil d\\'Ariane',
+      css:'display:flex;align-items:center;gap:10px;font:400 13.5px/1 Inter,sans-serif;color:'+C.encre3+';'+abs,
+      html:['Accueil','Catalogue','Fiche'].map(function(x,i){
+        return (i? '<span style="color:'+C.trait2+'">/</span>':'')
+          + '<span style="'+(i===2?'color:'+C.encre+';font-weight:600':'')+'">'+x+'</span>';
+      }).join('')
+    },
+
+    'bloc-chronologie': {
+      nom:'Chronologie',
+      css:'width:480px;'+abs,
+      html:[['2024','Premier prototype'],['2025','Ouverture au public'],['2026','Trois mille projets']]
+        .map(function(e,i,a){
+          return '<div style="display:flex;gap:18px">'
+            + '<div style="display:flex;flex-direction:column;align-items:center">'
+            + '<div style="width:13px;height:13px;border-radius:50%;background:'+C.accent+'"></div>'
+            + (i<a.length-1 ? '<div style="flex:1;width:2px;background:'+C.trait+'"></div>' : '')
+            + '</div>'
+            + '<div style="padding-bottom:26px"><div style="font:600 12.5px/1 Inter,sans-serif;letter-spacing:.08em;color:'+C.accent+';margin-bottom:6px">'+e[0]+'</div>'
+            + '<div style="font:500 15.5px/1.5 Inter,sans-serif;color:'+C.encre+'">'+e[1]+'</div></div></div>';
+        }).join('')
+    },
+
+    'bloc-logos': {
+      nom:'Bandeau de références',
+      css:'width:760px;padding:30px 0;'+abs,
+      html:'<div style="font:500 12px/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:'+C.encre3+';text-align:center;margin-bottom:24px">Ils nous font confiance</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:22px;align-items:center">'
+        + [1,2,3,4,5].map(function(){ return '<div style="height:34px;border-radius:7px;background:'+C.fond+'"></div>'; }).join('')
+        + '</div>'
+    },
+
+    'bloc-video': {
+      nom:'Vidéo',
+      css:'width:640px;aspect-ratio:16/9;border-radius:16px;background:'+C.nuit+';display:grid;place-items:center;'+abs,
+      html:'<div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.14);display:grid;place-items:center">'
+        + '<div style="width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px"></div></div>'
+    },
+
+    'bloc-carte-contact': Object.assign(carte(
+      '<h3 style="font:700 19px/1.3 Inter,sans-serif;color:'+C.encre+';margin:0 0 16px">Nous trouver</h3>'
+      + [['Adresse','12 rue des Ateliers, 75011 Paris'],['Téléphone','01 23 45 67 89'],['Courriel','bonjour@exemple.fr']]
+        .map(function(l){
+          return '<div style="margin-bottom:13px"><div style="font:500 12px/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:'+C.encre3+';margin-bottom:4px">'+l[0]+'</div>'
+            + '<div style="font:400 15px/1.5 Inter,sans-serif;color:'+C.encre+'">'+l[1]+'</div></div>';
+        }).join(''), 320),
+      { nom:'Coordonnées' }),
+
+    'bloc-cookies': {
+      nom:'Bandeau cookies',
+      css:'width:660px;background:'+C.blanc+';border:1px solid '+C.trait+';border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:20px;box-shadow:0 16px 40px rgba(20,18,16,.1);'+abs,
+      html:'<div style="flex:1;font:400 14px/1.6 Inter,sans-serif;color:'+C.encre2+'">Ce site utilise des cookies de mesure d\\'audience. Vous pouvez refuser sans perdre de fonctionnalité.</div>'
+        + '<button style="padding:11px 18px;border:1px solid '+C.trait2+';border-radius:9px;background:'+C.blanc+';color:'+C.encre+';font:600 14px/1 Inter,sans-serif;cursor:pointer">Refuser</button>'
+        + '<button style="padding:11px 18px;border:0;border-radius:9px;background:'+C.accent+';color:#fff;font:600 14px/1 Inter,sans-serif;cursor:pointer">Accepter</button>'
+    },
+
+    'bloc-comparatif': {
+      nom:'Deux colonnes comparées',
+      css:'width:700px;display:grid;grid-template-columns:1fr 1fr;gap:20px;'+abs,
+      html:[['Avant','Trois outils, deux exports, un fichier perdu par semaine.',C.fond,C.encre2],
+            ['Après','Un seul fichier, modifiable de trois façons.',C.accentClair,C.accent]]
+        .map(function(c){
+          return '<div style="background:'+c[2]+';border-radius:14px;padding:26px">'
+            + '<div style="font:700 15px/1 Inter,sans-serif;color:'+c[3]+';margin-bottom:12px">'+c[0]+'</div>'
+            + '<div style="font:400 14.5px/1.65 Inter,sans-serif;color:'+C.encre2+'">'+c[1]+'</div></div>';
+        }).join('')
+    },
+
+    'bloc-infolettre': {
+      nom:'Inscription à l\\'infolettre',
+      css:'width:560px;background:'+C.fond+';border-radius:16px;padding:32px;'+abs,
+      html:'<h3 style="font:700 21px/1.3 Inter,sans-serif;color:'+C.encre+';margin:0 0 8px">Une fois par mois, pas plus</h3>'
+        + '<p style="font:400 14.5px/1.6 Inter,sans-serif;color:'+C.encre3+';margin:0 0 20px">Les nouveautés, sans le bruit.</p>'
+        + '<div style="display:flex;gap:10px">'
+        + '<input placeholder="Votre adresse" style="flex:1;padding:13px 16px;border:1px solid '+C.trait2+';border-radius:9px;background:'+C.blanc+';font:400 14.5px/1 Inter,sans-serif;color:'+C.encre+'">'
+        + '<button style="padding:13px 22px;border:0;border-radius:9px;background:'+C.accent+';color:#fff;font:600 14.5px/1 Inter,sans-serif;cursor:pointer">S\\'inscrire</button></div>'
+    },
+
+    /* Présentoirs : la même page, montrée dans un appareil. Le cadre
+       intérieur porte dc-drop-target, on y dépose donc son contenu. */
+    'bloc-navigateur': {
+      nom:'Fenêtre de navigateur',
+      css:'width:760px;height:470px;background:'+C.blanc+';border:1px solid '+C.trait2+';border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 26px 60px rgba(20,18,16,.18);'+abs,
+      html:'<div style="height:38px;background:'+C.fond+';border-bottom:1px solid '+C.trait+';display:flex;align-items:center;gap:7px;padding:0 16px">'
+        + ['#e0695a','#e0b45a','#4fa878'].map(function(c){ return '<div style="width:11px;height:11px;border-radius:50%;background:'+c+'"></div>'; }).join('')
+        + '<div style="flex:1;margin-left:14px;height:22px;border-radius:6px;background:'+C.blanc+';border:1px solid '+C.trait+'"></div></div>'
+        + '<div class="dc-drop-target" style="flex:1;background:'+C.blanc+'"></div>'
+    },
+    'bloc-telephone': {
+      nom:'Téléphone',
+      css:'width:290px;height:590px;background:'+C.nuit+';border-radius:42px;padding:12px;'+abs,
+      html:'<div class="dc-drop-target" style="width:100%;height:100%;border-radius:32px;background:'+C.blanc+';overflow:hidden"></div>'
+    },
+    'bloc-portable': {
+      nom:'Ordinateur portable',
+      css:'width:720px;'+abs,
+      html:'<div style="background:'+C.nuit+';border-radius:14px 14px 0 0;padding:14px 14px 0">'
+        + '<div class="dc-drop-target" style="height:420px;background:'+C.blanc+';border-radius:6px 6px 0 0;overflow:hidden"></div></div>'
+        + '<div style="height:16px;background:'+C.encre2+';border-radius:0 0 14px 14px"></div>'
+        + '<div style="width:120px;height:5px;margin:0 auto;border-radius:0 0 6px 6px;background:'+C.trait2+'"></div>'
+    },
+    'bloc-terminal': {
+      nom:'Terminal',
+      css:'width:560px;background:'+C.nuit+';border-radius:12px;overflow:hidden;box-shadow:0 22px 52px rgba(20,18,16,.24);'+abs,
+      html:'<div style="height:32px;background:#221f1d;display:flex;align-items:center;gap:7px;padding:0 14px">'
+        + ['#e0695a','#e0b45a','#4fa878'].map(function(c){ return '<div style="width:10px;height:10px;border-radius:50%;background:'+c+'"></div>'; }).join('')
+        + '<span style="margin-left:12px;font:500 11.5px/1 ui-monospace,monospace;color:#8d857c">projet — bash</span></div>'
+        + '<pre style="margin:0;padding:18px 20px;font:500 13px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d9d4cd">'
+        + '<span style="color:#7fc9a0">$</span> npm run build\\n'
+        + '  <span style="color:#8d857c">construction…</span>\\n'
+        + '  <span style="color:#7fc9a0">✓</span> 12 fichiers écrits en 1,4 s</pre>'
     }
   };
 
@@ -14994,7 +15380,18 @@ window.nxExportZip = async function(){
     ['Confiance', 'fas fa-shield-halved fas fa-lock fas fa-key fas fa-fingerprint fas fa-user-shield fas fa-circle-check fas fa-award fas fa-certificate fas fa-thumbs-up fas fa-handshake'],
     ['Lieux & temps', 'fas fa-location-dot fas fa-map fas fa-globe fas fa-compass fas fa-calendar-days fas fa-clock fas fa-hourglass-half fas fa-plane fas fa-building fas fa-house-chimney'],
     ['Médias', 'fas fa-image fas fa-camera fas fa-video fas fa-music fas fa-microphone fas fa-film fas fa-play fas fa-pause fas fa-volume-high fas fa-palette'],
-    ['Documents', 'fas fa-file-lines fas fa-file-pdf fas fa-file-code fas fa-folder fas fa-cloud-arrow-down fas fa-cloud-arrow-up fas fa-print fas fa-paperclip fas fa-bookmark fas fa-book']
+    ['Documents', 'fas fa-file-lines fas fa-file-pdf fas fa-file-code fas fa-folder fas fa-cloud-arrow-down fas fa-cloud-arrow-up fas fa-print fas fa-paperclip fas fa-bookmark fas fa-book'],
+    ['Interface', 'fas fa-bars fas fa-xmark fas fa-plus fas fa-minus fas fa-chevron-right fas fa-chevron-left fas fa-chevron-down fas fa-chevron-up fas fa-arrow-right fas fa-arrow-left fas fa-magnifying-glass fas fa-sliders fas fa-ellipsis fas fa-grip fas fa-expand fas fa-compress fas fa-rotate fas fa-trash fas fa-pen fas fa-copy'],
+    ['Santé & soin', 'fas fa-heart-pulse fas fa-stethoscope fas fa-user-doctor fas fa-hospital fas fa-pills fas fa-syringe fas fa-tooth fas fa-notes-medical fas fa-kit-medical fas fa-spa fas fa-hand-holding-heart fas fa-leaf'],
+    ['Éducation', 'fas fa-graduation-cap fas fa-school fas fa-chalkboard-user fas fa-book-open fas fa-pen-ruler fas fa-microscope fas fa-language fas fa-user-graduate fas fa-square-poll-vertical fas fa-brain'],
+    ['Immobilier & bâtiment', 'fas fa-house fas fa-key fas fa-city fas fa-warehouse fas fa-ruler-combined fas fa-helmet-safety fas fa-trowel-bricks fas fa-door-open fas fa-bed fas fa-bath fas fa-couch fas fa-tree'],
+    ['Restauration', 'fas fa-utensils fas fa-mug-hot fas fa-pizza-slice fas fa-burger fas fa-bread-slice fas fa-wine-glass fas fa-martini-glass fas fa-ice-cream fas fa-carrot fas fa-fish fas fa-cheese fas fa-bell-concierge'],
+    ['Sport & loisirs', 'fas fa-dumbbell fas fa-person-running fas fa-futbol fas fa-basketball fas fa-bicycle fas fa-person-swimming fas fa-mountain-sun fas fa-campground fas fa-gamepad fas fa-dice fas fa-chess fas fa-guitar'],
+    ['Mode & beauté', 'fas fa-shirt fas fa-shoe-prints fas fa-glasses fas fa-gem fas fa-crown fas fa-scissors fas fa-brush fas fa-hand-sparkles fas fa-ring fas fa-hat-cowboy'],
+    ['Finance', 'fas fa-euro-sign fas fa-dollar-sign fas fa-piggy-bank fas fa-building-columns fas fa-file-invoice-dollar fas fa-money-bill-transfer fas fa-scale-balanced fas fa-hand-holding-dollar fas fa-chart-simple fas fa-briefcase'],
+    ['Voyage', 'fas fa-suitcase-rolling fas fa-passport fas fa-hotel fas fa-umbrella-beach fas fa-ship fas fa-train fas fa-car fas fa-taxi fas fa-road fas fa-earth-europe fas fa-signs-post fas fa-binoculars'],
+    ['Réseaux', 'fab fa-instagram fab fa-facebook-f fab fa-linkedin-in fab fa-youtube fab fa-tiktok fab fa-whatsapp fab fa-pinterest-p fab fa-github fab fa-behance fab fa-dribbble fab fa-spotify fab fa-telegram'],
+    ['Écologie & énergie', 'fas fa-recycle fas fa-solar-panel fas fa-wind fas fa-seedling fas fa-droplet fas fa-bolt fas fa-battery-full fas fa-plug-circle-check fas fa-earth-americas fas fa-jar']
   ];
 
   /* ── Emojis supplémentaires ──────────────────────────────── */
@@ -15005,7 +15402,14 @@ window.nxExportZip = async function(){
     ['Nature', [['🌱','pousse plante'],['🌿','feuillage'],['🍃','feuilles vent'],['🌳','arbre'],['🌸','fleur cerisier'],['🌻','tournesol'],['🌊','vague mer'],['🔥','feu flamme'],['❄️','flocon neige'],['☀️','soleil'],['🌙','lune nuit'],['⭐','etoile'],['🌈','arc en ciel'],['⛰️','montagne'],['🌍','terre monde'],['💧','goutte eau']]],
     ['Symboles', [['✅','valide coche'],['❌','croix erreur'],['⚠️','attention danger'],['ℹ️','information'],['❓','question'],['❗','exclamation'],['➕','plus ajouter'],['➖','moins retirer'],['🔒','cadenas ferme'],['🔓','cadenas ouvert'],['♻️','recyclage'],['🔄','rafraichir cycle'],['🔗','lien chaine'],['🏁','drapeau arrivee'],['🎯','cible objectif'],['🏆','trophee gagnant']]],
     ['Nourriture', [['☕','cafe'],['🍵','the'],['🥐','croissant'],['🍞','pain'],['🍕','pizza'],['🍔','burger'],['🥗','salade'],['🍎','pomme'],['🍓','fraise'],['🍰','gateau part'],['🍫','chocolat'],['🥂','trinquer fete']]],
-    ['Transport & lieux', [['🚗','voiture'],['🚲','velo'],['✈️','avion'],['🚀','fusee lancement'],['🚉','gare train'],['🏠','maison'],['🏢','immeuble bureau'],['🏭','usine'],['🏥','hopital'],['🏫','ecole'],['🗺️','carte plan'],['📍','position lieu']]]
+    ['Transport & lieux', [['🚗','voiture'],['🚲','velo'],['✈️','avion'],['🚀','fusee lancement'],['🚉','gare train'],['🏠','maison'],['🏢','immeuble bureau'],['🏭','usine'],['🏥','hopital'],['🏫','ecole'],['🗺️','carte plan'],['📍','position lieu']]],
+    ['Gestes & personnes', [['👋','salut bonjour'],['👍','pouce bien'],['👎','pouce mauvais'],['👏','applaudir bravo'],['🙌','bras leves'],['🤝','poignee main accord'],['✍️','ecrire main'],['🙏','merci priere'],['💪','muscle force'],['👀','yeux regarder'],['🧠','cerveau'],['👤','personne silhouette'],['👥','groupe deux'],['🧑‍💻','developpeur'],['🧑‍🍳','cuisinier'],['🧑‍⚕️','soignant']]],
+    ['Émotions', [['😀','sourire content'],['😃','joyeux'],['😉','clin oeil'],['🥳','fete celebration'],['😍','admiration coeur'],['🤩','emerveille etoiles'],['🤔','reflechir doute'],['😌','apaise soulage'],['😴','dormir fatigue'],['😅','gene rire'],['😎','lunettes cool'],['🤗','calin accueil']]],
+    ['Animaux', [['🐶','chien'],['🐱','chat'],['🦊','renard'],['🐻','ours'],['🐼','panda'],['🦁','lion'],['🐴','cheval'],['🐝','abeille'],['🦋','papillon'],['🐦','oiseau'],['🐟','poisson'],['🐢','tortue'],['🦉','hibou'],['🐘','elephant']]],
+    ['Musique & art', [['🎵','note musique'],['🎶','musique notes'],['🎸','guitare'],['🎹','piano clavier'],['🥁','batterie tambour'],['🎤','micro chant'],['🎧','casque audio'],['🎬','clap cinema'],['🎨','palette peinture'],['🖌️','pinceau'],['🖼️','tableau cadre'],['📷','appareil photo']]],
+    ['Sport & jeu', [['⚽','football ballon'],['🏀','basket'],['🎾','tennis'],['🏐','volley'],['🏈','football americain'],['🏓','ping pong'],['🏋️','halterophilie muscu'],['🚴','cycliste'],['🏃','course'],['🏊','natation'],['🎿','ski'],['🥇','medaille or'],['🎲','de jeu'],['🎮','manette jeu video'],['♟️','echecs'],['🎯','flechettes cible']]],
+    ['Fêtes & moments', [['🎉','fete confettis'],['🎊','celebration'],['🎁','cadeau'],['🎂','gateau anniversaire'],['🕯️','bougie'],['🎈','ballon'],['🥳','fete visage'],['🧧','enveloppe rouge'],['💐','bouquet fleurs'],['🎄','sapin noel'],['🎃','citrouille'],['✨','etincelles']]],
+    ['Météo & temps', [['🌤️','soleil nuage'],['⛅','nuageux'],['🌧️','pluie'],['⛈️','orage'],['🌨️','neige'],['🌫️','brouillard'],['🌪️','tornade'],['🌡️','thermometre'],['🌅','lever soleil'],['🌇','coucher soleil'],['🌃','nuit ville'],['🕐','une heure']]]
   ];
 
   /* ════════════════════════════════════════════════════════════
@@ -16714,6 +17118,230 @@ window.nxExportZip = async function(){
     };
   })();
 })();
+
+<\/script>
+<script id="nx-shell-vie">
+/* ════════════════════════════════════════════════════════════════
+   LE SITE EXPORTÉ DOIT RESTER UN SITE
+   ════════════════════════════════════════════════════════════════
+   La coque d'export met la page à l'échelle dans un cadre de largeur
+   fixe. C'est ce qui garantit qu'aucun élément ne bouge d'un pixel
+   entre le plan de travail, l'aperçu et le fichier livré.
+
+   Mais ce cadre ne défile pas : c'est le document extérieur qui
+   défile. Trois choses cassaient donc, et elles cassaient ensemble :
+
+     · les ancres (« href="#tarifs" ») ne faisaient rien, parce que le
+       navigateur essayait de faire défiler un cadre qui ne défile pas ;
+     · un en-tête en position:fixed restait collé en haut de la
+       CONCEPTION, pas en haut de l'écran : il disparaissait dès qu'on
+       descendait ;
+     · une fenêtre modale en position:fixed s'ouvrait tout en haut du
+       document, donc hors de l'écran — on ne pouvait plus se connecter.
+
+   Ce module rebranche les trois sur le défilement réel. Il vit dans la
+   coque, pas dans le studio : il n'existe que dans les fichiers livrés
+   et dans l'aperçu.
+   ════════════════════════════════════════════════════════════════ */
+
+window.NX_SHELL_VIE = \`
+(function(){
+  var f = document.getElementById("nx-fit-frame");
+  if(!f) return;
+  var FW = parseFloat(f.getAttribute("data-nx-design-width")) || 1920;
+  var FH = parseFloat(f.getAttribute("data-nx-design-height")) || 1080;
+
+  function echelle(){
+    var r = f.getBoundingClientRect();
+    return (r.width / FW) || 1;
+  }
+  /* Haut du cadre dans la page extérieure. */
+  function origine(){
+    return f.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+  }
+
+  var doc = null, vue = null, suivis = [], planifie = 0;
+
+  /* ── 1. Ce qui doit suivre l'écran ──────────────────────────
+     Un élément fixe est posé dans un cadre haut de FH px. On le
+     décale du défilement réel pour qu'il retrouve la place qu'il
+     occuperait dans une vraie fenêtre. */
+  function recenser(){
+    if(!doc || !doc.body) return;
+    suivis = [];
+    var tous = doc.body.querySelectorAll("*");
+    for(var i = 0; i < tous.length; i++){
+      var el = tous[i];
+      var cs;
+      try{ cs = vue.getComputedStyle(el); }catch(e){ continue; }
+      var pos = cs.position;
+      if(pos !== "fixed" && pos !== "sticky") continue;
+      if(el.hasAttribute("data-nx-scaler")) continue;
+      /* La transformation d'origine est retenue UNE fois. La relire à
+         chaque recensement reviendrait à empiler nos propres décalages :
+         l'élément partirait à des milliers de pixels au premier
+         changement de style. */
+      if(el.__nxTrBase === undefined) el.__nxTrBase = el.style.transform || "";
+      /* On classe l'élément sur sa GÉOMÉTRIE, pas sur ses propriétés
+         calculées : pour un élément positionné, « bottom » est résolu en
+         pixels même quand la feuille de style ne le fixe pas, et un
+         en-tête de 50 px passait alors pour une surcouche plein écran. */
+      var trAvant = el.style.transform;
+      el.style.transform = el.__nxTrBase;
+      var q = el.getBoundingClientRect();
+      var d = {
+        el: el,
+        pos: pos,
+        decalageHaut: parseFloat(cs.top) || 0,
+        base: el.__nxTrBase,
+        natureHaut: q.top,
+        hauteur: q.height
+      };
+      /* Une surcouche qui couvre toute la conception doit couvrir la
+         bande visible, sinon son contenu centré tombe au milieu de la
+         page et non au milieu de l'écran. */
+      d.etiree = q.height >= FH * 0.9;
+      /* Une barre collée en bas de fenêtre. */
+      d.ancreBas = !d.etiree && q.bottom >= FH - 2 && q.top > FH * 0.5;
+      if(d.pos === "sticky"){
+        var p = el.parentElement;
+        d.limite = p ? (p.getBoundingClientRect().bottom - q.height) : FH;
+      }
+      el.style.transform = trAvant;
+      suivis.push(d);
+    }
+    placer();
+  }
+
+  var enPlace = false;
+  function placer(){
+    if(!suivis.length) return;
+    enPlace = true;
+    var s = echelle();
+    var defilement = (window.scrollY || window.pageYOffset || 0) - origine();
+    if(defilement < 0) defilement = 0;
+    var hautVisible = defilement / s;                    /* en px de conception */
+    var fenetre = (window.innerHeight || 0) / s;         /* idem */
+
+    for(var i = 0; i < suivis.length; i++){
+      var d = suivis[i], y;
+      if(d.pos === "sticky"){
+        var vise = Math.max(d.natureHaut, hautVisible + d.decalageHaut);
+        if(vise > d.limite) vise = d.limite;
+        y = vise - d.natureHaut;
+      } else if(d.etiree){
+        y = hautVisible;
+        d.el.style.height = Math.max(1, Math.round(fenetre)) + "px";
+        d.el.style.bottom = "auto";
+      } else if(d.ancreBas){
+        y = hautVisible + fenetre - FH;
+      } else {
+        y = hautVisible;
+      }
+      d.el.style.transform = (d.base ? d.base + " " : "") + "translateY(" + Math.round(y) + "px)";
+    }
+    enPlace = false;
+  }
+
+  function planifier(){
+    if(planifie) return;
+    planifie = requestAnimationFrame(function(){ planifie = 0; placer(); });
+  }
+
+  /* ── 2. Les ancres font défiler la vraie page ─────────────── */
+  function versCible(cible, doux){
+    if(!cible) return;
+    var s = echelle();
+    var q = cible.getBoundingClientRect();
+    var y = origine() + (q.top + (vue.scrollY || 0)) * s;
+    try{ window.scrollTo({ top: Math.max(0, y), behavior: doux ? "smooth" : "auto" }); }
+    catch(e){ window.scrollTo(0, Math.max(0, y)); }
+  }
+  function cibleDe(hash){
+    if(!hash || hash === "#") return null;
+    var id = hash.slice(1);
+    try{ return doc.getElementById(id) || doc.getElementsByName(id)[0] || null; }
+    catch(e){ return null; }
+  }
+
+  /* ── 3. Le document intérieur croit défiler ───────────────── */
+  function brancherDefilement(){
+    var s = function(){ return echelle(); };
+    try{
+      Object.defineProperty(vue, "scrollY", { get: function(){
+        return Math.max(0, ((window.scrollY || 0) - origine()) / s()); } });
+      Object.defineProperty(vue, "pageYOffset", { get: function(){
+        return Math.max(0, ((window.scrollY || 0) - origine()) / s()); } });
+    }catch(e){}
+    vue.scrollTo = function(a, b){
+      var y = (a && typeof a === "object") ? a.top : b;
+      var doux = !!(a && typeof a === "object" && a.behavior === "smooth");
+      y = (typeof y === "number") ? y : 0;
+      try{ window.scrollTo({ top: origine() + y * s(), behavior: doux ? "smooth" : "auto" }); }
+      catch(e){ window.scrollTo(0, origine() + y * s()); }
+    };
+    vue.scrollBy = function(a, b){
+      var y = (a && typeof a === "object") ? a.top : b;
+      window.scrollBy(0, (typeof y === "number" ? y : 0) * s());
+    };
+    try{
+      var natif = vue.Element.prototype.scrollIntoView;
+      vue.Element.prototype.scrollIntoView = function(opt){
+        if(doc.contains(this)){
+          versCible(this, !!(opt && opt.behavior === "smooth"));
+          return;
+        }
+        return natif.apply(this, arguments);
+      };
+    }catch(e){}
+  }
+
+  /* ── Mise en route, à chaque chargement du cadre ──────────── */
+  function brancher(){
+    try{
+      doc = f.contentDocument;
+      vue = f.contentWindow;
+      if(!doc || !doc.body) return;
+    }catch(e){ return; }
+
+    brancherDefilement();
+
+    doc.addEventListener("click", function(e){
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if(!a) return;
+      var href = a.getAttribute("href") || "";
+      if(href.charAt(0) !== "#" || href.length < 2) return;
+      var cible = cibleDe(href);
+      if(!cible) return;
+      e.preventDefault();
+      versCible(cible, true);
+      try{ history.replaceState(null, "", href); }catch(e2){}
+    }, true);
+
+    recenser();
+    /* Le contenu bouge : une fenêtre s'ouvre, un menu se déploie. */
+    try{
+      new MutationObserver(function(){
+        if(enPlace) return;          /* nos propres écritures de style */
+        clearTimeout(window.__nxRecense);
+        window.__nxRecense = setTimeout(recenser, 120);
+      }).observe(doc.body, { childList: true, subtree: true, attributes: true,
+                             attributeFilter: ["style", "class"] });
+    }catch(e){}
+    setTimeout(recenser, 400);
+    setTimeout(recenser, 1200);
+
+    var cible = cibleDe(location.hash);
+    if(cible) setTimeout(function(){ versCible(cible, false); }, 120);
+  }
+
+  window.addEventListener("scroll", planifier, { passive: true });
+  window.addEventListener("resize", function(){ recenser(); }, { passive: true });
+  f.addEventListener("load", brancher);
+  if(f.contentDocument && f.contentDocument.readyState === "complete") brancher();
+  setTimeout(brancher, 250);
+})();
+\`;
 
 <\/script>
 </body>
